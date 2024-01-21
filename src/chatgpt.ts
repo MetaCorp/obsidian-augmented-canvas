@@ -40,10 +40,11 @@ export const getResponse = async (
 		model: "gpt-4-1106-preview",
 		messages: openaiMessages,
 		// max_tokens: 2048 || maxTokens || 4096 - totalTokens,
+		response_format: { type: "json_object" },
 	});
 
 	console.log({ completion });
-	return completion.choices[0].message!.content!.trim();
+	return JSON.parse(completion.choices[0].message!.content!);
 };
 
 let count = 0;

@@ -26,11 +26,15 @@ const placeholderNoteHeight = 60;
  */
 const emptyNoteHeight = 100;
 
-// const NOTE_MAX_WIDTH = 400;
-const NOTE_MAX_WIDTH = undefined;
+const NOTE_MAX_WIDTH = 400;
 
 // TODO : remove
 const logDebug = console.log;
+
+const SYSTEM_PROMPT = `You must respond in this JSON format: {
+	"response": Your response,
+	"questions": Follow up question the user could ask based on your response
+}`;
 
 export function noteGenerator(
 	app: App
@@ -70,7 +74,8 @@ export function noteGenerator(
 			text: "loading...",
 			size: {
 				height: emptyNoteHeight,
-				width: Math.min(parentNodeWidth, NOTE_MAX_WIDTH),
+				// width: Math.min(parentNodeWidth, NOTE_MAX_WIDTH),
+				width: parentNodeWidth,
 			},
 		});
 		canvas.selectOnly(created, true /* startEditing */);
@@ -83,12 +88,20 @@ export function noteGenerator(
 
 		const gptResponse = await getResponse("", [
 			{
+				role: "system",
+				content: SYSTEM_PROMPT,
+			},
+			{
 				role: "user",
 				content: prompt,
 			},
 		]);
 
-		created.setText(gptResponse);
+		created.setText(gptResponse.response);
+		created.setData({
+			questions: gptResponse.questions,
+		});
+		console.log({ created });
 		await canvas.requestSave();
 	};
 
