@@ -148,6 +148,8 @@ export const handleCanvasMenu = (
 	questions: string[],
 	callback: (question: string) => Promise<void>
 ) => {
+	if (!questions) return;
+
 	questions.forEach((question: string) =>
 		subMenu.addItem((item: MenuItem) => {
 			item

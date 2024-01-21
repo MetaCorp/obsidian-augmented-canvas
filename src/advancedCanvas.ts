@@ -24,7 +24,15 @@ export const handleCallGPT = async (app: App, node: CanvasNode) => {
 
 		// nodeData.height =
 		// 	nodeData.height > NODE_HEIGHT ? nodeData.height : NODE_HEIGHT;
-		await generateGptNote(nodeData.text, nodeData.width);
+		await generateGptNote(
+			[
+				{
+					role: "user",
+					content: nodeData.text,
+				},
+			],
+			nodeData.width
+		);
 	}
 
 	// node.canvas.setData(canvasData);
@@ -47,6 +55,18 @@ export const handleCallGPT_Question = async (
 	// TODO : CallGPT and update text
 	if (nodeData) {
 		const { generateGptNote } = noteGenerator(app);
-		await generateGptNote(nodeData.text, nodeData.width);
+		await generateGptNote(
+			[
+				{
+					role: "assistant",
+					content: nodeData.text,
+				},
+				{
+					role: "user",
+					content: question,
+				},
+			],
+			nodeData.width
+		);
 	}
 };

@@ -41,6 +41,7 @@ const textPaddingHeight = 12;
  * Margin between new notes
  */
 const newNoteMargin = 60;
+const newNoteMarginWithLabel = 110;
 
 /**
  * Min height of new notes
@@ -68,7 +69,8 @@ export const createNode = (
 	canvas: Canvas,
 	parentNode: CanvasNode,
 	nodeOptions: CreateNodeOptions,
-	nodeData?: Partial<AllCanvasNodeData>
+	nodeData?: Partial<AllCanvasNodeData>,
+	edgeLabel?: string
 ) => {
 	if (!canvas) {
 		throw new Error("Invalid arguments");
@@ -109,7 +111,9 @@ export const createNode = (
 	const y =
 		(priorSibling
 			? priorSibling.y
-			: parentNode.y + parentNode.height + newNoteMargin) +
+			: parentNode.y +
+			  parentNode.height +
+			  (edgeLabel ? newNoteMarginWithLabel : newNoteMargin)) +
 		// Using position=left, y value is treated as vertical center
 		height * 0.5;
 
@@ -140,7 +144,8 @@ export const createNode = (
 			fromOrTo: "to",
 			side: "top",
 			node: newNode,
-		}
+		},
+		edgeLabel
 	);
 
 	return newNode;
@@ -153,7 +158,8 @@ export const addEdge = (
 	canvas: Canvas,
 	edgeID: string,
 	fromEdge: CanvasEdgeIntermediate,
-	toEdge: CanvasEdgeIntermediate
+	toEdge: CanvasEdgeIntermediate,
+	label?: string
 ) => {
 	if (!canvas) return;
 
@@ -170,6 +176,7 @@ export const addEdge = (
 				fromSide: fromEdge.side,
 				toNode: toEdge.node.id,
 				toSide: toEdge.side,
+				label,
 			},
 		],
 		nodes: data.nodes,

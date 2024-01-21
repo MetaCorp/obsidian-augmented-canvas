@@ -52,7 +52,10 @@ export function noteGenerator(
 		// return true;
 	};
 
-	const generateGptNote = async (prompt: string, parentNodeWidth: number) => {
+	const generateGptNote = async (
+		messages: any[],
+		parentNodeWidth: number
+	) => {
 		logDebug("Creating user note");
 
 		const canvas = getActiveCanvas();
@@ -70,15 +73,23 @@ export function noteGenerator(
 
 		if (!node) return;
 
-		const created = createNode(canvas, node, {
-			text: "loading...",
-			size: {
-				height: emptyNoteHeight,
-				// width: Math.min(parentNodeWidth, NOTE_MAX_WIDTH),
-				width: parentNodeWidth,
+		const created = createNode(
+			canvas,
+			node,
+			{
+				text: "loading...",
+				size: {
+					height: emptyNoteHeight,
+					// width: Math.min(parentNodeWidth, NOTE_MAX_WIDTH),
+					width: parentNodeWidth,
+				},
 			},
-		});
-		canvas.selectOnly(created, true /* startEditing */);
+			undefined,
+			messages.length > 1
+				? messages[messages.length - 1].content
+				: undefined
+		);
+		// canvas.selectOnly(created, true /* startEditing */);
 
 		// startEditing() doesn't work if called immediately
 		await canvas.requestSave();
@@ -91,10 +102,7 @@ export function noteGenerator(
 				role: "system",
 				content: SYSTEM_PROMPT,
 			},
-			{
-				role: "user",
-				content: prompt,
-			},
+			...messages,
 		]);
 
 		created.setText(gptResponse.response);

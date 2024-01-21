@@ -370,6 +370,12 @@ export default class CanvasCollapsePlugin extends Plugin {
 							);
 						});
 
+						// const node = <CanvasNode>(
+						// 	Array.from(this.canvas.selection)?.first()
+						// );
+
+						// if (!node?.unknownData.questions?.length) return;
+
 						// * Handles Ask Questions button
 
 						const buttonEl_AskQuestions = createEl(
@@ -381,7 +387,6 @@ export default class CanvasCollapsePlugin extends Plugin {
 						});
 						setIcon(buttonEl_AskQuestions, "lucide-file-question");
 						this.menuEl.appendChild(buttonEl_AskQuestions);
-
 						buttonEl_AskQuestions.addEventListener("click", () => {
 							const pos =
 								buttonEl_AskQuestions.getBoundingClientRect();
