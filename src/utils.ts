@@ -145,15 +145,19 @@ const createHandleContextMenu = (
 // TODO : ask GPT and add subMenu items
 export const handleCanvasMenu = (
 	subMenu: Menu,
-	callback: (isFold: boolean) => Promise<void>
+	questions: string[],
+	callback: (question: string) => Promise<void>
 ) => {
-	return subMenu.addItem((item: MenuItem) => {
-		item.setIcon("fold-vertical")
-			.setTitle("Call GPT")
-			.onClick(async () => {
-				await callback(true);
-			});
-	});
+	questions.forEach((question: string) =>
+		subMenu.addItem((item: MenuItem) => {
+			item
+				// .setIcon("fold-vertical")
+				.setTitle(question)
+				.onClick(async () => {
+					await callback(question);
+				});
+		})
+	);
 	// .addItem((item: any) => {
 	// 	item
 	// 		.setIcon("unfold-vertical")
@@ -162,6 +166,8 @@ export const handleCanvasMenu = (
 	// 			await callback(false);
 	// 		});
 	// });
+
+	return subMenu;
 };
 export const handleSelectionContextMenu = (
 	plugin: CanvasCollapsePlugin,

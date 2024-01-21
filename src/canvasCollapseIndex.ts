@@ -23,7 +23,7 @@ import {
 	handleSingleNode,
 	refreshAllCanvasView,
 } from "./utils";
-import { handleCallGPT } from "./advancedCanvas";
+import { handleCallGPT, handleCallGPT_Question } from "./advancedCanvas";
 import { noteGenerator } from "./noteGenerator";
 
 export default class CanvasCollapsePlugin extends Plugin {
@@ -400,33 +400,47 @@ export default class CanvasCollapsePlugin extends Plugin {
 										this.selection.bbox
 									);
 
+								const node = <CanvasNode>(
+									Array.from(this.canvas.selection)?.first()
+								);
+
 								handleCanvasMenu(
 									menu,
+									node.unknownData.questions,
 									// TODO : onMenuItem Click
-									async (isFold: boolean) => {
-										triggerPlugin();
-										const currentSelection =
-											this.canvas.selection;
-										containingNodes.length > 1
-											? handleMultiNodesViaNodes(
-													this.canvas,
-													containingNodes,
-													isFold
-											  )
-											: currentSelection
-											? handleSingleNode(
-													<CanvasNode>(
-														Array.from(
-															currentSelection
-														)?.first()
-													),
-													isFold
-											  )
-											: "";
-										buttonEl_AskQuestions.toggleClass(
-											"has-active-menu",
-											false
+									async (question: string) => {
+										handleCallGPT_Question(
+											app,
+											<CanvasNode>(
+												Array.from(
+													this.canvas.selection
+												)?.first()
+											),
+											question
 										);
+										// triggerPlugin();
+										// const currentSelection =
+										// 	this.canvas.selection;
+										// containingNodes.length > 1
+										// 	? handleMultiNodesViaNodes(
+										// 			this.canvas,
+										// 			containingNodes,
+										// 			isFold
+										// 	  )
+										// 	: currentSelection
+										// 	? handleSingleNode(
+										// 			<CanvasNode>(
+										// 				Array.from(
+										// 					currentSelection
+										// 				)?.first()
+										// 			),
+										// 			isFold
+										// 	  )
+										// 	: "";
+										// buttonEl_AskQuestions.toggleClass(
+										// 	"has-active-menu",
+										// 	false
+										// );
 									}
 								);
 								menu.setParentElement(

@@ -33,7 +33,7 @@ const logDebug = console.log;
 
 const SYSTEM_PROMPT = `You must respond in this JSON format: {
 	"response": Your response,
-	"questions": Follow up question the user could ask based on your response
+	"questions": Follow up questions the user could ask based on your response, must be an array
 }`;
 
 export function noteGenerator(

@@ -32,3 +32,21 @@ export const handleCallGPT = async (app: App, node: CanvasNode) => {
 
 	// updateSelection(node.canvas);
 };
+
+export const handleCallGPT_Question = async (
+	app: App,
+	node: CanvasNode,
+	question: string
+) => {
+	if (node.unknownData.type === "group") {
+		return;
+	}
+	const canvasData = node.canvas.getData();
+	const nodeData = canvasData.nodes.find((t: any) => t.id === node.id);
+
+	// TODO : CallGPT and update text
+	if (nodeData) {
+		const { generateGptNote } = noteGenerator(app);
+		await generateGptNote(nodeData.text, nodeData.width);
+	}
+};
