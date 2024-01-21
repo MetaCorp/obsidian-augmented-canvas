@@ -24,7 +24,7 @@ export const handleCallGPT = async (app: App, node: CanvasNode) => {
 
 		// nodeData.height =
 		// 	nodeData.height > NODE_HEIGHT ? nodeData.height : NODE_HEIGHT;
-		await generateGptNote(nodeData.text);
+		await generateGptNote(nodeData.text, nodeData.width);
 	}
 
 	// node.canvas.setData(canvasData);

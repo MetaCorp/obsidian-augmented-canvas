@@ -9,6 +9,7 @@ import { CanvasView, calcHeight, createNode } from "./obsidian/canvas-patches";
 // import { Logger } from "./util/logging";
 import { visitNodeAndAncestors } from "./obsidian/canvasUtil";
 import { readNodeContent } from "./obsidian/fileUtil";
+import { getResponse } from "./chatgpt";
 
 /**
  * Color for assistant notes: 6 == purple
@@ -25,10 +26,11 @@ const placeholderNoteHeight = 60;
  */
 const emptyNoteHeight = 100;
 
+// const NOTE_MAX_WIDTH = 400;
+const NOTE_MAX_WIDTH = undefined;
+
 // TODO : remove
 const logDebug = console.log;
-
-const getResponse = async (text: string) => "Hello world !";
 
 export function noteGenerator(
 	app: App
@@ -46,7 +48,7 @@ export function noteGenerator(
 		// return true;
 	};
 
-	const generateGptNote = async (prompt: string) => {
+	const generateGptNote = async (prompt: string, parentNodeWidth: number) => {
 		logDebug("Creating user note");
 
 		const canvas = getActiveCanvas();
@@ -66,7 +68,10 @@ export function noteGenerator(
 
 		const created = createNode(canvas, node, {
 			text: "loading...",
-			size: { height: emptyNoteHeight },
+			size: {
+				height: emptyNoteHeight,
+				width: Math.min(parentNodeWidth, NOTE_MAX_WIDTH),
+			},
 		});
 		canvas.selectOnly(created, true /* startEditing */);
 
@@ -76,9 +81,15 @@ export function noteGenerator(
 		// await sleep(100);
 		// created.startEditing();
 
-		const gptResponse = await getResponse(prompt);
+		const gptResponse = await getResponse("", [
+			{
+				role: "user",
+				content: prompt,
+			},
+		]);
 
 		created.setText(gptResponse);
+		await canvas.requestSave();
 	};
 
 	const getActiveCanvas = () => {
