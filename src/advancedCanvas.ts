@@ -3,7 +3,7 @@ import { noteGenerator } from "./noteGenerator";
 
 const NODE_HEIGHT = 500;
 
-export const handleCallGPT = (app: App, node: CanvasNode) => {
+export const handleCallGPT = async (app: App, node: CanvasNode) => {
 	if (node.unknownData.type === "group") {
 		// (node.headerComponent as CollapseControlHeader).updateNodesInGroup();
 		return;
@@ -13,10 +13,9 @@ export const handleCallGPT = (app: App, node: CanvasNode) => {
 
 	// TODO : CallGPT and update text
 	if (nodeData) {
-		const { nextNote } = noteGenerator(app);
+		const { generateGptNote } = noteGenerator(app);
 
 		// console.log({ nodeData });
-		const gptResponse = "Hello world !";
 		// 		nodeData.text = `# ${nodeData.text}
 
 		// ${gptResponse}`;
@@ -25,11 +24,11 @@ export const handleCallGPT = (app: App, node: CanvasNode) => {
 
 		// nodeData.height =
 		// 	nodeData.height > NODE_HEIGHT ? nodeData.height : NODE_HEIGHT;
-		nextNote(nodeData.text);
+		await generateGptNote(nodeData.text);
 	}
 
-	node.canvas.setData(canvasData);
-	node.canvas.requestSave(true, true);
+	// node.canvas.setData(canvasData);
+	// node.canvas.requestSave(true, true);
 
 	// updateSelection(node.canvas);
 };

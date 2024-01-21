@@ -28,6 +28,8 @@ const emptyNoteHeight = 100;
 // TODO : remove
 const logDebug = console.log;
 
+const getResponse = async (text: string) => "Hello world !";
+
 export function noteGenerator(
 	app: App
 	// settings: ChatStreamSettings,
@@ -44,7 +46,7 @@ export function noteGenerator(
 		// return true;
 	};
 
-	const nextNote = async (text: string) => {
+	const generateGptNote = async (prompt: string) => {
 		logDebug("Creating user note");
 
 		const canvas = getActiveCanvas();
@@ -60,19 +62,23 @@ export function noteGenerator(
 		const values = Array.from(selection.values()) as CanvasNode[];
 		const node = values[0];
 
-		if (node) {
-			const created = createNode(canvas, node, {
-				text,
-				size: { height: emptyNoteHeight },
-			});
-			canvas.selectOnly(created, true /* startEditing */);
+		if (!node) return;
 
-			// startEditing() doesn't work if called immediately
-			await canvas.requestSave();
-			await sleep(100);
+		const created = createNode(canvas, node, {
+			text: "loading...",
+			size: { height: emptyNoteHeight },
+		});
+		canvas.selectOnly(created, true /* startEditing */);
 
-			created.startEditing();
-		}
+		// startEditing() doesn't work if called immediately
+		await canvas.requestSave();
+
+		// await sleep(100);
+		// created.startEditing();
+
+		const gptResponse = await getResponse(prompt);
+
+		created.setText(gptResponse);
 	};
 
 	const getActiveCanvas = () => {
@@ -280,7 +286,7 @@ export function noteGenerator(
 	// };
 
 	// return { nextNote, generateNote };
-	return { nextNote };
+	return { generateGptNote };
 }
 
 // function getTokenLimit(settings: ChatStreamSettings) {
