@@ -11,11 +11,6 @@ The links between notes are used to create the chat history sent to GPT.
 
 ![Augmented-Canvas-poc](./assets/Augmented-Canvas-poc.gif)
 
-## Usage
-
-1. Run `yarn`
-2. Then `yarn dev`
-
 ## Installation
 
 -   Not ready for market yet
