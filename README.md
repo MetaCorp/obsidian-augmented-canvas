@@ -20,6 +20,11 @@ A plugin for [Obsidian](https://obsidian.md) that augment Obsidian Canvas with A
    plugin
 5. Done!
 
+## Special thanks
+
+-   [rpggio/obsidian-chat-stream: Obsidian canvas plugin for using AI completion with threads of canvas nodes (github.com)](https://github.com/rpggio/obsidian-chat-stream)
+-   [Quorafind/Obsidian-Collapse-Node: A node collapsing plugin for Canvas in Obsidian. (github.com)](https://github.com/quorafind/obsidian-collapse-node)
+
 ## Support
 
 If you are enjoying this plugin then please support my work and enthusiasm by buying me a coffee
