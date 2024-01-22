@@ -26,4 +26,4 @@ If you are enjoying this plugin then please support my work and enthusiasm by bu
 on [https://www.buymeacoffee.com/metacorp](https://www.buymeacoffee.com/metacorp).
 .
 
-<a href="https://www.buymeacoffee.com/boninallhttps://www.buymeacoffee.com/metacorp"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=boninall&button_colour=6495ED&font_colour=ffffff&font_family=Lato&outline_colour=000000&coffee_colour=FFDD00"></a>
+<a href="https://www.buymeacoffee.com/metacorp"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=boninall&button_colour=6495ED&font_colour=ffffff&font_family=Lato&outline_colour=000000&coffee_colour=FFDD00"></a>
