@@ -150,15 +150,6 @@ export const handleCanvasMenu = (
 ) => {
 	if (!questions) return;
 
-	subMenu.addItem((item: MenuItem) => {
-		item
-			// .setIcon("fold-vertical")
-			.setTitle("Write custom question.")
-			.onClick(async () => {
-				await callback();
-			});
-	});
-
 	questions.forEach((question: string) =>
 		subMenu.addItem((item: MenuItem) => {
 			item
@@ -169,6 +160,15 @@ export const handleCanvasMenu = (
 				});
 		})
 	);
+
+	subMenu.addItem((item: MenuItem) => {
+		item
+			// .setIcon("fold-vertical")
+			.setTitle("Write custom question.")
+			.onClick(async () => {
+				await callback();
+			});
+	});
 	// .addItem((item: any) => {
 	// 	item
 	// 		.setIcon("unfold-vertical")

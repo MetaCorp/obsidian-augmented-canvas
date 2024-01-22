@@ -361,7 +361,7 @@ export default class AugmentedCanvasPlugin extends Plugin {
 							) as CanvasView | null;
 						if (
 							!maybeCanvasView ||
-							maybeCanvasView.canvas.selection?.size !== 1
+							maybeCanvasView.canvas?.selection?.size !== 1
 						)
 							return result;
 

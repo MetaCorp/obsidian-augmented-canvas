@@ -2,7 +2,7 @@
 
 A plugin for [Obsidian](https://obsidian.md) that augment Obsidian Canvas with AI features.
 
-![Collapse-Node](./assets/Collapse-Node.gif)
+![Auugmented-Canvas-poc](./assets/Augmented-Canvas-poc.gif)
 
 ## Usage
 
