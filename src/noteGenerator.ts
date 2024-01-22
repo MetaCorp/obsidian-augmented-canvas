@@ -280,17 +280,25 @@ export function noteGenerator(
 			const { messages, tokenCount } = await buildMessages(node);
 			if (!messages.length) return;
 
-			const messages2 = [
-				{
-					role: "system",
-					content: SYSTEM_PROMPT,
-				},
-				...messages,
-				{
-					role: "user",
-					content: question,
-				},
-			];
+			const messages2 = question
+				? [
+						{
+							role: "system",
+							content: SYSTEM_PROMPT,
+						},
+						...messages,
+						{
+							role: "user",
+							content: question,
+						},
+				  ]
+				: [
+						{
+							role: "system",
+							content: SYSTEM_PROMPT,
+						},
+						...messages,
+				  ];
 			// TODO : update tokenCount with new messages
 
 			const created = createNode(
@@ -314,7 +322,7 @@ export function noteGenerator(
 			);
 
 			try {
-				logDebug("messages", messages2);
+				logDebug("messages", messages);
 
 				const generated = await getResponse(
 					settings.apiKey,
@@ -336,7 +344,9 @@ export function noteGenerator(
 				}
 
 				created.setText(generated.response);
+				const nodeData = created.getData();
 				created.setData({
+					...nodeData,
 					questions: generated.questions,
 				});
 				const height = calcHeight({
