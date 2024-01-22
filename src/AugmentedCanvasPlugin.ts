@@ -30,6 +30,7 @@ import {
 	DEFAULT_SETTINGS,
 } from "./settings/AugmentedCanvasSettings";
 import SettingsTab from "./settings/SettingsTab";
+import { CustomQuestionModal } from "./CustomQuestionModal";
 
 export default class AugmentedCanvasPlugin extends Plugin {
 	triggerByPlugin: boolean = false;
@@ -369,17 +370,17 @@ export default class AugmentedCanvasPlugin extends Plugin {
 
 						// * Handles Call GPT button
 
-						const buttonEl_AskGPT = createEl(
+						const buttonEl_AskAI = createEl(
 							"button",
 							"clickable-icon gpt-menu-item"
 						);
-						setTooltip(buttonEl_AskGPT, "Ask GPT", {
+						setTooltip(buttonEl_AskAI, "Ask AI", {
 							placement: "top",
 						});
-						setIcon(buttonEl_AskGPT, "lucide-sparkles");
-						this.menuEl.appendChild(buttonEl_AskGPT);
+						setIcon(buttonEl_AskAI, "lucide-sparkles");
+						this.menuEl.appendChild(buttonEl_AskAI);
 
-						buttonEl_AskGPT.addEventListener("click", () => {
+						buttonEl_AskAI.addEventListener("click", () => {
 							handleCallGPT(
 								app,
 								settings,
@@ -401,9 +402,13 @@ export default class AugmentedCanvasPlugin extends Plugin {
 							"button",
 							"clickable-icon gpt-menu-item"
 						);
-						setTooltip(buttonEl_AskQuestions, "Ask questions", {
-							placement: "top",
-						});
+						setTooltip(
+							buttonEl_AskQuestions,
+							"Ask questions with AI",
+							{
+								placement: "top",
+							}
+						);
 						setIcon(buttonEl_AskQuestions, "lucide-file-question");
 						this.menuEl.appendChild(buttonEl_AskQuestions);
 						buttonEl_AskQuestions.addEventListener("click", () => {
@@ -419,10 +424,10 @@ export default class AugmentedCanvasPlugin extends Plugin {
 									true
 								);
 								const menu = new Menu();
-								const containingNodes =
-									this.canvas.getContainingNodes(
-										this.selection.bbox
-									);
+								// const containingNodes =
+								// 	this.canvas.getContainingNodes(
+								// 		this.selection.bbox
+								// 	);
 
 								const node = <CanvasNode>(
 									Array.from(this.canvas.selection)?.first()
@@ -431,17 +436,40 @@ export default class AugmentedCanvasPlugin extends Plugin {
 								handleCanvasMenu(
 									menu,
 									node.unknownData.questions,
-									async (question: string) => {
-										handleCallGPT_Question(
-											app,
-											settings,
-											<CanvasNode>(
-												Array.from(
-													this.canvas.selection
-												)?.first()
-											),
-											question
-										);
+									async (question?: string) => {
+										if (!question) {
+											// TODO : open modal
+											let modal = new CustomQuestionModal(
+												app,
+												(question2: string) => {
+													handleCallGPT_Question(
+														app,
+														settings,
+														<CanvasNode>(
+															Array.from(
+																this.canvas
+																	.selection
+															)?.first()
+														),
+														question2
+													);
+													// Handle the input
+												}
+											);
+											modal.open();
+										} else {
+											handleCallGPT_Question(
+												app,
+												settings,
+												<CanvasNode>(
+													Array.from(
+														this.canvas.selection
+													)?.first()
+												),
+												question
+											);
+										}
+
 										// triggerPlugin();
 										// const currentSelection =
 										// 	this.canvas.selection;

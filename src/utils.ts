@@ -146,9 +146,18 @@ const createHandleContextMenu = (
 export const handleCanvasMenu = (
 	subMenu: Menu,
 	questions: string[],
-	callback: (question: string) => Promise<void>
+	callback: (question?: string) => Promise<void>
 ) => {
 	if (!questions) return;
+
+	subMenu.addItem((item: MenuItem) => {
+		item
+			// .setIcon("fold-vertical")
+			.setTitle("Write custom question.")
+			.onClick(async () => {
+				await callback();
+			});
+	});
 
 	questions.forEach((question: string) =>
 		subMenu.addItem((item: MenuItem) => {

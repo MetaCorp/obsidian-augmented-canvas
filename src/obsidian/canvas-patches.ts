@@ -58,7 +58,8 @@ export const calcHeight = (options: { parentHeight: number; text: string }) => {
 		textPaddingHeight +
 			(pxPerLine * options.text.length) / (minWidth / pxPerChar)
 	);
-	return Math.max(options.parentHeight, calcTextHeight);
+	return calcTextHeight;
+	// return Math.max(options.parentHeight, calcTextHeight);
 };
 
 /**
