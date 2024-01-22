@@ -8,7 +8,7 @@ import {
 	MenuItem,
 } from "obsidian";
 import CollapseControlHeader from "./ControlHeader";
-import CanvasCollapsePlugin from "./canvasCollapseIndex";
+import AugmentedCanvasPlugin from "./AugmentedCanvasPlugin";
 
 const getBoundingRect = (nodes: CanvasNode[]) => {
 	const bboxArray = nodes.map((t: CanvasNode) => t.getBBox());
@@ -109,7 +109,7 @@ export const handleSingleNode = (node: CanvasNode, collapse: boolean) => {
 	updateSelection(node.canvas);
 };
 export const handleNodesViaCommands = (
-	plugin: CanvasCollapsePlugin,
+	plugin: AugmentedCanvasPlugin,
 	checking: boolean,
 	allNodes: boolean,
 	collapse: boolean
@@ -172,7 +172,7 @@ export const handleCanvasMenu = (
 	return subMenu;
 };
 export const handleSelectionContextMenu = (
-	plugin: CanvasCollapsePlugin,
+	plugin: AugmentedCanvasPlugin,
 	menu: Menu,
 	canvas: Canvas
 ) => {
@@ -183,7 +183,7 @@ export const handleSelectionContextMenu = (
 	createHandleContextMenu("action", callback)(menu);
 };
 export const handleNodeContextMenu = (
-	plugin: CanvasCollapsePlugin,
+	plugin: AugmentedCanvasPlugin,
 	menu: Menu,
 	node: CanvasNode
 ) => {

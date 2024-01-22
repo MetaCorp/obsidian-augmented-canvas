@@ -1,6 +1,6 @@
 {
-	"id": "collapse-node",
-	"name": "Collapse Node",
+	"id": "augmented-canvas",
+	"name": "Augmented Canvas",
 	"version": "1.0.0",
 	"minAppVersion": "1.1.0",
 	"description": "Collapse node in canvas.",

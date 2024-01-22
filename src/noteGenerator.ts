@@ -1,15 +1,16 @@
-// import { TiktokenModel, encodingForModel } from "js-tiktoken";
+import { TiktokenModel, encodingForModel } from "js-tiktoken";
 import { App, ItemView, Notice } from "obsidian";
 import { CanvasNode } from "./obsidian/canvas-internal";
 import { CanvasView, calcHeight, createNode } from "./obsidian/canvas-patches";
-// import {
-// 	ChatStreamSettings,
-// 	DEFAULT_SETTINGS,
-// } from "./settings/ChatStreamSettings";
+import {
+	AugmentedCanvasSettings,
+	DEFAULT_SETTINGS,
+} from "./settings/AugmentedCanvasSettings";
 // import { Logger } from "./util/logging";
 import { visitNodeAndAncestors } from "./obsidian/canvasUtil";
 import { readNodeContent } from "./obsidian/fileUtil";
 import { getResponse } from "./chatgpt";
+import { CHAT_MODELS, chatModelByName } from "./openai/models";
 
 /**
  * Color for assistant notes: 6 == purple
@@ -32,13 +33,13 @@ const NOTE_MAX_WIDTH = 400;
 const logDebug = console.log;
 
 const SYSTEM_PROMPT = `You must respond in this JSON format: {
-	"response": Your response,
+	"response": Your response, must be in markdown,
 	"questions": Follow up questions the user could ask based on your response, must be an array
 }`;
 
 export function noteGenerator(
-	app: App
-	// settings: ChatStreamSettings,
+	app: App,
+	settings: AugmentedCanvasSettings
 	// logDebug: Logger
 ) {
 	// TODO
@@ -77,18 +78,29 @@ export function noteGenerator(
 			canvas,
 			node,
 			{
-				text: "loading...",
+				text: `\`\`\`Calling AI (${settings.apiModel})...\`\`\``,
+				// text: "```loading...```",
 				size: {
 					height: emptyNoteHeight,
 					// width: Math.min(parentNodeWidth, NOTE_MAX_WIDTH),
 					width: parentNodeWidth,
 				},
 			},
-			undefined,
+			{
+				color: assistantColor,
+				chat_role: "assistant",
+			},
 			messages.length > 1
 				? messages[messages.length - 1].content
 				: undefined
 		);
+
+		// if (created == null) {
+		// 	new Notice(`Empty or unreadable response from GPT`);
+		// 	canvas.removeNode(created);
+		// 	return;
+		// }
+
 		// canvas.selectOnly(created, true /* startEditing */);
 
 		// startEditing() doesn't work if called immediately
@@ -97,7 +109,7 @@ export function noteGenerator(
 		// await sleep(100);
 		// created.startEditing();
 
-		const gptResponse = await getResponse("", [
+		const generated = await getResponse("", [
 			{
 				role: "system",
 				content: SYSTEM_PROMPT,
@@ -105,9 +117,19 @@ export function noteGenerator(
 			...messages,
 		]);
 
-		created.setText(gptResponse.response);
+		created.setText(generated.response);
 		created.setData({
-			questions: gptResponse.questions,
+			questions: generated.questions,
+		});
+		const height = calcHeight({
+			text: generated.response,
+			parentHeight: node.height,
+		});
+		created.moveAndResize({
+			height,
+			width: created.width,
+			x: created.x,
+			y: created.y,
 		});
 		console.log({ created });
 		await canvas.requestSave();
@@ -142,188 +164,190 @@ export function noteGenerator(
 	};
 
 	const buildMessages = async (node: CanvasNode) => {
-		return { messages: [], tokenCount: 0 };
+		// return { messages: [], tokenCount: 0 };
 
 		// TODO
-		// const encoding = encodingForModel(
-		// 	(settings.apiModel || DEFAULT_SETTINGS.apiModel) as TiktokenModel
-		// );
+		const encoding = encodingForModel(
+			(settings.apiModel || DEFAULT_SETTINGS.apiModel) as TiktokenModel
+		);
 
-		// const messages: openai.ChatCompletionRequestMessage[] = [];
-		// let tokenCount = 0;
+		const messages: any[] = [];
+		let tokenCount = 0;
 
-		// // Note: We are not checking for system prompt longer than context window.
-		// // That scenario makes no sense, though.
-		// const systemPrompt = await getSystemPrompt(node);
-		// if (systemPrompt) {
-		// 	tokenCount += encoding.encode(systemPrompt).length;
-		// }
+		// Note: We are not checking for system prompt longer than context window.
+		// That scenario makes no sense, though.
+		const systemPrompt = await getSystemPrompt(node);
+		if (systemPrompt) {
+			tokenCount += encoding.encode(systemPrompt).length;
+		}
 
-		// const visit = async (node: CanvasNode, depth: number) => {
-		// 	if (settings.maxDepth && depth > settings.maxDepth) return false;
+		const visit = async (node: CanvasNode, depth: number) => {
+			if (settings.maxDepth && depth > settings.maxDepth) return false;
 
-		// 	const nodeData = node.getData();
-		// 	let nodeText = (await readNodeContent(node))?.trim() || "";
-		// 	const inputLimit = getTokenLimit(settings);
+			const nodeData = node.getData();
+			let nodeText = (await readNodeContent(node))?.trim() || "";
+			const inputLimit = getTokenLimit(settings);
 
-		// 	let shouldContinue = true;
+			let shouldContinue = true;
 
-		// 	if (nodeText) {
-		// 		if (isSystemPromptNode(nodeText)) return true;
+			if (nodeText) {
+				if (isSystemPromptNode(nodeText)) return true;
 
-		// 		let nodeTokens = encoding.encode(nodeText);
-		// 		let keptNodeTokens: number;
+				let nodeTokens = encoding.encode(nodeText);
+				let keptNodeTokens: number;
 
-		// 		if (tokenCount + nodeTokens.length > inputLimit) {
-		// 			// will exceed input limit
+				if (tokenCount + nodeTokens.length > inputLimit) {
+					// will exceed input limit
 
-		// 			shouldContinue = false;
+					shouldContinue = false;
 
-		// 			// Leaving one token margin, just in case
-		// 			const keepTokens = nodeTokens.slice(
-		// 				0,
-		// 				inputLimit - tokenCount - 1
-		// 			);
-		// 			const truncateTextTo = encoding.decode(keepTokens).length;
-		// 			logDebug(
-		// 				`Truncating node text from ${nodeText.length} to ${truncateTextTo} characters`
-		// 			);
-		// 			nodeText = nodeText.slice(0, truncateTextTo);
-		// 			keptNodeTokens = keepTokens.length;
-		// 		} else {
-		// 			keptNodeTokens = nodeTokens.length;
-		// 		}
+					// Leaving one token margin, just in case
+					const keepTokens = nodeTokens.slice(
+						0,
+						inputLimit - tokenCount - 1
+					);
+					const truncateTextTo = encoding.decode(keepTokens).length;
+					logDebug(
+						`Truncating node text from ${nodeText.length} to ${truncateTextTo} characters`
+					);
+					nodeText = nodeText.slice(0, truncateTextTo);
+					keptNodeTokens = keepTokens.length;
+				} else {
+					keptNodeTokens = nodeTokens.length;
+				}
 
-		// 		tokenCount += keptNodeTokens;
+				tokenCount += keptNodeTokens;
 
-		// 		const role: openai.ChatCompletionRequestMessageRoleEnum =
-		// 			nodeData.chat_role === "assistant" ? "assistant" : "user";
+				const role: any =
+					nodeData.chat_role === "assistant" ? "assistant" : "user";
 
-		// 		messages.unshift({
-		// 			content: nodeText,
-		// 			role,
-		// 		});
-		// 	}
+				messages.unshift({
+					content: nodeText,
+					role,
+				});
+			}
 
-		// 	return shouldContinue;
-		// };
+			return shouldContinue;
+		};
 
-		// await visitNodeAndAncestors(node, visit);
+		await visitNodeAndAncestors(node, visit);
 
-		// if (messages.length) {
-		// 	if (systemPrompt) {
-		// 		messages.unshift({
-		// 			content: systemPrompt,
-		// 			role: "system",
-		// 		});
-		// 	}
+		if (messages.length) {
+			if (systemPrompt) {
+				messages.unshift({
+					content: systemPrompt,
+					role: "system",
+				});
+			}
 
-		// 	return { messages, tokenCount };
-		// } else {
-		// 	return { messages: [], tokenCount: 0 };
-		// }
+			return { messages, tokenCount };
+		} else {
+			return { messages: [], tokenCount: 0 };
+		}
 	};
 
-	// const generateNote = async () => {
-	// 	if (!canCallAI()) return;
+	const generateNote = async () => {
+		if (!canCallAI()) return;
 
-	// 	logDebug("Creating AI note");
+		logDebug("Creating AI note");
 
-	// 	const canvas = getActiveCanvas();
-	// 	if (!canvas) {
-	// 		logDebug("No active canvas");
-	// 		return;
-	// 	}
+		const canvas = getActiveCanvas();
+		if (!canvas) {
+			logDebug("No active canvas");
+			return;
+		}
 
-	// 	await canvas.requestFrame();
+		await canvas.requestFrame();
 
-	// 	const selection = canvas.selection;
-	// 	if (selection?.size !== 1) return;
-	// 	const values = Array.from(selection.values());
-	// 	const node = values[0];
+		const selection = canvas.selection;
+		if (selection?.size !== 1) return;
+		const values = Array.from(selection.values());
+		const node = values[0];
 
-	// 	if (node) {
-	// 		// Last typed characters might not be applied to note yet
-	// 		await canvas.requestSave();
-	// 		await sleep(200);
+		if (node) {
+			// Last typed characters might not be applied to note yet
+			await canvas.requestSave();
+			await sleep(200);
 
-	// 		const { messages, tokenCount } = await buildMessages(node);
-	// 		if (!messages.length) return;
+			const { messages, tokenCount } = await buildMessages(node);
+			if (!messages.length) return;
 
-	// 		const created = createNode(
-	// 			canvas,
-	// 			node,
-	// 			{
-	// 				text: `Calling AI (${settings.apiModel})...`,
-	// 				size: { height: placeholderNoteHeight },
-	// 			},
-	// 			{
-	// 				color: assistantColor,
-	// 				chat_role: "assistant",
-	// 			}
-	// 		);
+			const created = createNode(
+				canvas,
+				node,
+				{
+					// text: "```loading...```",
+					text: `\`\`\`Calling AI (${settings.apiModel})...\`\`\``,
+					size: { height: placeholderNoteHeight },
+				},
+				{
+					color: assistantColor,
+					chat_role: "assistant",
+				}
+			);
 
-	// 		new Notice(
-	// 			`Sending ${messages.length} notes with ${tokenCount} tokens to GPT`
-	// 		);
+			new Notice(
+				`Sending ${messages.length} notes with ${tokenCount} tokens to GPT`
+			);
 
-	// 		try {
-	// 			logDebug("messages", messages);
+			try {
+				logDebug("messages", messages);
 
-	// 			const generated = await getChatGPTCompletion(
-	// 				settings.apiKey,
-	// 				settings.apiUrl,
-	// 				settings.apiModel,
-	// 				messages,
-	// 				{
-	// 					max_tokens: settings.maxResponseTokens || undefined,
-	// 					temperature: settings.temperature,
-	// 				}
-	// 			);
+				const generated = await getResponse(
+					"",
+					// TODO : settings
+					// settings.apiKey,
+					// settings.apiModel,
+					messages
+					// {
+					// 	max_tokens: settings.maxResponseTokens || undefined,
+					// 	temperature: settings.temperature,
+					// }
+				);
 
-	// 			if (generated == null) {
-	// 				new Notice(`Empty or unreadable response from GPT`);
-	// 				canvas.removeNode(created);
-	// 				return;
-	// 			}
+				if (generated == null) {
+					new Notice(`Empty or unreadable response from GPT`);
+					canvas.removeNode(created);
+					return;
+				}
 
-	// 			created.setText(generated);
-	// 			const height = calcHeight({
-	// 				text: generated,
-	// 				parentHeight: node.height,
-	// 			});
-	// 			created.moveAndResize({
-	// 				height,
-	// 				width: created.width,
-	// 				x: created.x,
-	// 				y: created.y,
-	// 			});
+				created.setText(generated.response);
+				const height = calcHeight({
+					text: generated.response,
+					parentHeight: node.height,
+				});
+				created.moveAndResize({
+					height,
+					width: created.width,
+					x: created.x,
+					y: created.y,
+				});
 
-	// 			const selectedNoteId =
-	// 				canvas.selection?.size === 1
-	// 					? Array.from(canvas.selection.values())?.[0]?.id
-	// 					: undefined;
+				// const selectedNoteId =
+				// 	canvas.selection?.size === 1
+				// 		? Array.from(canvas.selection.values())?.[0]?.id
+				// 		: undefined;
 
-	// 			if (selectedNoteId === node?.id || selectedNoteId == null) {
-	// 				// If the user has not changed selection, select the created node
-	// 				canvas.selectOnly(created, false /* startEditing */);
-	// 			}
-	// 		} catch (error) {
-	// 			new Notice(`Error calling GPT: ${error.message || error}`);
-	// 			canvas.removeNode(created);
-	// 		}
+				// if (selectedNoteId === node?.id || selectedNoteId == null) {
+				// 	// If the user has not changed selection, select the created node
+				// 	canvas.selectOnly(created, false /* startEditing */);
+				// }
+			} catch (error) {
+				new Notice(`Error calling GPT: ${error.message || error}`);
+				canvas.removeNode(created);
+			}
 
-	// 		await canvas.requestSave();
-	// 	}
-	// };
+			await canvas.requestSave();
+		}
+	};
 
 	// return { nextNote, generateNote };
 	return { generateGptNote };
 }
 
-// function getTokenLimit(settings: ChatStreamSettings) {
-// 	const model = chatModelByName(settings.apiModel) || CHAT_MODELS.GPT35;
-// 	return settings.maxInputTokens
-// 		? Math.min(settings.maxInputTokens, model.tokenLimit)
-// 		: model.tokenLimit;
-// }
+function getTokenLimit(settings: AugmentedCanvasSettings) {
+	const model = chatModelByName(settings.apiModel) || CHAT_MODELS.GPT35;
+	return settings.maxInputTokens
+		? Math.min(settings.maxInputTokens, model.tokenLimit)
+		: model.tokenLimit;
+}

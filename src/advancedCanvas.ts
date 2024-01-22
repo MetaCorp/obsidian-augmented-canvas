@@ -1,9 +1,14 @@
 import { App, CanvasNode } from "obsidian";
 import { noteGenerator } from "./noteGenerator";
+import { AugmentedCanvasSettings } from "./settings/AugmentedCanvasSettings";
 
 const NODE_HEIGHT = 500;
 
-export const handleCallGPT = async (app: App, node: CanvasNode) => {
+export const handleCallGPT = async (
+	app: App,
+	settings: AugmentedCanvasSettings,
+	node: CanvasNode
+) => {
 	if (node.unknownData.type === "group") {
 		// (node.headerComponent as CollapseControlHeader).updateNodesInGroup();
 		return;
@@ -13,7 +18,7 @@ export const handleCallGPT = async (app: App, node: CanvasNode) => {
 
 	// TODO : CallGPT and update text
 	if (nodeData) {
-		const { generateGptNote } = noteGenerator(app);
+		const { generateGptNote } = noteGenerator(app, settings);
 
 		// console.log({ nodeData });
 		// 		nodeData.text = `# ${nodeData.text}
@@ -43,6 +48,7 @@ export const handleCallGPT = async (app: App, node: CanvasNode) => {
 
 export const handleCallGPT_Question = async (
 	app: App,
+	settings: AugmentedCanvasSettings,
 	node: CanvasNode,
 	question: string
 ) => {
@@ -54,7 +60,7 @@ export const handleCallGPT_Question = async (
 
 	// TODO : CallGPT and update text
 	if (nodeData) {
-		const { generateGptNote } = noteGenerator(app);
+		const { generateGptNote } = noteGenerator(app, settings);
 		await generateGptNote(
 			[
 				{

@@ -5,6 +5,7 @@ import {
 	CanvasGroupNode,
 	CanvasNode,
 	CanvasView,
+	ItemView,
 	Menu,
 	Plugin,
 	setIcon,
@@ -24,14 +25,21 @@ import {
 	refreshAllCanvasView,
 } from "./utils";
 import { handleCallGPT, handleCallGPT_Question } from "./advancedCanvas";
-import { noteGenerator } from "./noteGenerator";
+import {
+	AugmentedCanvasSettings,
+	DEFAULT_SETTINGS,
+} from "./settings/AugmentedCanvasSettings";
 
-export default class CanvasCollapsePlugin extends Plugin {
+export default class AugmentedCanvasPlugin extends Plugin {
 	triggerByPlugin: boolean = false;
 	patchSucceed: boolean = false;
 
+	settings: AugmentedCanvasSettings;
+
 	async onload() {
-		this.registerCommands();
+		this.loadSettings();
+
+		// this.registerCommands();
 		// this.registerCanvasEvents();
 		this.registerCustomIcons();
 
@@ -77,6 +85,14 @@ export default class CanvasCollapsePlugin extends Plugin {
 	onunload() {
 		console.log("unloading plugin");
 		refreshAllCanvasView(this.app);
+	}
+
+	async loadSettings() {
+		this.settings = Object.assign(
+			{},
+			DEFAULT_SETTINGS,
+			await this.loadData()
+		);
 	}
 
 	registerCommands() {
@@ -311,6 +327,8 @@ export default class CanvasCollapsePlugin extends Plugin {
 
 	patchCanvasMenu() {
 		const app = this.app;
+		const settings = this.settings;
+
 		const triggerPlugin = () => {
 			this.triggerByPlugin = true;
 		};
@@ -325,19 +343,6 @@ export default class CanvasCollapsePlugin extends Plugin {
 			if (!menu) return false;
 
 			// TODO : remove menu items if group selection
-			// console.log({
-			// 	unknownData:
-			// 		// @ts-expect-error
-			// 		this.canvas &&
-			// 		// @ts-expect-error
-			// 		Array.from(this.canvas.selection)?.first().unknownData,
-			// });
-			// if (
-			// 	// @ts-expect-error
-			// 	Array.from(this.canvas.selection)?.first().unknownData.type ===
-			// 	"group"
-			// )
-			// 	return false;
 
 			const selection = menu.selection;
 			if (!selection) return false;
@@ -346,35 +351,48 @@ export default class CanvasCollapsePlugin extends Plugin {
 				render: (next: any) =>
 					function (...args: any) {
 						const result = next.call(this, ...args);
+
+						// * If multi selection
+						const maybeCanvasView =
+							app.workspace.getActiveViewOfType(
+								ItemView
+							) as CanvasView | null;
+						if (
+							!maybeCanvasView ||
+							maybeCanvasView.canvas.selection?.size !== 1
+						)
+							return result;
+
 						if (this.menuEl.querySelector(".gpt-menu-item"))
 							return result;
 
 						// * Handles Call GPT button
 
-						const buttonEl_CallGPT = createEl(
+						const buttonEl_AskGPT = createEl(
 							"button",
 							"clickable-icon gpt-menu-item"
 						);
-						setTooltip(buttonEl_CallGPT, "Call GPT", {
+						setTooltip(buttonEl_AskGPT, "Ask GPT", {
 							placement: "top",
 						});
-						setIcon(buttonEl_CallGPT, "lucide-sparkles");
-						this.menuEl.appendChild(buttonEl_CallGPT);
+						setIcon(buttonEl_AskGPT, "lucide-sparkles");
+						this.menuEl.appendChild(buttonEl_AskGPT);
 
-						buttonEl_CallGPT.addEventListener("click", () => {
+						buttonEl_AskGPT.addEventListener("click", () => {
 							handleCallGPT(
 								app,
+								settings,
 								<CanvasNode>(
 									Array.from(this.canvas.selection)?.first()
 								)
 							);
 						});
 
-						// const node = <CanvasNode>(
-						// 	Array.from(this.canvas.selection)?.first()
-						// );
+						const node = <CanvasNode>(
+							Array.from(this.canvas.selection)?.first()
+						);
 
-						// if (!node?.unknownData.questions?.length) return;
+						if (!node?.unknownData.questions?.length) return;
 
 						// * Handles Ask Questions button
 
@@ -416,6 +434,7 @@ export default class CanvasCollapsePlugin extends Plugin {
 									async (question: string) => {
 										handleCallGPT_Question(
 											app,
+											settings,
 											<CanvasNode>(
 												Array.from(
 													this.canvas.selection
@@ -631,5 +650,9 @@ export default class CanvasCollapsePlugin extends Plugin {
 				this.registerEvent(evt);
 			}
 		});
+	}
+
+	async saveSettings() {
+		await this.saveData(this.settings);
 	}
 }
