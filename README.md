@@ -13,6 +13,9 @@ The links between notes are used to create the chat history sent to GPT.
 
 ## Usage
 
+1. Run `yarn`
+2. Then `yarn dev`
+
 ## Installation
 
 -   Not ready for market yet
