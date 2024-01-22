@@ -18,7 +18,7 @@ export const handleCallGPT = async (
 
 	// TODO : CallGPT and update text
 	if (nodeData) {
-		const { generateGptNote } = noteGenerator(app, settings);
+		const { generateNote } = noteGenerator(app, settings);
 
 		// console.log({ nodeData });
 		// 		nodeData.text = `# ${nodeData.text}
@@ -29,15 +29,14 @@ export const handleCallGPT = async (
 
 		// nodeData.height =
 		// 	nodeData.height > NODE_HEIGHT ? nodeData.height : NODE_HEIGHT;
-		await generateGptNote(
-			[
-				{
-					role: "user",
-					content: nodeData.text,
-				},
-			],
-			nodeData.width
-		);
+		await generateNote();
+		// [
+		// 	{
+		// 		role: "user",
+		// 		content: nodeData.text,
+		// 	},
+		// ],
+		// nodeData.width
 	}
 
 	// node.canvas.setData(canvasData);
@@ -60,19 +59,18 @@ export const handleCallGPT_Question = async (
 
 	// TODO : CallGPT and update text
 	if (nodeData) {
-		const { generateGptNote } = noteGenerator(app, settings);
-		await generateGptNote(
-			[
-				{
-					role: "assistant",
-					content: nodeData.text,
-				},
-				{
-					role: "user",
-					content: question,
-				},
-			],
-			nodeData.width
-		);
+		const { generateNote } = noteGenerator(app, settings);
+		await generateNote(question);
+		// [
+		// 	{
+		// 		role: "assistant",
+		// 		content: nodeData.text,
+		// 	},
+		// 	{
+		// 		role: "user",
+		// 		content: question,
+		// 	},
+		// ],
+		// nodeData.width
 	}
 };

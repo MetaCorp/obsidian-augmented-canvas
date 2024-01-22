@@ -42,15 +42,14 @@ export function noteGenerator(
 	settings: AugmentedCanvasSettings
 	// logDebug: Logger
 ) {
-	// TODO
 	const canCallAI = () => {
-		return true;
-		// if (!settings.apiKey) {
-		// 	new Notice("Please set your OpenAI API key in the plugin settings");
-		// 	return false;
-		// }
-
 		// return true;
+		if (!settings.apiKey) {
+			new Notice("Please set your OpenAI API key in the plugin settings");
+			return false;
+		}
+
+		return true;
 	};
 
 	const generateGptNote = async (
@@ -166,7 +165,6 @@ export function noteGenerator(
 	const buildMessages = async (node: CanvasNode) => {
 		// return { messages: [], tokenCount: 0 };
 
-		// TODO
 		const encoding = encodingForModel(
 			(settings.apiModel || DEFAULT_SETTINGS.apiModel) as TiktokenModel
 		);
@@ -181,7 +179,11 @@ export function noteGenerator(
 			tokenCount += encoding.encode(systemPrompt).length;
 		}
 
-		const visit = async (node: CanvasNode, depth: number) => {
+		const visit = async (
+			node: CanvasNode,
+			depth: number,
+			edgeLabel?: string
+		) => {
 			if (settings.maxDepth && depth > settings.maxDepth) return false;
 
 			const nodeData = node.getData();
@@ -221,6 +223,12 @@ export function noteGenerator(
 				const role: any =
 					nodeData.chat_role === "assistant" ? "assistant" : "user";
 
+				if (edgeLabel) {
+					messages.unshift({
+						content: edgeLabel,
+						role: "user",
+					});
+				}
 				messages.unshift({
 					content: nodeText,
 					role,
@@ -246,7 +254,7 @@ export function noteGenerator(
 		}
 	};
 
-	const generateNote = async () => {
+	const generateNote = async (question?: string) => {
 		if (!canCallAI()) return;
 
 		logDebug("Creating AI note");
@@ -272,6 +280,19 @@ export function noteGenerator(
 			const { messages, tokenCount } = await buildMessages(node);
 			if (!messages.length) return;
 
+			const messages2 = [
+				{
+					role: "system",
+					content: SYSTEM_PROMPT,
+				},
+				...messages,
+				{
+					role: "user",
+					content: question,
+				},
+			];
+			// TODO : update tokenCount with new messages
+
 			const created = createNode(
 				canvas,
 				node,
@@ -282,23 +303,26 @@ export function noteGenerator(
 				},
 				{
 					color: assistantColor,
+					// TODO : debug
 					chat_role: "assistant",
-				}
+				},
+				question
 			);
 
 			new Notice(
-				`Sending ${messages.length} notes with ${tokenCount} tokens to GPT`
+				`Sending ${messages2.length} notes with ${tokenCount} tokens to GPT`
 			);
 
 			try {
-				logDebug("messages", messages);
+				logDebug("messages", messages2);
 
 				const generated = await getResponse(
-					"",
-					// TODO : settings
-					// settings.apiKey,
+					settings.apiKey,
 					// settings.apiModel,
-					messages
+					messages2,
+					{
+						model: settings.apiModel,
+					}
 					// {
 					// 	max_tokens: settings.maxResponseTokens || undefined,
 					// 	temperature: settings.temperature,
@@ -312,6 +336,9 @@ export function noteGenerator(
 				}
 
 				created.setText(generated.response);
+				created.setData({
+					questions: generated.questions,
+				});
 				const height = calcHeight({
 					text: generated.response,
 					parentHeight: node.height,
@@ -342,11 +369,12 @@ export function noteGenerator(
 	};
 
 	// return { nextNote, generateNote };
-	return { generateGptNote };
+	return { generateNote };
 }
 
 function getTokenLimit(settings: AugmentedCanvasSettings) {
-	const model = chatModelByName(settings.apiModel) || CHAT_MODELS.GPT35;
+	const model =
+		chatModelByName(settings.apiModel) || CHAT_MODELS.GPT_4_1106_PREVIEW;
 	return settings.maxInputTokens
 		? Math.min(settings.maxInputTokens, model.tokenLimit)
 		: model.tokenLimit;

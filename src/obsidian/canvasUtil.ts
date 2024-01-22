@@ -4,7 +4,11 @@ export type HasId = {
 	id: string;
 };
 
-export type NodeVisitor = (node: HasId, depth: number) => Promise<boolean>;
+export type NodeVisitor = (
+	node: HasId,
+	depth: number,
+	edgeLabel?: string
+) => Promise<boolean>;
 
 /**
  * Get parents for canvas node
@@ -14,9 +18,13 @@ export function nodeParents(node: CanvasNode) {
 	const nodes = canvas
 		.getEdgesForNode(node)
 		.filter((edge) => edge.to.node.id === node.id)
-		.map((edge) => edge.from.node);
+		.map((edge) => ({
+			node: edge.from.node,
+			// @ts-expect-error
+			edgeLabel: edge.label,
+		}));
 	// Left-to-right for node ordering
-	nodes.sort((a, b) => b.x - a.x);
+	nodes.sort((a, b) => b.node.x - a.node.x);
 	return nodes;
 }
 
@@ -26,18 +34,22 @@ export function nodeParents(node: CanvasNode) {
 export async function visitNodeAndAncestors(
 	start: { id: string },
 	visitor: NodeVisitor,
-	getNodeParents: (node: HasId) => HasId[] = nodeParents
+	getNodeParents: (
+		node: HasId
+	) => { node: HasId; edgeLabel: string }[] = nodeParents
 ) {
 	const visited = new Set<string>();
-	const queue: { node: HasId; depth: number }[] = [{ node: start, depth: 0 }];
+	const queue: { node: HasId; depth: number; edgeLabel?: string }[] = [
+		{ node: start, depth: 0, edgeLabel: undefined },
+	];
 
 	while (queue.length > 0) {
-		const { node: currentNode, depth } = queue.shift()!;
+		const { node: currentNode, depth, edgeLabel } = queue.shift()!;
 		if (visited.has(currentNode.id)) {
 			continue;
 		}
 
-		const shouldContinue = await visitor(currentNode, depth);
+		const shouldContinue = await visitor(currentNode, depth, edgeLabel);
 		if (!shouldContinue) {
 			break;
 		}
@@ -46,8 +58,12 @@ export async function visitNodeAndAncestors(
 
 		const parents = getNodeParents(currentNode);
 		for (const parent of parents) {
-			if (!visited.has(parent.id)) {
-				queue.push({ node: parent, depth: depth + 1 });
+			if (!visited.has(parent.node.id)) {
+				queue.push({
+					node: parent.node,
+					depth: depth + 1,
+					edgeLabel: parent.edgeLabel,
+				});
 			}
 		}
 	}

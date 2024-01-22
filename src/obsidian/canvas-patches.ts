@@ -132,6 +132,8 @@ export const createNode = (
 	canvas.deselectAll();
 	canvas.addNode(newNode);
 
+	console.log({ newNode });
+
 	addEdge(
 		canvas,
 		randomHexString(16),

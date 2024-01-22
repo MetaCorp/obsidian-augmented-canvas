@@ -39,13 +39,14 @@ export default class AugmentedCanvasPlugin extends Plugin {
 
 	async onload() {
 		this.loadSettings();
+		this.addSettingTab(new SettingsTab(this.app, this));
 
 		// this.registerCommands();
 		// this.registerCanvasEvents();
 		this.registerCustomIcons();
 
-		this.patchCanvas();
-		this.patchCanvasMenu();
+		// this.patchCanvas();
+		setTimeout(() => this.patchCanvasMenu(), 200);
 		// this.patchCanvasInteraction();
 		// this.patchCanvasNode();
 
@@ -81,7 +82,6 @@ export default class AugmentedCanvasPlugin extends Plugin {
 		// 		},
 		// 	],
 		// });
-		this.addSettingTab(new SettingsTab(this.app, this));
 	}
 
 	onunload() {
@@ -330,6 +330,7 @@ export default class AugmentedCanvasPlugin extends Plugin {
 	patchCanvasMenu() {
 		const app = this.app;
 		const settings = this.settings;
+		console.log({ settings });
 
 		const triggerPlugin = () => {
 			this.triggerByPlugin = true;
@@ -343,8 +344,6 @@ export default class AugmentedCanvasPlugin extends Plugin {
 
 			const menu = (canvasView as CanvasView)?.canvas.menu;
 			if (!menu) return false;
-
-			// TODO : remove menu items if group selection
 
 			const selection = menu.selection;
 			if (!selection) return false;
@@ -432,7 +431,6 @@ export default class AugmentedCanvasPlugin extends Plugin {
 								handleCanvasMenu(
 									menu,
 									node.unknownData.questions,
-									// TODO : onMenuItem Click
 									async (question: string) => {
 										handleCallGPT_Question(
 											app,
