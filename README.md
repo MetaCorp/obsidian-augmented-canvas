@@ -1,27 +1,16 @@
 # Obsidian Collapse Node
 
-A plugin for [Obsidian](https://obsidian.md) that helps you collapse node in canvas.
+A plugin for [Obsidian](https://obsidian.md) that augment Obsidian Canvas with AI features.
 
 ![Collapse-Node](./assets/Collapse-Node.gif)
 
 ## Usage
 
-- Commands
-    - `Fold All Nodes` - Collapses all nodes in the workspace
-    - `Expand All Nodes` - Expands all nodes in the workspace
-    - `Fold Selected Nodes` - Collapses only the selected nodes
-    - `Expand Selected Nodes` - Expands only the selected nodes
-- Context menu in canvas
-    - `Selection Menu` - Shows the context menu for selected nodes
-    - `Node Menu` - Shows the context menu for a specific node or nodes
-- Direct Click on the Header
-    - `Click` - Collapse or expand the node
-
 ## Installation
 
-- Not ready for market yet
-- Can be installed via the [Brat](https://github.com/TfTHacker/obsidian42-brat) plugin
-- Manual installation
+-   Not ready for market yet
+-   Can be installed via the [Brat](https://github.com/TfTHacker/obsidian42-brat) plugin
+-   Manual installation
 
 1. Find the release page on this github page and click
 2. Download the latest release zip file
@@ -34,8 +23,7 @@ A plugin for [Obsidian](https://obsidian.md) that helps you collapse node in can
 ## Support
 
 If you are enjoying this plugin then please support my work and enthusiasm by buying me a coffee
-on [https://www.buymeacoffee.com/boninall](https://www.buymeacoffee.com/boninall).
+on [https://www.buymeacoffee.com/metacorp](https://www.buymeacoffee.com/metacorp).
 .
 
-<a href="https://www.buymeacoffee.com/boninall"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=boninall&button_colour=6495ED&font_colour=ffffff&font_family=Lato&outline_colour=000000&coffee_colour=FFDD00"></a>
-
+<a href="https://www.buymeacoffee.com/boninallhttps://www.buymeacoffee.com/metacorp"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=boninall&button_colour=6495ED&font_colour=ffffff&font_family=Lato&outline_colour=000000&coffee_colour=FFDD00"></a>

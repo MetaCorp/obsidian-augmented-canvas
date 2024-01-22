@@ -3,13 +3,11 @@
 	"name": "Augmented Canvas",
 	"version": "1.0.0",
 	"minAppVersion": "1.1.0",
-	"description": "Collapse node in canvas.",
-	"author": "Boninall",
-	"authorUrl": "https://github.com/Quorafind",
+	"description": "Obsidian Canvas with AI features",
+	"author": "MetaCorp",
+	"authorUrl": "https://github.com/MetaCorp",
 	"fundingUrl": {
-		"Buy Me a Coffee": "https://www.buymeacoffee.com/boninall",
-		"爱发电": "https://afdian.net/a/boninall",
-		"支付宝": "https://cdn.jsdelivr.net/gh/Quorafind/.github@main/IMAGE/%E6%94%AF%E4%BB%98%E5%AE%9D%E4%BB%98%E6%AC%BE%E7%A0%81.jpg"
+		"Buy Me a Coffee": "https://www.buymeacoffee.com/metacorp"
 	},
 	"isDesktopOnly": false
 }
