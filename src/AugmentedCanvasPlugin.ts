@@ -29,6 +29,7 @@ import {
 	AugmentedCanvasSettings,
 	DEFAULT_SETTINGS,
 } from "./settings/AugmentedCanvasSettings";
+import SettingsTab from "./settings/SettingsTab";
 
 export default class AugmentedCanvasPlugin extends Plugin {
 	triggerByPlugin: boolean = false;
@@ -80,6 +81,7 @@ export default class AugmentedCanvasPlugin extends Plugin {
 		// 		},
 		// 	],
 		// });
+		this.addSettingTab(new SettingsTab(this.app, this));
 	}
 
 	onunload() {
