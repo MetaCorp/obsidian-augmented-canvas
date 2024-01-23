@@ -6,32 +6,49 @@ import { AugmentedCanvasSettings } from "./settings/AugmentedCanvasSettings";
 import { CanvasNode } from "./obsidian/canvas-internal";
 
 // TODO : ask GPT and add subMenu items
-export const handleCanvasMenu = async (
-	app: App,
-	settings: AugmentedCanvasSettings,
-	node: CanvasNode,
+export const handleCanvasMenu_Loading = async (
 	subMenu: Menu,
-	// questions: string[],
-	callback: (question?: string) => Promise<void>
+	questions?: string[],
+	callback?: (question?: string) => Promise<void>
 ) => {
-	const questions = node.unknownData.questions;
-	if (!questions) {
+	if (questions) {
+		questions.forEach((question: string) =>
+			subMenu.addItem((item: MenuItem) => {
+				item
+					// .setIcon("fold-vertical")
+					.setTitle(question)
+					.onClick(async () => {
+						callback && (await callback(question));
+					});
+			})
+		);
+	} else {
 		subMenu.addItem((item: MenuItem) => {
 			item
 				// .setIcon("fold-vertical")
-				.setTitle("Write custom question")
-				.onClick(async () => {
-					await callback();
-				});
+				.setTitle("loading...");
 		});
-		return;
 	}
 
-	// const questions = await handleCallGPT_Questions(app, settings, node);
-	// console.log({ questions })
-	// if (!questions) return;
+	subMenu.addSeparator();
 
-	// subMenu.removeChild(item1);
+	subMenu.addItem((item: MenuItem) => {
+		item
+			// .setIcon("fold-vertical")
+			.setTitle("Write custom question")
+			.onClick(async () => {
+				callback && (await callback());
+			});
+	});
+};
+
+// TODO : ask GPT and add subMenu items
+export const handleCanvasMenu_Loaded = async (
+	subMenu: Menu,
+	questions: string[],
+	callback: (question?: string) => Promise<void>
+) => {
+	// subMenu.
 
 	questions.forEach((question: string) =>
 		subMenu.addItem((item: MenuItem) => {
@@ -43,6 +60,8 @@ export const handleCanvasMenu = async (
 				});
 		})
 	);
+
+	subMenu.addSeparator();
 
 	subMenu.addItem((item: MenuItem) => {
 		item
