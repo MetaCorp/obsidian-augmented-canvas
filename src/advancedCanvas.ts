@@ -98,10 +98,6 @@ export const handleCallGPT_Questions = async (
 			content: SYSTEM_PROMPT_QUESTIONS,
 		},
 		...messages,
-		{
-			role: "user",
-			content: node.text,
-		},
 	];
 
 	const gptResponse = await getResponse(
