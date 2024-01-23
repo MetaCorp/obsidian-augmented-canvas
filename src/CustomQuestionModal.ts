@@ -10,15 +10,10 @@ export class CustomQuestionModal extends Modal {
 
 	onOpen() {
 		let { contentEl } = this;
-		contentEl.style.display = "flex";
-		contentEl.style.gap = "16px";
-		contentEl.style.justifyContent = "flex-end";
-		contentEl.style.alignItems = "flex-end";
+		contentEl.className = "augmented-canvas-modal-container";
 
 		let textareaEl = contentEl.createEl("textarea");
-		textareaEl.style.boxSizing = "border-box"; // Include padding and borders in the width
-		textareaEl.style.minHeight = "70px"; // Set a minimum height
-		textareaEl.style.flexGrow = "1";
+		textareaEl.className = "augmented-canvas-modal-input";
 
 		// Create and append a submit button
 		let submitBtn = contentEl.createEl("button", { text: "Ask AI" });

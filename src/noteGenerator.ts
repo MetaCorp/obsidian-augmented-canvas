@@ -32,10 +32,12 @@ const NOTE_MAX_WIDTH = 400;
 // TODO : remove
 const logDebug = console.log;
 
-const SYSTEM_PROMPT = `You must respond in this JSON format: {
+const SYSTEM_PROMPT = `
+You must respond in this JSON format: {
 	"response": Your response, must be in markdown,
 	"questions": Follow up questions the user could ask based on your response, must be an array
-}`;
+}
+`.trim();
 
 export function noteGenerator(
 	app: App,
@@ -379,7 +381,7 @@ export function noteGenerator(
 	};
 
 	// return { nextNote, generateNote };
-	return { generateNote };
+	return { generateNote, buildMessages };
 }
 
 function getTokenLimit(settings: AugmentedCanvasSettings) {

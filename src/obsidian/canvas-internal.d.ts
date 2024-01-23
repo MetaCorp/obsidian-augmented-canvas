@@ -20,7 +20,7 @@ export interface CanvasNode {
 	renderedZIndex: number;
 	resizeDirty: boolean;
 	text: string;
-	unknownData: Record<string, string>;
+	unknownData: Record<string, any>;
 	width: number;
 	x: number;
 	y: number;

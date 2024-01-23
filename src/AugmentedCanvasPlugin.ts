@@ -3,7 +3,6 @@ import {
 	Canvas,
 	CanvasCoords,
 	CanvasGroupNode,
-	CanvasNode,
 	CanvasView,
 	ItemView,
 	Menu,
@@ -31,6 +30,7 @@ import {
 } from "./settings/AugmentedCanvasSettings";
 import SettingsTab from "./settings/SettingsTab";
 import { CustomQuestionModal } from "./CustomQuestionModal";
+import { CanvasNode } from "./obsidian/canvas-internal";
 
 export default class AugmentedCanvasPlugin extends Plugin {
 	triggerByPlugin: boolean = false;
@@ -44,10 +44,10 @@ export default class AugmentedCanvasPlugin extends Plugin {
 
 		// this.registerCommands();
 		// this.registerCanvasEvents();
-		this.registerCustomIcons();
+		// this.registerCustomIcons();
 
 		// this.patchCanvas();
-		setTimeout(() => this.patchCanvasMenu(), 200);
+		setTimeout(() => this.patchCanvasMenu(), 20);
 		// this.patchCanvasInteraction();
 		// this.patchCanvasNode();
 
@@ -98,235 +98,235 @@ export default class AugmentedCanvasPlugin extends Plugin {
 		);
 	}
 
-	registerCommands() {
-		this.addCommand({
-			id: "fold-all-nodes",
-			name: "Fold all nodes",
-			checkCallback: (checking: boolean) =>
-				handleNodesViaCommands(this, checking, true, true),
-		});
+	// registerCommands() {
+	// 	this.addCommand({
+	// 		id: "fold-all-nodes",
+	// 		name: "Fold all nodes",
+	// 		checkCallback: (checking: boolean) =>
+	// 			handleNodesViaCommands(this, checking, true, true),
+	// 	});
 
-		this.addCommand({
-			id: "expand-all-nodes",
-			name: "Expand all nodes",
-			checkCallback: (checking: boolean) =>
-				handleNodesViaCommands(this, checking, true, false),
-		});
+	// 	this.addCommand({
+	// 		id: "expand-all-nodes",
+	// 		name: "Expand all nodes",
+	// 		checkCallback: (checking: boolean) =>
+	// 			handleNodesViaCommands(this, checking, true, false),
+	// 	});
 
-		this.addCommand({
-			id: "fold-selected-nodes",
-			name: "Fold selected nodes",
-			checkCallback: (checking: boolean) =>
-				handleNodesViaCommands(this, checking, false, true),
-		});
+	// 	this.addCommand({
+	// 		id: "fold-selected-nodes",
+	// 		name: "Fold selected nodes",
+	// 		checkCallback: (checking: boolean) =>
+	// 			handleNodesViaCommands(this, checking, false, true),
+	// 	});
 
-		this.addCommand({
-			id: "expand-selected-nodes",
-			name: "Expand selected nodes",
-			checkCallback: (checking: boolean) =>
-				handleNodesViaCommands(this, checking, false, false),
-		});
-	}
+	// 	this.addCommand({
+	// 		id: "expand-selected-nodes",
+	// 		name: "Expand selected nodes",
+	// 		checkCallback: (checking: boolean) =>
+	// 			handleNodesViaCommands(this, checking, false, false),
+	// 	});
+	// }
 
-	registerCanvasEvents() {
-		this.registerEvent(
-			this.app.workspace.on("collapse-node:patched-canvas", () => {
-				refreshAllCanvasView(this.app);
-			})
-		);
-		this.registerEvent(
-			this.app.workspace.on("canvas:selection-menu", (menu, canvas) => {
-				handleSelectionContextMenu(this, menu, canvas);
-			})
-		);
-		this.registerEvent(
-			this.app.workspace.on("canvas:node-menu", (menu, node) => {
-				handleNodeContextMenu(this, menu, node);
-			})
-		);
-	}
+	// registerCanvasEvents() {
+	// 	this.registerEvent(
+	// 		this.app.workspace.on("collapse-node:patched-canvas", () => {
+	// 			refreshAllCanvasView(this.app);
+	// 		})
+	// 	);
+	// 	this.registerEvent(
+	// 		this.app.workspace.on("canvas:selection-menu", (menu, canvas) => {
+	// 			handleSelectionContextMenu(this, menu, canvas);
+	// 		})
+	// 	);
+	// 	this.registerEvent(
+	// 		this.app.workspace.on("canvas:node-menu", (menu, node) => {
+	// 			handleNodeContextMenu(this, menu, node);
+	// 		})
+	// 	);
+	// }
 
-	registerCustomIcons() {
-		addIcon(
-			"fold-vertical",
-			`<g id="surface1"><path style="fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:4;" d="M 12 22.000312 L 12 16.000312 " transform="matrix(4.166667,0,0,4.166667,0,0)"/><path style="fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:4;" d="M 12 7.999687 L 12 1.999687 " transform="matrix(4.166667,0,0,4.166667,0,0)"/><path style="fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:4;" d="M 4.000312 12 L 1.999687 12 " transform="matrix(4.166667,0,0,4.166667,0,0)"/><path style="fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:4;" d="M 10.000312 12 L 7.999687 12 " transform="matrix(4.166667,0,0,4.166667,0,0)"/><path style="fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:4;" d="M 16.000312 12 L 13.999688 12 " transform="matrix(4.166667,0,0,4.166667,0,0)"/><path style="fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:4;" d="M 22.000312 12 L 19.999688 12 " transform="matrix(4.166667,0,0,4.166667,0,0)"/><path style="fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:4;" d="M 15 19.000312 L 12 16.000312 L 9 19.000312 " transform="matrix(4.166667,0,0,4.166667,0,0)"/><path style="fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:4;" d="M 15 4.999687 L 12 7.999687 L 9 4.999687 " transform="matrix(4.166667,0,0,4.166667,0,0)"/></g>`
-		);
-		addIcon(
-			"unfold-vertical",
-			`<g id="surface1"><path style="fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:4;" d="M 12 22.000312 L 12 16.000312 " transform="matrix(4.166667,0,0,4.166667,0,0)"/><path style="fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:4;" d="M 12 7.999687 L 12 1.999687 " transform="matrix(4.166667,0,0,4.166667,0,0)"/><path style="fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:4;" d="M 4.000312 12 L 1.999687 12 " transform="matrix(4.166667,0,0,4.166667,0,0)"/><path style="fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:4;" d="M 10.000312 12 L 7.999687 12 " transform="matrix(4.166667,0,0,4.166667,0,0)"/><path style="fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:4;" d="M 16.000312 12 L 13.999688 12 " transform="matrix(4.166667,0,0,4.166667,0,0)"/><path style="fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:4;" d="M 22.000312 12 L 19.999688 12 " transform="matrix(4.166667,0,0,4.166667,0,0)"/><path style="fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:4;" d="M 15 19.000312 L 12 22.000312 L 9 19.000312 " transform="matrix(4.166667,0,0,4.166667,0,0)"/><path style="fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:4;" d="M 15 4.999687 L 12 1.999687 L 9 4.999687 " transform="matrix(4.166667,0,0,4.166667,0,0)"/></g>`
-		);
-	}
+	// registerCustomIcons() {
+	// 	addIcon(
+	// 		"fold-vertical",
+	// 		`<g id="surface1"><path style="fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:4;" d="M 12 22.000312 L 12 16.000312 " transform="matrix(4.166667,0,0,4.166667,0,0)"/><path style="fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:4;" d="M 12 7.999687 L 12 1.999687 " transform="matrix(4.166667,0,0,4.166667,0,0)"/><path style="fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:4;" d="M 4.000312 12 L 1.999687 12 " transform="matrix(4.166667,0,0,4.166667,0,0)"/><path style="fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:4;" d="M 10.000312 12 L 7.999687 12 " transform="matrix(4.166667,0,0,4.166667,0,0)"/><path style="fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:4;" d="M 16.000312 12 L 13.999688 12 " transform="matrix(4.166667,0,0,4.166667,0,0)"/><path style="fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:4;" d="M 22.000312 12 L 19.999688 12 " transform="matrix(4.166667,0,0,4.166667,0,0)"/><path style="fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:4;" d="M 15 19.000312 L 12 16.000312 L 9 19.000312 " transform="matrix(4.166667,0,0,4.166667,0,0)"/><path style="fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:4;" d="M 15 4.999687 L 12 7.999687 L 9 4.999687 " transform="matrix(4.166667,0,0,4.166667,0,0)"/></g>`
+	// 	);
+	// 	addIcon(
+	// 		"unfold-vertical",
+	// 		`<g id="surface1"><path style="fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:4;" d="M 12 22.000312 L 12 16.000312 " transform="matrix(4.166667,0,0,4.166667,0,0)"/><path style="fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:4;" d="M 12 7.999687 L 12 1.999687 " transform="matrix(4.166667,0,0,4.166667,0,0)"/><path style="fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:4;" d="M 4.000312 12 L 1.999687 12 " transform="matrix(4.166667,0,0,4.166667,0,0)"/><path style="fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:4;" d="M 10.000312 12 L 7.999687 12 " transform="matrix(4.166667,0,0,4.166667,0,0)"/><path style="fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:4;" d="M 16.000312 12 L 13.999688 12 " transform="matrix(4.166667,0,0,4.166667,0,0)"/><path style="fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:4;" d="M 22.000312 12 L 19.999688 12 " transform="matrix(4.166667,0,0,4.166667,0,0)"/><path style="fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:4;" d="M 15 19.000312 L 12 22.000312 L 9 19.000312 " transform="matrix(4.166667,0,0,4.166667,0,0)"/><path style="fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:4;" d="M 15 4.999687 L 12 1.999687 L 9 4.999687 " transform="matrix(4.166667,0,0,4.166667,0,0)"/></g>`
+	// 	);
+	// }
 
-	patchCanvas() {
-		const checkCoords = (e: CanvasCoords, t: CanvasCoords) => {
-			return (
-				e.minX <= t.minX &&
-				e.minY <= t.minY &&
-				e.maxX >= t.maxX &&
-				e.maxY >= t.maxY
-			);
-		};
+	// patchCanvas() {
+	// 	const checkCoords = (e: CanvasCoords, t: CanvasCoords) => {
+	// 		return (
+	// 			e.minX <= t.minX &&
+	// 			e.minY <= t.minY &&
+	// 			e.maxX >= t.maxX &&
+	// 			e.maxY >= t.maxY
+	// 		);
+	// 	};
 
-		const checkTriggerByPlugin = () => {
-			return this.triggerByPlugin;
-		};
+	// 	const checkTriggerByPlugin = () => {
+	// 		return this.triggerByPlugin;
+	// 	};
 
-		const toggleTriggerByPlugin = () => {
-			this.triggerByPlugin = !this.triggerByPlugin;
-		};
+	// 	const toggleTriggerByPlugin = () => {
+	// 		this.triggerByPlugin = !this.triggerByPlugin;
+	// 	};
 
-		const patchCanvas = () => {
-			const canvasView = this.app.workspace
-				.getLeavesOfType("canvas")
-				.first()?.view;
-			if (!canvasView) return false;
+	// 	const patchCanvas = () => {
+	// 		const canvasView = this.app.workspace
+	// 			.getLeavesOfType("canvas")
+	// 			.first()?.view;
+	// 		if (!canvasView) return false;
 
-			const canvas: Canvas = (canvasView as CanvasView)?.canvas;
-			if (!canvas) return false;
+	// 		const canvas: Canvas = (canvasView as CanvasView)?.canvas;
+	// 		if (!canvas) return false;
 
-			const uninstaller = around(canvas.constructor.prototype, {
-				getContainingNodes: (next: any) =>
-					function (e: CanvasCoords) {
-						const result = next.call(this, e);
+	// 		const uninstaller = around(canvas.constructor.prototype, {
+	// 			getContainingNodes: (next: any) =>
+	// 				function (e: CanvasCoords) {
+	// 					const result = next.call(this, e);
 
-						const checkExistGroupNode: CanvasNode | null =
-							this.nodeIndex
-								.search(e)
-								.find(
-									(t: CanvasNode) =>
-										t.unknownData.type === "group" ||
-										(t as CanvasGroupNode).label
-								);
-						if (!checkExistGroupNode) return result;
-						const renewCoords = checkExistGroupNode?.getBBox(true);
-						if (renewCoords !== e && e.maxY - e.minY === 40) {
-							const newResult = this.nodeIndex
-								.search(renewCoords)
-								.filter((t: any) => {
-									return checkCoords(
-										renewCoords,
-										t.getBBox(true)
-									);
-								});
-							if (newResult.length > result.length) {
-								return newResult;
-							}
-						}
-						return result;
-					},
-				requestSave: (next: any) =>
-					function (args?: boolean, triggerBySelf?: boolean) {
-						next.call(this, args);
-						if (triggerBySelf) {
-							if (args !== undefined) {
-								this.data = this.getData();
-								args && this.requestPushHistory(this.data);
-							}
-						}
-					},
-				pushHistory: (next: any) =>
-					function (args: CanvasData) {
-						if (checkTriggerByPlugin()) {
-							toggleTriggerByPlugin();
-							return;
-						}
-						return next.call(this, args);
-					},
-				selectAll: (next: any) =>
-					function (e: Set<CanvasNode>) {
-						if (this.wrapperEl.querySelector(".canvas-selection")) {
-							const domCoords = getSelectionCoords(
-								this.wrapperEl.querySelector(
-									".canvas-selection"
-								) as HTMLElement
-							);
-							if (domCoords) {
-								const newResult = Array.from(e).filter(
-									(t: CanvasNode) => {
-										if (!t.unknownData.collapsed)
-											return true;
-										if (
-											t.nodeEl.hasClass(
-												"group-nodes-collapsed"
-											)
-										)
-											return false;
-										return checkCoords(
-											domCoords,
-											t.getBBox()
-										);
-									}
-								);
-								if (newResult.length > 0) {
-									const ne = new Set(newResult);
-									return next.call(this, ne);
-								}
-								if (newResult.length === 0) {
-									return;
-								}
-							}
-						}
-						return next.call(this, e);
-					},
-				createTextNode: (next: any) =>
-					function (args: any) {
-						if (args.size === undefined && args.pos) {
-							return next.call(this, {
-								...args,
-								pos: {
-									x: args.pos.x,
-									y: args.pos.y,
-									width: args?.size?.width || 250,
-									height: args?.size?.height || 140,
-								},
-								size: {
-									x: args.pos.x,
-									y: args.pos.y,
-									width: args?.size?.width || 250,
-									height: args?.size?.height || 140,
-								},
-							});
-						}
-						return next.call(this, args);
-					},
-				createGroupNode: (next: any) =>
-					function (args: any) {
-						if (args.size !== undefined && args.pos) {
-							return next.call(this, {
-								...args,
-								pos: {
-									x: args.pos.x,
-									y: args.pos.y - 30,
-									width: args?.size?.width,
-									height: args?.size?.height + 30,
-								},
-								size: {
-									x: args.pos.x,
-									y: args.pos.y - 30,
-									width: args?.size?.width,
-									height: args?.size?.height + 30,
-								},
-							});
-						}
-						return next.call(this, args);
-					},
-			});
-			this.register(uninstaller);
-			this.patchSucceed = true;
+	// 					const checkExistGroupNode: CanvasNode | null =
+	// 						this.nodeIndex
+	// 							.search(e)
+	// 							.find(
+	// 								(t: CanvasNode) =>
+	// 									t.unknownData.type === "group" ||
+	// 									(t as CanvasGroupNode).label
+	// 							);
+	// 					if (!checkExistGroupNode) return result;
+	// 					const renewCoords = checkExistGroupNode?.getBBox(true);
+	// 					if (renewCoords !== e && e.maxY - e.minY === 40) {
+	// 						const newResult = this.nodeIndex
+	// 							.search(renewCoords)
+	// 							.filter((t: any) => {
+	// 								return checkCoords(
+	// 									renewCoords,
+	// 									t.getBBox(true)
+	// 								);
+	// 							});
+	// 						if (newResult.length > result.length) {
+	// 							return newResult;
+	// 						}
+	// 					}
+	// 					return result;
+	// 				},
+	// 			requestSave: (next: any) =>
+	// 				function (args?: boolean, triggerBySelf?: boolean) {
+	// 					next.call(this, args);
+	// 					if (triggerBySelf) {
+	// 						if (args !== undefined) {
+	// 							this.data = this.getData();
+	// 							args && this.requestPushHistory(this.data);
+	// 						}
+	// 					}
+	// 				},
+	// 			pushHistory: (next: any) =>
+	// 				function (args: CanvasData) {
+	// 					if (checkTriggerByPlugin()) {
+	// 						toggleTriggerByPlugin();
+	// 						return;
+	// 					}
+	// 					return next.call(this, args);
+	// 				},
+	// 			selectAll: (next: any) =>
+	// 				function (e: Set<CanvasNode>) {
+	// 					if (this.wrapperEl.querySelector(".canvas-selection")) {
+	// 						const domCoords = getSelectionCoords(
+	// 							this.wrapperEl.querySelector(
+	// 								".canvas-selection"
+	// 							) as HTMLElement
+	// 						);
+	// 						if (domCoords) {
+	// 							const newResult = Array.from(e).filter(
+	// 								(t: CanvasNode) => {
+	// 									if (!t.unknownData.collapsed)
+	// 										return true;
+	// 									if (
+	// 										t.nodeEl.hasClass(
+	// 											"group-nodes-collapsed"
+	// 										)
+	// 									)
+	// 										return false;
+	// 									return checkCoords(
+	// 										domCoords,
+	// 										t.getBBox()
+	// 									);
+	// 								}
+	// 							);
+	// 							if (newResult.length > 0) {
+	// 								const ne = new Set(newResult);
+	// 								return next.call(this, ne);
+	// 							}
+	// 							if (newResult.length === 0) {
+	// 								return;
+	// 							}
+	// 						}
+	// 					}
+	// 					return next.call(this, e);
+	// 				},
+	// 			createTextNode: (next: any) =>
+	// 				function (args: any) {
+	// 					if (args.size === undefined && args.pos) {
+	// 						return next.call(this, {
+	// 							...args,
+	// 							pos: {
+	// 								x: args.pos.x,
+	// 								y: args.pos.y,
+	// 								width: args?.size?.width || 250,
+	// 								height: args?.size?.height || 140,
+	// 							},
+	// 							size: {
+	// 								x: args.pos.x,
+	// 								y: args.pos.y,
+	// 								width: args?.size?.width || 250,
+	// 								height: args?.size?.height || 140,
+	// 							},
+	// 						});
+	// 					}
+	// 					return next.call(this, args);
+	// 				},
+	// 			createGroupNode: (next: any) =>
+	// 				function (args: any) {
+	// 					if (args.size !== undefined && args.pos) {
+	// 						return next.call(this, {
+	// 							...args,
+	// 							pos: {
+	// 								x: args.pos.x,
+	// 								y: args.pos.y - 30,
+	// 								width: args?.size?.width,
+	// 								height: args?.size?.height + 30,
+	// 							},
+	// 							size: {
+	// 								x: args.pos.x,
+	// 								y: args.pos.y - 30,
+	// 								width: args?.size?.width,
+	// 								height: args?.size?.height + 30,
+	// 							},
+	// 						});
+	// 					}
+	// 					return next.call(this, args);
+	// 				},
+	// 		});
+	// 		this.register(uninstaller);
+	// 		this.patchSucceed = true;
 
-			console.log("Obsidian-Collapse-Node: canvas patched");
-			return true;
-		};
+	// 		console.log("Obsidian-Collapse-Node: canvas patched");
+	// 		return true;
+	// 	};
 
-		this.app.workspace.onLayoutReady(() => {
-			if (!patchCanvas()) {
-				const evt = this.app.workspace.on("layout-change", () => {
-					patchCanvas() && this.app.workspace.offref(evt);
-				});
-				this.registerEvent(evt);
-			}
-		});
-	}
+	// 	this.app.workspace.onLayoutReady(() => {
+	// 		if (!patchCanvas()) {
+	// 			const evt = this.app.workspace.on("layout-change", () => {
+	// 				patchCanvas() && this.app.workspace.offref(evt);
+	// 			});
+	// 			this.registerEvent(evt);
+	// 		}
+	// 	});
+	// }
 
 	patchCanvasMenu() {
 		const app = this.app;
@@ -390,11 +390,11 @@ export default class AugmentedCanvasPlugin extends Plugin {
 							);
 						});
 
-						const node = <CanvasNode>(
-							Array.from(this.canvas.selection)?.first()
-						);
+						// const node = <CanvasNode>(
+						// 	Array.from(this.canvas.selection)?.first()
+						// );
 
-						if (!node?.unknownData.questions?.length) return;
+						// if (!node?.unknownData.questions?.length) return;
 
 						// * Handles Ask Questions button
 
@@ -411,100 +411,109 @@ export default class AugmentedCanvasPlugin extends Plugin {
 						);
 						setIcon(buttonEl_AskQuestions, "lucide-file-question");
 						this.menuEl.appendChild(buttonEl_AskQuestions);
-						buttonEl_AskQuestions.addEventListener("click", () => {
-							const pos =
-								buttonEl_AskQuestions.getBoundingClientRect();
-							if (
-								!buttonEl_AskQuestions.hasClass(
-									"has-active-menu"
-								)
-							) {
-								buttonEl_AskQuestions.toggleClass(
-									"has-active-menu",
-									true
-								);
-								const menu = new Menu();
-								// const containingNodes =
-								// 	this.canvas.getContainingNodes(
-								// 		this.selection.bbox
-								// 	);
+						buttonEl_AskQuestions.addEventListener(
+							"click",
+							async () => {
+								const pos =
+									buttonEl_AskQuestions.getBoundingClientRect();
+								if (
+									!buttonEl_AskQuestions.hasClass(
+										"has-active-menu"
+									)
+								) {
+									buttonEl_AskQuestions.toggleClass(
+										"has-active-menu",
+										true
+									);
+									const menu = new Menu();
+									// const containingNodes =
+									// 	this.canvas.getContainingNodes(
+									// 		this.selection.bbox
+									// 	);
 
-								const node = <CanvasNode>(
-									Array.from(this.canvas.selection)?.first()
-								);
+									const node = <CanvasNode>(
+										Array.from(
+											this.canvas.selection
+										)?.first()
+									);
 
-								handleCanvasMenu(
-									menu,
-									node.unknownData.questions,
-									async (question?: string) => {
-										if (!question) {
-											// TODO : open modal
-											let modal = new CustomQuestionModal(
-												app,
-												(question2: string) => {
-													handleCallGPT_Question(
+									handleCanvasMenu(
+										app,
+										settings,
+										node,
+										menu,
+										async (question?: string) => {
+											if (!question) {
+												let modal =
+													new CustomQuestionModal(
 														app,
-														settings,
-														<CanvasNode>(
-															Array.from(
-																this.canvas
-																	.selection
-															)?.first()
-														),
-														question2
+														(question2: string) => {
+															handleCallGPT_Question(
+																app,
+																settings,
+																<CanvasNode>(
+																	Array.from(
+																		this
+																			.canvas
+																			.selection
+																	)?.first()
+																),
+																question2
+															);
+															// Handle the input
+														}
 													);
-													// Handle the input
-												}
-											);
-											modal.open();
-										} else {
-											handleCallGPT_Question(
-												app,
-												settings,
-												<CanvasNode>(
-													Array.from(
-														this.canvas.selection
-													)?.first()
-												),
-												question
-											);
-										}
+												modal.open();
+											} else {
+												handleCallGPT_Question(
+													app,
+													settings,
+													<CanvasNode>(
+														Array.from(
+															this.canvas
+																.selection
+														)?.first()
+													),
+													question
+												);
+											}
 
-										// triggerPlugin();
-										// const currentSelection =
-										// 	this.canvas.selection;
-										// containingNodes.length > 1
-										// 	? handleMultiNodesViaNodes(
-										// 			this.canvas,
-										// 			containingNodes,
-										// 			isFold
-										// 	  )
-										// 	: currentSelection
-										// 	? handleSingleNode(
-										// 			<CanvasNode>(
-										// 				Array.from(
-										// 					currentSelection
-										// 				)?.first()
-										// 			),
-										// 			isFold
-										// 	  )
-										// 	: "";
-										// buttonEl_AskQuestions.toggleClass(
-										// 	"has-active-menu",
-										// 	false
-										// );
-									}
-								);
-								menu.setParentElement(
-									this.menuEl
-								).showAtPosition({
-									x: pos.x,
-									y: pos.bottom,
-									width: pos.width,
-									overlap: true,
-								});
+											// triggerPlugin();
+											// const currentSelection =
+											// 	this.canvas.selection;
+											// containingNodes.length > 1
+											// 	? handleMultiNodesViaNodes(
+											// 			this.canvas,
+											// 			containingNodes,
+											// 			isFold
+											// 	  )
+											// 	: currentSelection
+											// 	? handleSingleNode(
+											// 			<CanvasNode>(
+											// 				Array.from(
+											// 					currentSelection
+											// 				)?.first()
+											// 			),
+											// 			isFold
+											// 	  )
+											// 	: "";
+											// buttonEl_AskQuestions.toggleClass(
+											// 	"has-active-menu",
+											// 	false
+											// );
+										}
+									);
+									menu.setParentElement(
+										this.menuEl
+									).showAtPosition({
+										x: pos.x,
+										y: pos.bottom,
+										width: pos.width,
+										overlap: true,
+									});
+								}
 							}
-						});
+						);
 
 						return result;
 					},

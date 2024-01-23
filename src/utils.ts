@@ -1,14 +1,9 @@
-import {
-	App,
-	Canvas,
-	CanvasCoords,
-	CanvasNode,
-	ItemView,
-	Menu,
-	MenuItem,
-} from "obsidian";
+import { App, Canvas, CanvasCoords, ItemView, Menu, MenuItem } from "obsidian";
 import CollapseControlHeader from "./ControlHeader";
 import AugmentedCanvasPlugin from "./AugmentedCanvasPlugin";
+import { handleCallGPT_Questions } from "./advancedCanvas";
+import { AugmentedCanvasSettings } from "./settings/AugmentedCanvasSettings";
+import { CanvasNode } from "./obsidian/canvas-internal";
 
 const getBoundingRect = (nodes: CanvasNode[]) => {
 	const bboxArray = nodes.map((t: CanvasNode) => t.getBBox());
@@ -143,12 +138,32 @@ const createHandleContextMenu = (
 };
 
 // TODO : ask GPT and add subMenu items
-export const handleCanvasMenu = (
+export const handleCanvasMenu = async (
+	app: App,
+	settings: AugmentedCanvasSettings,
+	node: CanvasNode,
 	subMenu: Menu,
-	questions: string[],
+	// questions: string[],
 	callback: (question?: string) => Promise<void>
 ) => {
-	if (!questions) return;
+	const questions = node.unknownData.questions;
+	if (!questions) {
+		subMenu.addItem((item: MenuItem) => {
+			item
+				// .setIcon("fold-vertical")
+				.setTitle("Write custom question")
+				.onClick(async () => {
+					await callback();
+				});
+		});
+		return;
+	}
+
+	// const questions = await handleCallGPT_Questions(app, settings, node);
+	// console.log({ questions })
+	// if (!questions) return;
+
+	// subMenu.removeChild(item1);
 
 	questions.forEach((question: string) =>
 		subMenu.addItem((item: MenuItem) => {
@@ -169,14 +184,6 @@ export const handleCanvasMenu = (
 				await callback();
 			});
 	});
-	// .addItem((item: any) => {
-	// 	item
-	// 		.setIcon("unfold-vertical")
-	// 		.setTitle("Expand selected nodes")
-	// 		.onClick(async () => {
-	// 			await callback(false);
-	// 		});
-	// });
 
 	return subMenu;
 };

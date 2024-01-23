@@ -1,6 +1,14 @@
-import { App, CanvasNode } from "obsidian";
+import { App } from "obsidian";
 import { noteGenerator } from "./noteGenerator";
 import { AugmentedCanvasSettings } from "./settings/AugmentedCanvasSettings";
+import { CanvasNode } from "./obsidian/canvas-internal";
+import { getResponse } from "./chatgpt";
+
+const SYSTEM_PROMPT_QUESTIONS = `
+You must respond in this JSON format: {
+	"questions": Follow up questions the user could ask based on the chat history, must be an array
+}
+`.trim();
 
 const NODE_HEIGHT = 500;
 
@@ -73,4 +81,41 @@ export const handleCallGPT_Question = async (
 		// ],
 		// nodeData.width
 	}
+};
+
+export const handleCallGPT_Questions = async (
+	app: App,
+	settings: AugmentedCanvasSettings,
+	node: CanvasNode
+) => {
+	const { buildMessages } = noteGenerator(app, settings);
+	const { messages, tokenCount } = await buildMessages(node);
+	if (!messages.length) return;
+
+	const messages2 = [
+		{
+			role: "system",
+			content: SYSTEM_PROMPT_QUESTIONS,
+		},
+		...messages,
+		{
+			role: "user",
+			content: node.text,
+		},
+	];
+
+	const gptResponse = await getResponse(
+		settings.apiKey,
+		// settings.apiModel,
+		messages2,
+		{
+			model: settings.apiModel,
+		}
+		// {
+		// 	max_tokens: settings.maxResponseTokens || undefined,
+		// 	temperature: settings.temperature,
+		// }
+	);
+
+	return gptResponse.questions;
 };
