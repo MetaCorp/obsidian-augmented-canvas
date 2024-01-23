@@ -3,7 +3,7 @@
 	"name": "Augmented Canvas",
 	"version": "0.1.2",
 	"minAppVersion": "1.1.0",
-	"description": "Obsidian Canvas with AI features",
+	"description": "Obsidian Canvas with AI features.",
 	"author": "MetaCorp",
 	"authorUrl": "https://github.com/MetaCorp",
 	"fundingUrl": {

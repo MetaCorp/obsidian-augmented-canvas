@@ -1,7 +1,7 @@
 {
 	"name": "obsidian-augmented-canvas",
 	"version": "0.1.2",
-	"description": "Obsidian Canvas with AI features",
+	"description": "Obsidian Canvas with AI features.",
 	"main": "main.js",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
