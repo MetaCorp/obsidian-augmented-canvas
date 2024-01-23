@@ -1,4 +1,4 @@
-# Obsidian Collapse Node
+# Obsidian Augmented Canvas
 
 A plugin for [Obsidian](https://obsidian.md) that "augment" Obsidian Canvas with AI features.
 
