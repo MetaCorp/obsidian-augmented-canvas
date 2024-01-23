@@ -1,5 +1,4 @@
 import { App, Canvas, CanvasCoords, ItemView, Menu, MenuItem } from "obsidian";
-import CollapseControlHeader from "./ControlHeader";
 import AugmentedCanvasPlugin from "./AugmentedCanvasPlugin";
 import { handleCallGPT_Questions } from "./advancedCanvas";
 import { AugmentedCanvasSettings } from "./settings/AugmentedCanvasSettings";
