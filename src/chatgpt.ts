@@ -6,13 +6,13 @@ export const getResponse = async (
 	messages: any[],
 	{ maxTokens, model }: any = {}
 ) => {
-	console.log("Calling ChatGPT getResponse: ", {
-		messages,
-		// prompt,
-		// apiKey,
-		maxTokens,
-		model,
-	});
+	// console.log("Calling ChatGPT getResponse: ", {
+	// 	messages,
+	// 	// prompt,
+	// 	// apiKey,
+	// 	maxTokens,
+	// 	model,
+	// });
 
 	const openai = new OpenAI({
 		apiKey: apiKey,
@@ -32,7 +32,7 @@ export const getResponse = async (
 			(total, message) => total + message.content.length,
 			0
 		) * 2;
-	console.log({ totalTokens });
+	// console.log({ totalTokens });
 
 	const completion = await openai.chat.completions.create({
 		// model: "gpt-3.5-turbo",
@@ -42,7 +42,7 @@ export const getResponse = async (
 		response_format: { type: "json_object" },
 	});
 
-	console.log({ completion });
+	// console.log({ completion });
 	return JSON.parse(completion.choices[0].message!.content!);
 };
 
@@ -58,7 +58,7 @@ export const createImage = async (
 	});
 
 	count++;
-	console.log({ createImage: { prompt, count } });
+	// console.log({ createImage: { prompt, count } });
 	const response = await openai.images.generate({
 		model: "dall-e-3",
 		prompt,
@@ -66,6 +66,6 @@ export const createImage = async (
 		size: isVertical ? "1024x1792" : "1792x1024",
 		response_format: "b64_json",
 	});
-	console.log({ responseImg: response });
+	// console.log({ responseImg: response });
 	return response.data[0].b64_json!;
 };

@@ -30,7 +30,7 @@ const emptyNoteHeight = 100;
 const NOTE_MAX_WIDTH = 400;
 
 // TODO : remove
-const logDebug = console.log;
+const logDebug = (text: any) => null;
 
 const SYSTEM_PROMPT = `
 You must respond in this JSON format: {
@@ -132,7 +132,7 @@ export function noteGenerator(
 			x: created.x,
 			y: created.y,
 		});
-		console.log({ created });
+		// console.log({ created });
 		await canvas.requestSave();
 	};
 
@@ -324,7 +324,7 @@ export function noteGenerator(
 			);
 
 			try {
-				logDebug("messages", messages);
+				// logDebug("messages", messages);
 
 				const generated = await getResponse(
 					settings.apiKey,
