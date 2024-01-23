@@ -66,21 +66,6 @@ export const handlePatchNoteMenu = async (
 						question
 					);
 				}
-
-				let modal = new CustomQuestionModal(
-					app,
-					(question2: string) => {
-						handleCallGPT_Question(
-							app,
-							settings,
-							// @ts-expect-error
-							<CanvasNode>Array.from(canvas.selection)?.first()!,
-							question2
-						);
-						// Handle the input
-					}
-				);
-				modal.open();
 			}
 		);
 		menu.setParentElement(menuEl).showAtPosition({
@@ -93,6 +78,7 @@ export const handlePatchNoteMenu = async (
 		if (node.unknownData.questions) return;
 
 		const questions = await handleCallGPT_Questions(app, settings, node);
+		if (!questions) return;
 		node.unknownData.questions = questions;
 
 		menu.hide();
