@@ -1,6 +1,7 @@
 # Obsidian Collapse Node
 
 A plugin for [Obsidian](https://obsidian.md) that "augment" Obsidian Canvas with AI features.
+
 You need a OpenAI API Key to use this plugin, you can input it in the settings. The plugin only works with OpenAI latest model : `gpt-4-1106-preview`
 
 ## Features
