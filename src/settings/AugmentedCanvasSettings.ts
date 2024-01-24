@@ -42,12 +42,17 @@ export interface AugmentedCanvasSettings {
 	maxDepth: number;
 }
 
-export const DEFAULT_SYSTEM_PROMPT = `
-You are a critical-thinking assistant bot. 
-Consider the intent of my questions before responding.
-Do not restate my information unless I ask for it. 
-Do not include caveats or disclaimers.
-Use step-by-step reasoning. Be brief.
+// export const DEFAULT_SYSTEM_PROMPT = `
+// You are a critical-thinking assistant bot.
+// Consider the intent of my questions before responding.
+// Do not restate my information unless I ask for it.
+// Do not include caveats or disclaimers.
+// Use step-by-step reasoning. Be brief.
+// `.trim();
+
+const DEFAULT_SYSTEM_PROMPT = `
+You must respond in markdown.
+The response must be in the same language the user used.
 `.trim();
 
 export const DEFAULT_SETTINGS: AugmentedCanvasSettings = {

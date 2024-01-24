@@ -3,6 +3,7 @@ import {
 	CanvasView,
 	ItemView,
 	Menu,
+	MenuItem,
 	Plugin,
 	setIcon,
 	setTooltip,
@@ -17,6 +18,7 @@ import SettingsTab from "./settings/SettingsTab";
 import { CustomQuestionModal } from "./CustomQuestionModal";
 import { CanvasNode } from "./obsidian/canvas-internal";
 import { handlePatchNoteMenu } from "./noteMenuPatch";
+import { getActiveCanvas } from "./utils";
 
 export default class AugmentedCanvasPlugin extends Plugin {
 	triggerByPlugin: boolean = false;
@@ -33,7 +35,10 @@ export default class AugmentedCanvasPlugin extends Plugin {
 		// this.registerCustomIcons();
 
 		// this.patchCanvas();
-		setTimeout(() => this.patchCanvasMenu(), 100);
+		setTimeout(() => {
+			this.patchCanvasMenu();
+			this.patchCanvasContextMenu();
+		}, 100);
 		// this.patchCanvasInteraction();
 		// this.patchCanvasNode();
 
@@ -229,6 +234,53 @@ export default class AugmentedCanvasPlugin extends Plugin {
 				});
 				this.registerEvent(evt);
 			}
+		});
+	}
+
+	patchCanvasContextMenu() {
+		// * no event name to add to Canvas context menu ("canvas-menu" does not exist)
+		// this.app.workspace.on("canvas-menu", (menu) => {
+		// 	console.log({ menu });
+		// 	menu.addItem((item) => {
+		// 		item.setTitle("test")
+		// 			// .setIcon(command.icon)
+		// 			.onClick(() => {
+		// 				//@ts-ignore
+		// 				this.app.commands.executeCommandById(command.id);
+		// 			});
+		// 	});
+		// });
+
+		const app = this.app;
+
+		this.addCommand({
+			id: "add-system-prompt",
+			name: "Add system prompt",
+			checkCallback: (checking: boolean) => {
+				if (checking) {
+					console.log({ checkCallback: checking });
+					if (!getActiveCanvas(app)) return false;
+
+					return true;
+				}
+
+				const canvas = getActiveCanvas(app);
+				console.log({ canvas });
+				if (!canvas) return;
+
+				// @ts-expect-error
+				const newNode = canvas.createTextNode({
+					pos: { x: canvas.x, y: canvas.y },
+					// position: "left",
+					// size: { height, width },
+					text: "SYSTEM PROMPT",
+					focus: false,
+				});
+				// @ts-expect-error
+				canvas.addNode(newNode);
+				// canvas.menu.menuEl.append(new MenuItem())
+			},
+			callback: () => {},
 		});
 	}
 

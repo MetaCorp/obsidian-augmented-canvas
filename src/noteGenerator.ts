@@ -155,21 +155,20 @@ export function noteGenerator(
 		text.trim().startsWith("SYSTEM PROMPT");
 
 	const getSystemPrompt = async (node: CanvasNode) => {
-		return undefined;
 		// TODO
-		// let foundPrompt: string | null = null;
+		let foundPrompt: string | null = null;
 
-		// await visitNodeAndAncestors(node, async (n: CanvasNode) => {
-		// 	const text = await readNodeContent(n);
-		// 	if (text && isSystemPromptNode(text)) {
-		// 		foundPrompt = text;
-		// 		return false;
-		// 	} else {
-		// 		return true;
-		// 	}
-		// });
+		await visitNodeAndAncestors(node, async (n: CanvasNode) => {
+			const text = await readNodeContent(n);
+			if (text && isSystemPromptNode(text)) {
+				foundPrompt = text.replace("SYSTEM PROMPT", "").trim();
+				return false;
+			} else {
+				return true;
+			}
+		});
 
-		// return foundPrompt || settings.systemPrompt;
+		return foundPrompt || settings.systemPrompt;
 	};
 
 	const buildMessages = async (node: CanvasNode) => {
@@ -308,10 +307,10 @@ export function noteGenerator(
 
 			const messages2 = question
 				? [
-						{
-							role: "system",
-							content: SYSTEM_PROMPT,
-						},
+						// {
+						// 	role: "system",
+						// 	content: SYSTEM_PROMPT,
+						// },
 						...messages,
 						{
 							role: "user",
@@ -319,10 +318,10 @@ export function noteGenerator(
 						},
 				  ]
 				: [
-						{
-							role: "system",
-							content: SYSTEM_PROMPT,
-						},
+						// {
+						// 	role: "system",
+						// 	content: SYSTEM_PROMPT,
+						// },
 						...messages,
 				  ];
 			// TODO : update tokenCount with new messages

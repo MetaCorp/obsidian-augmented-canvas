@@ -1,4 +1,12 @@
-import { App, Canvas, CanvasCoords, ItemView, Menu, MenuItem } from "obsidian";
+import {
+	App,
+	Canvas,
+	CanvasCoords,
+	CanvasView,
+	ItemView,
+	Menu,
+	MenuItem,
+} from "obsidian";
 import AugmentedCanvasPlugin from "./AugmentedCanvasPlugin";
 import { handleCallGPT_Questions } from "./advancedCanvas";
 import { AugmentedCanvasSettings } from "./settings/AugmentedCanvasSettings";
@@ -78,4 +86,11 @@ export const randomHexString = (len: number) => {
 		t.push(((16 * Math.random()) | 0).toString(16));
 	}
 	return t.join("");
+};
+
+export const getActiveCanvas = (app: App) => {
+	const maybeCanvasView = app.workspace.getActiveViewOfType(
+		ItemView
+	) as CanvasView | null;
+	return maybeCanvasView ? maybeCanvasView["canvas"] : null;
 };

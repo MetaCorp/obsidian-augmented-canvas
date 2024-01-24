@@ -44,21 +44,21 @@ export class SettingsTab extends PluginSettingTab {
 					});
 			});
 
-		// new Setting(containerEl)
-		// 	.setName("System prompt")
-		// 	.setDesc(
-		// 		`The system prompt sent with each request to the API. \n(Note: you can override this by beginning a note stream with a note starting 'SYSTEM PROMPT'. The remaining content of that note will be used as system prompt.)`
-		// 	)
-		// 	.addTextArea((component) => {
-		// 		component.inputEl.rows = 6;
-		// 		component.inputEl.style.width = "300px";
-		// 		component.inputEl.style.fontSize = "10px";
-		// 		component.setValue(this.plugin.settings.systemPrompt);
-		// 		component.onChange(async (value) => {
-		// 			this.plugin.settings.systemPrompt = value;
-		// 			await this.plugin.saveSettings();
-		// 		});
-		// 	});
+		new Setting(containerEl)
+			.setName("System prompt")
+			.setDesc(
+				`The system prompt sent with each request to the API. \n(Note: you can override this by beginning a note stream with a note starting 'SYSTEM PROMPT'. The remaining content of that note will be used as system prompt.)`
+			)
+			.addTextArea((component) => {
+				component.inputEl.rows = 6;
+				component.inputEl.style.width = "300px";
+				component.inputEl.style.fontSize = "10px";
+				component.setValue(this.plugin.settings.systemPrompt);
+				component.onChange(async (value) => {
+					this.plugin.settings.systemPrompt = value;
+					await this.plugin.saveSettings();
+				});
+			});
 
 		new Setting(containerEl)
 			.setName("Max input tokens")
