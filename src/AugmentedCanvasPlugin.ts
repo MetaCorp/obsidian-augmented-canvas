@@ -13,6 +13,7 @@ import { handleCallGPT, handleCallGPT_Question } from "./advancedCanvas";
 import {
 	AugmentedCanvasSettings,
 	DEFAULT_SETTINGS,
+	SystemPrompt,
 } from "./settings/AugmentedCanvasSettings";
 import SettingsTab from "./settings/SettingsTab";
 import { CustomQuestionModal } from "./CustomQuestionModal";
@@ -20,6 +21,8 @@ import { CanvasNode } from "./obsidian/canvas-internal";
 import { handlePatchNoteMenu } from "./noteMenuPatch";
 import { getActiveCanvas } from "./utils";
 import SystemPromptsModal from "./SystemPromptsModal";
+
+import * as CSV from "csv-string";
 
 export default class AugmentedCanvasPlugin extends Plugin {
 	triggerByPlugin: boolean = false;
@@ -39,6 +42,10 @@ export default class AugmentedCanvasPlugin extends Plugin {
 		setTimeout(() => {
 			this.patchCanvasMenu();
 			this.patchCanvasContextMenu();
+
+			if (this.settings.systemPrompts.length === 0) {
+				this.fetchSystemPrompts();
+			}
 		}, 100);
 		// this.patchCanvasInteraction();
 		// this.patchCanvasNode();
@@ -236,6 +243,26 @@ export default class AugmentedCanvasPlugin extends Plugin {
 				this.registerEvent(evt);
 			}
 		});
+	}
+
+	async fetchSystemPrompts() {
+		const response = await fetch(
+			"https://raw.githubusercontent.com/f/awesome-chatgpt-prompts/main/prompts.csv"
+		);
+		const text = await response.text();
+		const parsedCsv = CSV.parse(text);
+
+		const systemPrompts: SystemPrompt[] = parsedCsv
+			.slice(1)
+			.map((value: string[]) => ({
+				act: value[0],
+				prompt: value[1],
+			}));
+		console.log({ systemPrompts });
+
+		this.settings.systemPrompts = systemPrompts;
+
+		this.saveSettings();
 	}
 
 	patchCanvasContextMenu() {

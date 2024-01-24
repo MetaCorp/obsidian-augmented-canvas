@@ -7,10 +7,6 @@ import {
 	Menu,
 	MenuItem,
 } from "obsidian";
-import AugmentedCanvasPlugin from "./AugmentedCanvasPlugin";
-import { handleCallGPT_Questions } from "./advancedCanvas";
-import { AugmentedCanvasSettings } from "./settings/AugmentedCanvasSettings";
-import { CanvasNode } from "./obsidian/canvas-internal";
 
 // TODO : ask GPT and add subMenu items
 export const handleCanvasMenu_Loading = async (

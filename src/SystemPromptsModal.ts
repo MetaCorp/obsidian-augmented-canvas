@@ -8,7 +8,7 @@ import {
 /**
  * A serchable modal that allows the user to select a checkbox status symbol
  */
-export default class QuickActionModal extends SuggestModal<CheckboxOption> {
+export default class QuickActionModal extends SuggestModal<SystemPrompt> {
 	settings: AugmentedCanvasSettings;
 
 	/**
@@ -69,7 +69,11 @@ export default class QuickActionModal extends SuggestModal<CheckboxOption> {
 			pos: { x: canvas.x, y: canvas.y },
 			// position: "left",
 			// size: { height, width },
-			text: "SYSTEM PROMPT",
+			text: `
+SYSTEM PROMPT
+
+${systemPrompt.prompt}
+			`,
 			focus: false,
 		});
 		// @ts-expect-error
