@@ -11,16 +11,24 @@ export const handleCanvasMenu_Loading = async (
 	callback?: (question?: string) => Promise<void>
 ) => {
 	if (questions) {
-		questions.forEach((question: string) =>
+		if (questions.length === 0) {
 			subMenu.addItem((item: MenuItem) => {
 				item
 					// .setIcon("fold-vertical")
-					.setTitle(question)
-					.onClick(async () => {
-						callback && (await callback(question));
-					});
-			})
-		);
+					.setTitle("No questions");
+			});
+		} else {
+			questions.forEach((question: string) =>
+				subMenu.addItem((item: MenuItem) => {
+					item
+						// .setIcon("fold-vertical")
+						.setTitle(question)
+						.onClick(async () => {
+							callback && (await callback(question));
+						});
+				})
+			);
+		}
 	} else {
 		subMenu.addItem((item: MenuItem) => {
 			item
@@ -28,17 +36,6 @@ export const handleCanvasMenu_Loading = async (
 				.setTitle("loading...");
 		});
 	}
-
-	subMenu.addSeparator();
-
-	subMenu.addItem((item: MenuItem) => {
-		item
-			// .setIcon("fold-vertical")
-			.setTitle("Write custom question")
-			.onClick(async () => {
-				callback && (await callback());
-			});
-	});
 };
 
 // TODO : ask GPT and add subMenu items
@@ -48,28 +45,24 @@ export const handleCanvasMenu_Loaded = async (
 	callback: (question?: string) => Promise<void>
 ) => {
 	// subMenu.
-
-	questions.forEach((question: string) =>
+	if (questions.length === 0) {
 		subMenu.addItem((item: MenuItem) => {
 			item
 				// .setIcon("fold-vertical")
-				.setTitle(question)
-				.onClick(async () => {
-					await callback(question);
-				});
-		})
-	);
-
-	subMenu.addSeparator();
-
-	subMenu.addItem((item: MenuItem) => {
-		item
-			// .setIcon("fold-vertical")
-			.setTitle("Write custom question.")
-			.onClick(async () => {
-				await callback();
-			});
-	});
+				.setTitle("No questions");
+		});
+	} else {
+		questions.forEach((question: string) =>
+			subMenu.addItem((item: MenuItem) => {
+				item
+					// .setIcon("fold-vertical")
+					.setTitle(question)
+					.onClick(async () => {
+						await callback(question);
+					});
+			})
+		);
+	}
 
 	return subMenu;
 };

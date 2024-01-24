@@ -150,24 +150,59 @@ export default class AugmentedCanvasPlugin extends Plugin {
 
 						// if (!node?.unknownData.questions?.length) return;
 
-						// * Handles "Ask Questions" button
+						// * Handles "Ask Question" button
 
-						const buttonEl_AskQuestions = createEl(
+						const buttonEl_AskQuestion = createEl(
 							"button",
 							"clickable-icon gpt-menu-item"
 						);
 						setTooltip(
-							buttonEl_AskQuestions,
-							"Ask questions with AI",
+							buttonEl_AskQuestion,
+							"Ask question with AI",
 							{
 								placement: "top",
 							}
 						);
-						setIcon(buttonEl_AskQuestions, "lucide-file-question");
-						this.menuEl.appendChild(buttonEl_AskQuestions);
-						buttonEl_AskQuestions.addEventListener("click", () =>
+						setIcon(buttonEl_AskQuestion, "lucide-help-circle");
+						this.menuEl.appendChild(buttonEl_AskQuestion);
+						buttonEl_AskQuestion.addEventListener("click", () => {
+							let modal = new CustomQuestionModal(
+								app,
+								(question2: string) => {
+									handleCallGPT_Question(
+										app,
+										settings,
+										<CanvasNode>(
+											Array.from(
+												this.canvas.selection
+											)?.first()!
+										),
+										question2
+									);
+									// Handle the input
+								}
+							);
+							modal.open();
+						});
+
+						// * Handles "AI Questions" button
+
+						const buttonEl_AIQuestions = createEl(
+							"button",
+							"clickable-icon gpt-menu-item"
+						);
+						setTooltip(
+							buttonEl_AIQuestions,
+							"AI generated questions",
+							{
+								placement: "top",
+							}
+						);
+						setIcon(buttonEl_AIQuestions, "lucide-file-question");
+						this.menuEl.appendChild(buttonEl_AIQuestions);
+						buttonEl_AIQuestions.addEventListener("click", () =>
 							handlePatchNoteMenu(
-								buttonEl_AskQuestions,
+								buttonEl_AIQuestions,
 								this.menuEl,
 								{
 									app,

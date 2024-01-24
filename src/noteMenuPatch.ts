@@ -7,7 +7,6 @@ import {
 	handleCallGPT_Questions,
 } from "./advancedCanvas";
 import { handleCanvasMenu_Loaded, handleCanvasMenu_Loading } from "./utils";
-import { getResponse } from "./chatgpt";
 
 export const handlePatchNoteMenu = async (
 	buttonEl_AskQuestions: HTMLButtonElement,
@@ -41,22 +40,6 @@ export const handlePatchNoteMenu = async (
 			node.unknownData.questions,
 			async (question) => {
 				if (!question) {
-					let modal = new CustomQuestionModal(
-						app,
-						(question2: string) => {
-							handleCallGPT_Question(
-								app,
-								settings,
-								// @ts-expect-error
-								<CanvasNode>(
-									Array.from(canvas.selection)?.first()!
-								),
-								question2
-							);
-							// Handle the input
-						}
-					);
-					modal.open();
 				} else {
 					handleCallGPT_Question(
 						app,
