@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-augmented-canvas",
-	"version": "0.1.3",
+	"version": "0.1.4",
 	"description": "Obsidian Canvas with AI features.",
 	"main": "main.js",
 	"scripts": {
