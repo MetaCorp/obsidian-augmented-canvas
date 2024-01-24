@@ -18,7 +18,7 @@ The links between notes are used to create the chat history sent to GPT.
 
 ## Additional Features
 
--   The plugin adds a command to insert system prompts on the Canvas. The system prompt are fetch from [f/awesome-chatgpt-prompts (github.com)](https://github.com/f/awesome-chatgpt-prompts)
+-   The plugin adds a command to insert system prompts on the Canvas. The system prompts are fetch from [f/awesome-chatgpt-prompts (github.com)](https://github.com/f/awesome-chatgpt-prompts)
 
 ## Installation
 
