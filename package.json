@@ -23,6 +23,7 @@
 	},
 	"dependencies": {
 		"csv-string": "^4.1.1",
+		"fuse.js": "^7.0.0",
 		"js-tiktoken": "^1.0.8",
 		"monkey-around": "^2.3.0",
 		"openai": "^4.25.0"

@@ -17,7 +17,7 @@ export const streamResponse = async (
 	}: { maxTokens?: number; model?: string; isJSON?: boolean } = {},
 	cb: any
 ) => {
-	console.log({ messages });
+	// console.log({ messages });
 	const openai = new OpenAI({
 		apiKey: apiKey,
 		dangerouslyAllowBrowser: true,

@@ -287,7 +287,7 @@ export function noteGenerator(
 			await sleep(200);
 
 			const { messages, tokenCount } = await buildMessages(node);
-			console.log({ messages });
+			// console.log({ messages });
 			if (!messages.length) return;
 
 			const created = createNode(

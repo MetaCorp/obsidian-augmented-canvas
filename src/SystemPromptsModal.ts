@@ -5,12 +5,14 @@ import {
 	SystemPrompt,
 } from "./settings/AugmentedCanvasSettings";
 import { calcHeight } from "./obsidian/canvas-patches";
+import Fuse, { FuseResult } from "fuse.js";
 
 /**
  * A serchable modal that allows the user to select a checkbox status symbol
  */
 export default class QuickActionModal extends SuggestModal<SystemPrompt> {
 	settings: AugmentedCanvasSettings;
+	fuse: Fuse<SystemPrompt>;
 
 	/**
 	 *
@@ -21,6 +23,11 @@ export default class QuickActionModal extends SuggestModal<SystemPrompt> {
 	constructor(app: App, settings: AugmentedCanvasSettings) {
 		super(app);
 		this.settings = settings;
+
+		const fuse = new Fuse(this.settings.systemPrompts, {
+			keys: ["act", "prompt"],
+		});
+		this.fuse = fuse;
 	}
 
 	/**
@@ -29,6 +36,12 @@ export default class QuickActionModal extends SuggestModal<SystemPrompt> {
 	 * @returns collection of options
 	 */
 	getSuggestions(query: string): SystemPrompt[] {
+		if (query === "") return this.settings.systemPrompts;
+
+		return this.fuse
+			.search(query)
+			.map((result: FuseResult<SystemPrompt>) => result.item);
+
 		return this.settings.systemPrompts.filter(
 			(systemPrompt: SystemPrompt) => {
 				if (query === "") return true;
@@ -76,7 +89,6 @@ export default class QuickActionModal extends SuggestModal<SystemPrompt> {
 		new Notice(`Selected ${systemPrompt.act}`);
 
 		const canvas = getActiveCanvas(this.app);
-		console.log({ canvas });
 		if (!canvas) return;
 
 		const text = `

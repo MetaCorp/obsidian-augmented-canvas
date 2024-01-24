@@ -1,3 +1,4 @@
+import { FuseIndex } from "fuse.js";
 import { CHAT_MODELS } from "src/openai/models";
 
 export interface SystemPrompt {
@@ -50,6 +51,11 @@ export interface AugmentedCanvasSettings {
 	 * System prompt list fetch from github
 	 */
 	systemPrompts: SystemPrompt[];
+
+	/**
+	 * For fuzzy search on systemPrompts
+	 */
+	fuseSystemPrompts?: FuseIndex<SystemPrompt>;
 }
 
 // export const DEFAULT_SYSTEM_PROMPT = `
