@@ -29,7 +29,7 @@ const emptyNoteHeight = 100;
 
 const NOTE_MAX_WIDTH = 400;
 const NOTE_MIN_HEIGHT = 400;
-const NOTE_INCR_HEIGHT_STEP = 200;
+const NOTE_INCR_HEIGHT_STEP = 150;
 
 // TODO : remove
 const logDebug = (text: any) => null;
@@ -335,7 +335,7 @@ export function noteGenerator(
 				// logDebug("messages", messages);
 
 				let firstDelta = true;
-				const generated = await streamResponse(
+				await streamResponse(
 					settings.apiKey,
 					// settings.apiModel,
 					messages2,
@@ -349,16 +349,16 @@ export function noteGenerator(
 					(delta?: string) => {
 						// * Last call
 						if (!delta) {
-							const height = calcHeight({
-								text: created.text,
-								parentHeight: node.height,
-							});
-							created.moveAndResize({
-								height,
-								width: created.width,
-								x: created.x,
-								y: created.y,
-							});
+							// const height = calcHeight({
+							// 	text: created.text,
+							// 	parentHeight: node.height,
+							// });
+							// created.moveAndResize({
+							// 	height,
+							// 	width: created.width,
+							// 	x: created.x,
+							// 	y: created.y,
+							// });
 							return;
 						}
 

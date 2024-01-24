@@ -1,5 +1,6 @@
 .augmented-canvas-modal-container {
 	display: flex;
+	flex-direction: column;
 	gap: 16px;
 	justify-content: end;
 	align-items: end;
@@ -9,4 +10,5 @@
 	box-sizing: border-box;
 	min-height: 70px;
 	flex-grow: 1;
+	width: 100%;
 }

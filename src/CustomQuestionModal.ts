@@ -15,6 +15,18 @@ export class CustomQuestionModal extends Modal {
 		let textareaEl = contentEl.createEl("textarea");
 		textareaEl.className = "augmented-canvas-modal-input";
 
+		// Add keydown event listener to the textarea
+		textareaEl.addEventListener("keydown", (event) => {
+			// Check if Ctrl + Enter is pressed
+			if (event.ctrlKey && event.key === "Enter") {
+				// Prevent default action to avoid any unwanted behavior
+				event.preventDefault();
+				// Call the onSubmit function and close the modal
+				this.onSubmit(textareaEl.value);
+				this.close();
+			}
+		});
+
 		// Create and append a submit button
 		let submitBtn = contentEl.createEl("button", { text: "Ask AI" });
 		submitBtn.onClickEvent(() => {
