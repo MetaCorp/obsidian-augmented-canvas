@@ -19,6 +19,7 @@ import { CustomQuestionModal } from "./CustomQuestionModal";
 import { CanvasNode } from "./obsidian/canvas-internal";
 import { handlePatchNoteMenu } from "./noteMenuPatch";
 import { getActiveCanvas } from "./utils";
+import SystemPromptsModal from "./SystemPromptsModal";
 
 export default class AugmentedCanvasPlugin extends Plugin {
 	triggerByPlugin: boolean = false;
@@ -264,21 +265,7 @@ export default class AugmentedCanvasPlugin extends Plugin {
 					return true;
 				}
 
-				const canvas = getActiveCanvas(app);
-				console.log({ canvas });
-				if (!canvas) return;
-
-				// @ts-expect-error
-				const newNode = canvas.createTextNode({
-					pos: { x: canvas.x, y: canvas.y },
-					// position: "left",
-					// size: { height, width },
-					text: "SYSTEM PROMPT",
-					focus: false,
-				});
-				// @ts-expect-error
-				canvas.addNode(newNode);
-				// canvas.menu.menuEl.append(new MenuItem())
+				new SystemPromptsModal(this.app, this.settings).open();
 			},
 			callback: () => {},
 		});

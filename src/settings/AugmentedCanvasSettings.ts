@@ -1,5 +1,10 @@
 import { CHAT_MODELS } from "src/openai/models";
 
+export interface SystemPrompt {
+	act: string;
+	prompt: string;
+}
+
 export interface AugmentedCanvasSettings {
 	/**
 	 * The API key to use when making requests
@@ -40,6 +45,11 @@ export interface AugmentedCanvasSettings {
 	 * The maximum depth of ancestor notes to include. 0 means no limit.
 	 */
 	maxDepth: number;
+
+	/**
+	 * System prompt list fetch from github
+	 */
+	systemPrompts: SystemPrompt[];
 }
 
 // export const DEFAULT_SYSTEM_PROMPT = `
@@ -64,6 +74,7 @@ export const DEFAULT_SETTINGS: AugmentedCanvasSettings = {
 	maxInputTokens: 0,
 	maxResponseTokens: 0,
 	maxDepth: 0,
+	systemPrompts: [],
 };
 
 export function getModels() {
