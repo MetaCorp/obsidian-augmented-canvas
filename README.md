@@ -4,7 +4,7 @@ A plugin for [Obsidian](https://obsidian.md) that "augments" Obsidian Canvas wit
 
 You need a OpenAI API Key to use this plugin, you can input it in the settings. The plugin only works with OpenAI latest model : `gpt-4-1106-preview`
 
-## Features
+## Key Features
 
 This plugin adds three actions to the Menu of a note in the Canvas View.
 
@@ -15,6 +15,10 @@ This plugin adds three actions to the Menu of a note in the Canvas View.
 The links between notes are used to create the chat history sent to GPT.
 
 ![Augmented-Canvas-poc](./assets/Augmented-Canvas-poc.gif)
+
+## Additional Features
+
+-   The plugin adds a command to insert system prompts on the Canvas. The system prompt are fetch from [f/awesome-chatgpt-prompts (github.com)](https://github.com/f/awesome-chatgpt-prompts)
 
 ## Installation
 
