@@ -249,13 +249,13 @@ export function noteGenerator(
 
 		await visitNodeAndAncestors(node, visit);
 
-		if (messages.length) {
-			if (systemPrompt) {
-				messages.unshift({
-					content: systemPrompt,
-					role: "system",
-				});
-			}
+		// if (messages.length) {
+		if (systemPrompt) {
+			messages.unshift({
+				content: systemPrompt,
+				role: "system",
+			});
+			// }
 
 			return { messages, tokenCount };
 		} else {
@@ -287,6 +287,7 @@ export function noteGenerator(
 			await sleep(200);
 
 			const { messages, tokenCount } = await buildMessages(node);
+			console.log({ messages });
 			if (!messages.length) return;
 
 			const created = createNode(

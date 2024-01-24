@@ -4,6 +4,7 @@ import {
 	AugmentedCanvasSettings,
 	SystemPrompt,
 } from "./settings/AugmentedCanvasSettings";
+import { calcHeight } from "./obsidian/canvas-patches";
 
 /**
  * A serchable modal that allows the user to select a checkbox status symbol
@@ -28,7 +29,21 @@ export default class QuickActionModal extends SuggestModal<SystemPrompt> {
 	 * @returns collection of options
 	 */
 	getSuggestions(query: string): SystemPrompt[] {
-		return this.settings.systemPrompts;
+		return this.settings.systemPrompts.filter(
+			(systemPrompt: SystemPrompt) => {
+				if (query === "") return true;
+
+				const promptWords = systemPrompt.prompt.split(/ /g);
+				const actWords = systemPrompt.act.split(/ /g);
+
+				return (
+					promptWords.filter((word: string) => word.includes(query))
+						.length > 0 ||
+					actWords.filter((word: string) => word.includes(query))
+						.length > 0
+				);
+			}
+		);
 	}
 
 	/**
@@ -64,16 +79,26 @@ export default class QuickActionModal extends SuggestModal<SystemPrompt> {
 		console.log({ canvas });
 		if (!canvas) return;
 
-		// @ts-expect-error
-		const newNode = canvas.createTextNode({
-			pos: { x: canvas.x, y: canvas.y },
-			// position: "left",
-			// size: { height, width },
-			text: `
+		const text = `
 SYSTEM PROMPT
 
-${systemPrompt.prompt}
-			`,
+${systemPrompt.prompt.trim()}
+`.trim();
+
+		const NODE_WIDTH = 800;
+		const NODE_HEIGHT = 300;
+		// @ts-expect-error
+		const newNode = canvas.createTextNode({
+			pos: {
+				x: canvas.x - NODE_WIDTH / 2,
+				y: canvas.y - NODE_HEIGHT / 2,
+			},
+			// position: "left",
+			size: {
+				height: calcHeight({ parentHeight: NODE_HEIGHT, text }),
+				width: NODE_WIDTH,
+			},
+			text,
 			focus: false,
 		});
 		// @ts-expect-error
