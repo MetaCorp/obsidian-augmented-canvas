@@ -8,6 +8,7 @@ const SYSTEM_PROMPT_QUESTIONS = `
 You must respond in this JSON format: {
 	"questions": Follow up questions the user could ask based on the chat history, must be an array
 }
+The questions must be asked in the same language the user used.
 `.trim();
 
 const NODE_HEIGHT = 500;

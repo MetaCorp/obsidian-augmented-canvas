@@ -9,7 +9,7 @@ import {
 // import { Logger } from "./util/logging";
 import { visitNodeAndAncestors } from "./obsidian/canvasUtil";
 import { readNodeContent } from "./obsidian/fileUtil";
-import { getResponse } from "./chatgpt";
+import { getResponse, streamResponse } from "./chatgpt";
 import { CHAT_MODELS, chatModelByName } from "./openai/models";
 
 /**
@@ -28,15 +28,23 @@ const placeholderNoteHeight = 60;
 const emptyNoteHeight = 100;
 
 const NOTE_MAX_WIDTH = 400;
+const NOTE_MIN_HEIGHT = 400;
+const NOTE_INCR_HEIGHT_STEP = 200;
 
 // TODO : remove
 const logDebug = (text: any) => null;
 
+// const SYSTEM_PROMPT2 = `
+// You must respond in this JSON format: {
+// 	"response": Your response, must be in markdown,
+// 	"questions": Follow up questions the user could ask based on your response, must be an array
+// }
+// The response must be in the same language the user used.
+// `.trim();
+
 const SYSTEM_PROMPT = `
-You must respond in this JSON format: {
-	"response": Your response, must be in markdown,
-	"questions": Follow up questions the user could ask based on your response, must be an array
-}
+You must respond in markdown.
+The response must be in the same language the user used.
 `.trim();
 
 export function noteGenerator(
@@ -282,6 +290,22 @@ export function noteGenerator(
 			const { messages, tokenCount } = await buildMessages(node);
 			if (!messages.length) return;
 
+			const created = createNode(
+				canvas,
+				node,
+				{
+					// text: "```loading...```",
+					text: `\`\`\`Calling AI (${settings.apiModel})...\`\`\``,
+					size: { height: placeholderNoteHeight },
+				},
+				{
+					color: assistantColor,
+					// TODO : debug
+					chat_role: "assistant",
+				},
+				question
+			);
+
 			const messages2 = question
 				? [
 						{
@@ -303,22 +327,6 @@ export function noteGenerator(
 				  ];
 			// TODO : update tokenCount with new messages
 
-			const created = createNode(
-				canvas,
-				node,
-				{
-					// text: "```loading...```",
-					text: `\`\`\`Calling AI (${settings.apiModel})...\`\`\``,
-					size: { height: placeholderNoteHeight },
-				},
-				{
-					color: assistantColor,
-					// TODO : debug
-					chat_role: "assistant",
-				},
-				question
-			);
-
 			new Notice(
 				`Sending ${messages2.length} notes with ${tokenCount} tokens to GPT`
 			);
@@ -326,41 +334,88 @@ export function noteGenerator(
 			try {
 				// logDebug("messages", messages);
 
-				const generated = await getResponse(
+				let firstDelta = true;
+				const generated = await streamResponse(
 					settings.apiKey,
 					// settings.apiModel,
 					messages2,
 					{
 						model: settings.apiModel,
-					}
+					},
 					// {
 					// 	max_tokens: settings.maxResponseTokens || undefined,
 					// 	temperature: settings.temperature,
 					// }
+					(delta?: string) => {
+						// * Last call
+						if (!delta) {
+							const height = calcHeight({
+								text: created.text,
+								parentHeight: node.height,
+							});
+							created.moveAndResize({
+								height,
+								width: created.width,
+								x: created.x,
+								y: created.y,
+							});
+							return;
+						}
+
+						let newText;
+						if (firstDelta) {
+							newText = delta;
+							firstDelta = false;
+
+							created.moveAndResize({
+								height: NOTE_MIN_HEIGHT,
+								width: created.width,
+								x: created.x,
+								y: created.y,
+							});
+						} else {
+							const height = calcHeight({
+								text: created.text,
+								parentHeight: node.height,
+							});
+							if (height > created.height) {
+								created.moveAndResize({
+									height:
+										created.height + NOTE_INCR_HEIGHT_STEP,
+									width: created.width,
+									x: created.x,
+									y: created.y,
+								});
+							}
+							newText = created.text + delta;
+						}
+						created.setText(newText);
+					}
 				);
 
-				if (generated == null) {
-					new Notice(`Empty or unreadable response from GPT`);
-					canvas.removeNode(created);
-					return;
-				}
+				// if (generated == null) {
+				// 	new Notice(`Empty or unreadable response from GPT`);
+				// 	canvas.removeNode(created);
+				// 	return;
+				// }
 
-				created.setText(generated.response);
-				const nodeData = created.getData();
-				created.setData({
-					...nodeData,
-					questions: generated.questions,
-				});
-				const height = calcHeight({
-					text: generated.response,
-					parentHeight: node.height,
-				});
-				created.moveAndResize({
-					height,
-					width: created.width,
-					x: created.x,
-					y: created.y,
-				});
+				// * Update Node
+				// created.setText(generated.response);
+				// const nodeData = created.getData();
+				// created.setData({
+				// 	...nodeData,
+				// 	questions: generated.questions,
+				// });
+				// const height = calcHeight({
+				// 	text: generated.response,
+				// 	parentHeight: node.height,
+				// });
+				// created.moveAndResize({
+				// 	height,
+				// 	width: created.width,
+				// 	x: created.x,
+				// 	y: created.y,
+				// });
 
 				// const selectedNoteId =
 				// 	canvas.selection?.size === 1

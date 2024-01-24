@@ -33,7 +33,7 @@ export default class AugmentedCanvasPlugin extends Plugin {
 		// this.registerCustomIcons();
 
 		// this.patchCanvas();
-		setTimeout(() => this.patchCanvasMenu(), 20);
+		setTimeout(() => this.patchCanvasMenu(), 100);
 		// this.patchCanvasInteraction();
 		// this.patchCanvasNode();
 
