@@ -8,7 +8,7 @@ function CSVToArray(strData, strDelimiter) {
 	strDelimiter = strDelimiter || ",";
 
 	// Create a regular expression to parse the CSV values.
-	var objPattern = new RegExp(
+	let objPattern = new RegExp(
 		// Delimiters.
 		"(\\" +
 			strDelimiter +
@@ -24,11 +24,11 @@ function CSVToArray(strData, strDelimiter) {
 
 	// Create an array to hold our data. Give the array
 	// a default empty first row.
-	var arrData = [[]];
+	const arrData: string[][] = [[]];
 
 	// Create an array to hold our individual pattern
 	// matching groups.
-	var arrMatches = null;
+	let arrMatches = null;
 
 	// Keep looping over the regular expression matches
 	// until we can no longer find a match.
