@@ -190,8 +190,8 @@ export class SettingsTab extends PluginSettingTab {
 
 		setting.addButton((button) => {
 			button
-				.setIcon("lucide-save")
-				.setTooltip("Save")
+				.setIcon("lucide-,plus")
+				.setTooltip("Add")
 				.onClick(async (buttonEl: any) => {
 					let name = nameInput.inputEl.value;
 					const prompt = promptInput.inputEl.value;
