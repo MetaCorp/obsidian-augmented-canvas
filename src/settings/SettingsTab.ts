@@ -59,8 +59,9 @@ export class SettingsTab extends PluginSettingTab {
 			)
 			.addTextArea((component) => {
 				component.inputEl.rows = 6;
-				component.inputEl.style.width = "300px";
-				component.inputEl.style.fontSize = "10px";
+				// component.inputEl.style.width = "300px";
+				// component.inputEl.style.fontSize = "10px";
+				component.inputEl.addClass("augmented-canvas-settings-prompt");
 				component.setValue(this.plugin.settings.systemPrompt);
 				component.onChange(async (value) => {
 					this.plugin.settings.systemPrompt = value;
@@ -181,8 +182,8 @@ export class SettingsTab extends PluginSettingTab {
 		let promptInput: TextAreaComponent;
 		setting.addTextArea((component) => {
 			component.inputEl.rows = 6;
-			component.inputEl.style.width = "300px";
-			component.inputEl.style.fontSize = "10px";
+			// component.inputEl.style.width = "300px";
+			// component.inputEl.style.fontSize = "10px";
 			component.setPlaceholder("Prompt");
 			component.inputEl.addClass("augmented-canvas-settings-prompt");
 			promptInput = component;
