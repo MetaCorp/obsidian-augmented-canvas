@@ -100,10 +100,6 @@ export default class AugmentedCanvasPlugin extends Plugin {
 		const app = this.app;
 		const settings = this.settings;
 
-		const triggerPlugin = () => {
-			this.triggerByPlugin = true;
-		};
-
 		const patchMenu = () => {
 			const canvasView = this.app.workspace
 				.getLeavesOfType("canvas")
@@ -258,7 +254,6 @@ export default class AugmentedCanvasPlugin extends Plugin {
 				act: value[0],
 				prompt: value[1],
 			}));
-		console.log({ systemPrompts });
 
 		this.settings.systemPrompts = systemPrompts;
 

@@ -12,3 +12,21 @@
 	flex-grow: 1;
 	width: 100%;
 }
+
+/*  */
+
+.augmented-canvas-setting-item {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+.augmented-canvas-setting-item > .setting-item-control {
+	width: 100%;
+	display: flex;
+	justify-content: start;
+}
+
+.augmented-canvas-settings-prompt {
+	flex-grow: 1;
+}

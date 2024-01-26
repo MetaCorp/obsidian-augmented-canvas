@@ -53,9 +53,9 @@ export interface AugmentedCanvasSettings {
 	systemPrompts: SystemPrompt[];
 
 	/**
-	 * For fuzzy search on systemPrompts
+	 * User system prompts
 	 */
-	fuseSystemPrompts?: FuseIndex<SystemPrompt>;
+	userSystemPrompts: SystemPrompt[];
 }
 
 // export const DEFAULT_SYSTEM_PROMPT = `
@@ -81,6 +81,7 @@ export const DEFAULT_SETTINGS: AugmentedCanvasSettings = {
 	maxResponseTokens: 0,
 	maxDepth: 0,
 	systemPrompts: [],
+	userSystemPrompts: [],
 };
 
 export function getModels() {

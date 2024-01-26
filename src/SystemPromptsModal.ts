@@ -24,9 +24,15 @@ export default class QuickActionModal extends SuggestModal<SystemPrompt> {
 		super(app);
 		this.settings = settings;
 
-		const fuse = new Fuse(this.settings.systemPrompts, {
-			keys: ["act", "prompt"],
-		});
+		const fuse = new Fuse(
+			[
+				...this.settings.userSystemPrompts,
+				...this.settings.systemPrompts,
+			].sort((a, b) => a.act.localeCompare(b.act)),
+			{
+				keys: ["act", "prompt"],
+			}
+		);
 		this.fuse = fuse;
 	}
 

@@ -1,6 +1,13 @@
-import { App, PluginSettingTab, Setting } from "obsidian";
+import {
+	App,
+	Notice,
+	PluginSettingTab,
+	Setting,
+	TextAreaComponent,
+	TextComponent,
+} from "obsidian";
 import ChatStreamPlugin from "./../AugmentedCanvasPlugin";
-import { getModels } from "./AugmentedCanvasSettings";
+import { SystemPrompt, getModels } from "./AugmentedCanvasSettings";
 
 export class SettingsTab extends PluginSettingTab {
 	plugin: ChatStreamPlugin;
@@ -44,8 +51,10 @@ export class SettingsTab extends PluginSettingTab {
 					});
 			});
 
+		this.displaySystemPromptsSettings(containerEl);
+
 		new Setting(containerEl)
-			.setName("System prompt")
+			.setName("Default system prompt")
 			.setDesc(
 				`The system prompt sent with each request to the API. \n(Note: you can override this by beginning a note stream with a note starting 'SYSTEM PROMPT'. The remaining content of that note will be used as system prompt.)`
 			)
@@ -152,6 +161,93 @@ export class SettingsTab extends PluginSettingTab {
 						await this.plugin.saveSettings();
 					});
 			});
+	}
+
+	displaySystemPromptsSettings(containerEl: HTMLElement): void {
+		const setting = new Setting(containerEl);
+
+		setting
+			.setName("Add system prompts")
+			.setClass("augmented-canvas-setting-item")
+			.setDesc(
+				`Create new highlight colors by providing a color name and using the color picker to set the hex code value. Don't forget to save the color before exiting the color picker. Drag and drop the highlight color to change the order for your highlighter component.`
+			);
+
+		const nameInput = new TextComponent(setting.controlEl);
+		nameInput.setPlaceholder("Name");
+		// colorInput.inputEl.addClass("highlighter-settings-color");
+
+		let promptInput: TextAreaComponent;
+		setting.addTextArea((component) => {
+			component.inputEl.rows = 6;
+			component.inputEl.style.width = "300px";
+			component.inputEl.style.fontSize = "10px";
+			component.setPlaceholder("Prompt");
+			component.inputEl.addClass("augmented-canvas-settings-prompt");
+			promptInput = component;
+		});
+
+		setting.addButton((button) => {
+			button
+				.setIcon("lucide-save")
+				.setTooltip("Save")
+				.onClick(async (buttonEl: any) => {
+					let name = nameInput.inputEl.value.replace(" ", "-");
+					const prompt = promptInput.inputEl.value;
+
+					console.log({ name, prompt });
+
+					if (!name || !prompt) {
+						name && !prompt
+							? new Notice("Prompt missing")
+							: !name && prompt
+							? new Notice("Name missing")
+							: new Notice("Values missing"); // else
+						return;
+					}
+
+					// * Handles multiple with the same name
+					// if (
+					// 	this.plugin.settings.systemPrompts.filter(
+					// 		(systemPrompt: SystemPrompt) =>
+					// 			systemPrompt.act === name
+					// 	).length
+					// ) {
+					// 	name += " 2";
+					// }
+					// let count = 3;
+					// while (
+					// 	this.plugin.settings.systemPrompts.filter(
+					// 		(systemPrompt: SystemPrompt) =>
+					// 			systemPrompt.act === name
+					// 	).length
+					// ) {
+					// 	name = name.slice(0, -2) + " " + count;
+					// 	count++;
+					// }
+
+					if (
+						!this.plugin.settings.systemPrompts.filter(
+							(systemPrompt: SystemPrompt) =>
+								systemPrompt.act === name
+						).length &&
+						!this.plugin.settings.userSystemPrompts.filter(
+							(systemPrompt: SystemPrompt) =>
+								systemPrompt.act === name
+						).length
+					) {
+						this.plugin.settings.userSystemPrompts.push({
+							act: name,
+							prompt,
+						});
+						await this.plugin.saveSettings();
+						this.display();
+					} else {
+						buttonEl.stopImmediatePropagation();
+						new Notice("This system prompt name already exists");
+					}
+				});
+		});
 	}
 }
 
