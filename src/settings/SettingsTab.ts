@@ -190,7 +190,7 @@ export class SettingsTab extends PluginSettingTab {
 
 		setting.addButton((button) => {
 			button
-				.setIcon("lucide-,plus")
+				.setIcon("lucide-plus")
 				.setTooltip("Add")
 				.onClick(async (buttonEl: any) => {
 					let name = nameInput.inputEl.value;
