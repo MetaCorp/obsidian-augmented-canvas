@@ -14,6 +14,7 @@ export class CustomQuestionModal extends Modal {
 
 		let textareaEl = contentEl.createEl("textarea");
 		textareaEl.className = "augmented-canvas-modal-input";
+		textareaEl.placeholder = "Write your question here";
 
 		// Add keydown event listener to the textarea
 		textareaEl.addEventListener("keydown", (event) => {
