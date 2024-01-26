@@ -250,7 +250,8 @@ export default class AugmentedCanvasPlugin extends Plugin {
 
 		const systemPrompts: SystemPrompt[] = parsedCsv
 			.slice(1)
-			.map((value: string[]) => ({
+			.map((value: string[], index: number) => ({
+				id: index,
 				act: value[0],
 				prompt: value[1],
 			}));

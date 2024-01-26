@@ -1,5 +1,6 @@
 import {
 	App,
+	ButtonComponent,
 	Notice,
 	PluginSettingTab,
 	Setting,
@@ -51,8 +52,6 @@ export class SettingsTab extends PluginSettingTab {
 					});
 			});
 
-		this.displaySystemPromptsSettings(containerEl);
-
 		new Setting(containerEl)
 			.setName("Default system prompt")
 			.setDesc(
@@ -68,6 +67,8 @@ export class SettingsTab extends PluginSettingTab {
 					await this.plugin.saveSettings();
 				});
 			});
+
+		this.displaySystemPromptsSettings(containerEl);
 
 		new Setting(containerEl)
 			.setName("Max input tokens")
@@ -192,10 +193,10 @@ export class SettingsTab extends PluginSettingTab {
 				.setIcon("lucide-save")
 				.setTooltip("Save")
 				.onClick(async (buttonEl: any) => {
-					let name = nameInput.inputEl.value.replace(" ", "-");
+					let name = nameInput.inputEl.value;
 					const prompt = promptInput.inputEl.value;
 
-					console.log({ name, prompt });
+					// console.log({ name, prompt });
 
 					if (!name || !prompt) {
 						name && !prompt
@@ -237,6 +238,9 @@ export class SettingsTab extends PluginSettingTab {
 						).length
 					) {
 						this.plugin.settings.userSystemPrompts.push({
+							id:
+								this.plugin.settings.systemPrompts.length +
+								this.plugin.settings.userSystemPrompts.length,
 							act: name,
 							prompt,
 						});
@@ -248,6 +252,71 @@ export class SettingsTab extends PluginSettingTab {
 					}
 				});
 		});
+
+		const listContainer = containerEl.createEl("div", {
+			cls: "augmented-canvas-list-container",
+		});
+
+		this.plugin.settings.userSystemPrompts.forEach(
+			(systemPrompt: SystemPrompt) => {
+				const listElement = listContainer.createEl("div", {
+					cls: "augmented-canvas-list-element",
+				});
+
+				const nameInput = new TextComponent(listElement);
+				nameInput.setValue(systemPrompt.act);
+
+				const promptInput = new TextAreaComponent(listElement);
+				promptInput.inputEl.addClass(
+					"augmented-canvas-settings-prompt"
+				);
+				promptInput.setValue(systemPrompt.prompt);
+
+				const buttonSave = new ButtonComponent(listElement);
+				buttonSave
+					.setIcon("lucide-save")
+					.setTooltip("Save")
+					.onClick(async (buttonEl: any) => {
+						let name = nameInput.inputEl.value;
+						const prompt = promptInput.inputEl.value;
+
+						// console.log({ name, prompt });
+						this.plugin.settings.userSystemPrompts =
+							this.plugin.settings.userSystemPrompts.map(
+								(systemPrompt2: SystemPrompt) =>
+									systemPrompt2.id === systemPrompt.id
+										? {
+												...systemPrompt2,
+												act: name,
+												prompt,
+										  }
+										: systemPrompt2
+							);
+						await this.plugin.saveSettings();
+						this.display();
+						new Notice("System prompt updated");
+					});
+
+				const buttonDelete = new ButtonComponent(listElement);
+				buttonDelete
+					.setIcon("lucide-trash")
+					.setTooltip("Delete")
+					.onClick(async (buttonEl: any) => {
+						let name = nameInput.inputEl.value;
+						const prompt = promptInput.inputEl.value;
+
+						// console.log({ name, prompt });
+						this.plugin.settings.userSystemPrompts =
+							this.plugin.settings.userSystemPrompts.filter(
+								(systemPrompt2: SystemPrompt) =>
+									systemPrompt2.id !== systemPrompt.id
+							);
+						await this.plugin.saveSettings();
+						this.display();
+						new Notice("System prompt deleted");
+					});
+			}
+		);
 	}
 }
 

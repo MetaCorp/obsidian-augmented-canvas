@@ -2,6 +2,7 @@ import { FuseIndex } from "fuse.js";
 import { CHAT_MODELS } from "src/openai/models";
 
 export interface SystemPrompt {
+	id: number;
 	act: string;
 	prompt: string;
 }

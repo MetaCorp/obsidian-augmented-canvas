@@ -25,8 +25,22 @@
 	width: 100%;
 	display: flex;
 	justify-content: start;
+	align-items: start;
+	gap: 16px;
 }
 
 .augmented-canvas-settings-prompt {
 	flex-grow: 1;
+}
+
+.augmented-canvas-list-container {
+}
+
+.augmented-canvas-list-element {
+	width: 100%;
+	display: flex;
+	justify-content: start;
+	align-items: start;
+	gap: 16px;
+	padding: 0.75em 0;
 }
