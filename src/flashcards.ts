@@ -83,14 +83,22 @@ export const createFlashcards = async (
 ${gptResponse.flashcards
 	.map(
 		(flashcard: { front: string; back: string }) =>
-			`#Q
-${flashcard.front}::${flashcard.back}`
+			`${flashcard.front}::${flashcard.back}`
+		// 			`#Q
+		// ${flashcard.front}::${flashcard.back}`
 	)
 	.join("\n\n")}
 `.trim();
 
-	const file = await app.vault.create(
-		`Flashcards/${gptResponse.filename}.md`,
+	//  TODO : replace with settings value
+	const FLASHCARDS_PATH = "Home/Flashcards";
+	try {
+		await app.vault.createFolder(
+			`${FLASHCARDS_PATH}/${gptResponse.filename}`
+		);
+	} catch {}
+	await app.vault.create(
+		`${FLASHCARDS_PATH}/${gptResponse.filename}/${gptResponse.filename}.md`,
 		content
 	);
 
