@@ -1,12 +1,5 @@
-import {
-	App,
-	Canvas,
-	CanvasCoords,
-	CanvasView,
-	ItemView,
-	Menu,
-	MenuItem,
-} from "obsidian";
+import { App, Canvas, CanvasCoords, ItemView, Menu, MenuItem } from "obsidian";
+import { CanvasView } from "./obsidian/canvas-patches";
 
 // TODO : ask GPT and add subMenu items
 export const handleCanvasMenu_Loading = async (

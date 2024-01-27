@@ -63,25 +63,9 @@ export const handleCallGPT_Question = async (
 	if (node.unknownData.type === "group") {
 		return;
 	}
-	const canvasData = node.canvas.getData();
-	const nodeData = canvasData.nodes.find((t: any) => t.id === node.id);
 
-	// TODO : CallGPT and update text
-	if (nodeData) {
-		const { generateNote } = noteGenerator(app, settings);
-		await generateNote(question);
-		// [
-		// 	{
-		// 		role: "assistant",
-		// 		content: nodeData.text,
-		// 	},
-		// 	{
-		// 		role: "user",
-		// 		content: question,
-		// 	},
-		// ],
-		// nodeData.width
-	}
+	const { generateNote } = noteGenerator(app, settings);
+	await generateNote(question);
 };
 
 export const handleCallGPT_Questions = async (
@@ -107,11 +91,10 @@ export const handleCallGPT_Questions = async (
 		messages2,
 		{
 			model: settings.apiModel,
+			max_tokens: settings.maxResponseTokens || undefined,
+			temperature: settings.temperature,
+			isJSON: true,
 		}
-		// {
-		// 	max_tokens: settings.maxResponseTokens || undefined,
-		// 	temperature: settings.temperature,
-		// }
 	);
 
 	return gptResponse.questions;

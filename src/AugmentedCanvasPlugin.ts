@@ -23,6 +23,7 @@ import { getActiveCanvas } from "./utils";
 import SystemPromptsModal from "./SystemPromptsModal";
 
 import * as CSV from "csv-string";
+import { createFlashcards } from "./flashcards";
 
 export default class AugmentedCanvasPlugin extends Plugin {
 	triggerByPlugin: boolean = false;
@@ -41,7 +42,8 @@ export default class AugmentedCanvasPlugin extends Plugin {
 		// this.patchCanvas();
 		setTimeout(() => {
 			this.patchCanvasMenu();
-			this.patchCanvasContextMenu();
+			this.addComands();
+			this.patchNoteContextMenu();
 
 			if (this.settings.systemPrompts.length === 0) {
 				this.fetchSystemPrompts();
@@ -261,20 +263,22 @@ export default class AugmentedCanvasPlugin extends Plugin {
 		this.saveSettings();
 	}
 
-	patchCanvasContextMenu() {
+	patchNoteContextMenu() {
+		const settings = this.settings;
 		// * no event name to add to Canvas context menu ("canvas-menu" does not exist)
-		// this.app.workspace.on("canvas-menu", (menu) => {
-		// 	console.log({ menu });
-		// 	menu.addItem((item) => {
-		// 		item.setTitle("test")
-		// 			// .setIcon(command.icon)
-		// 			.onClick(() => {
-		// 				//@ts-ignore
-		// 				this.app.commands.executeCommandById(command.id);
-		// 			});
-		// 	});
-		// });
+		this.app.workspace.on("canvas:node-menu", (menu) => {
+			menu.addSeparator();
+			menu.addItem((item) => {
+				item.setTitle("Create flashcards")
+					// .setIcon(command.icon)
+					.onClick(() => {
+						createFlashcards(this.app, settings);
+					});
+			});
+		});
+	}
 
+	addComands() {
 		const app = this.app;
 
 		this.addCommand({
@@ -282,7 +286,7 @@ export default class AugmentedCanvasPlugin extends Plugin {
 			name: "Insert system prompt",
 			checkCallback: (checking: boolean) => {
 				if (checking) {
-					console.log({ checkCallback: checking });
+					// console.log({ checkCallback: checking });
 					if (!getActiveCanvas(app)) return false;
 
 					return true;

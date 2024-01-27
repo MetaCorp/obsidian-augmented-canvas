@@ -11,10 +11,14 @@ export const streamResponse = async (
 	// prompt: string,
 	messages: ChatCompletionMessageParam[],
 	{
-		maxTokens,
+		max_tokens,
 		model,
-		isJSON = true,
-	}: { maxTokens?: number; model?: string; isJSON?: boolean } = {},
+		temperature,
+	}: {
+		max_tokens?: number;
+		model?: string;
+		temperature?: number;
+	} = {},
 	cb: any
 ) => {
 	// console.log({ messages });
@@ -24,9 +28,11 @@ export const streamResponse = async (
 	});
 
 	const stream = await openai.chat.completions.create({
-		model: "gpt-4",
+		model: model || "gpt-4",
 		messages,
 		stream: true,
+		max_tokens,
+		temperature,
 	});
 	for await (const chunk of stream) {
 		// console.log({ completionChoice: chunk.choices[0] });
@@ -40,10 +46,16 @@ export const getResponse = async (
 	// prompt: string,
 	messages: ChatCompletionMessageParam[],
 	{
-		maxTokens,
+		max_tokens,
 		model,
-		isJSON = true,
-	}: { maxTokens?: number; model?: string; isJSON?: boolean } = {}
+		temperature,
+		isJSON,
+	}: {
+		max_tokens?: number;
+		model?: string;
+		temperature?: number;
+		isJSON?: boolean;
+	} = {}
 ) => {
 	// console.log("Calling ChatGPT getResponse: ", {
 	// 	messages,
@@ -58,31 +70,26 @@ export const getResponse = async (
 		dangerouslyAllowBrowser: true,
 	});
 
-	const openaiMessages = [
-		...messages,
-		// {
-		//   role: 'user',
-		//   content: prompt,
-		// },
-	];
-
-	const totalTokens =
-		openaiMessages.reduce(
-			(total, message) => total + (message.content?.length || 0),
-			0
-		) * 2;
+	// const totalTokens =
+	// 	openaiMessages.reduce(
+	// 		(total, message) => total + (message.content?.length || 0),
+	// 		0
+	// 	) * 2;
 	// console.log({ totalTokens });
 
 	const completion = await openai.chat.completions.create({
 		// model: "gpt-3.5-turbo",
 		model: model || "gpt-4-1106-preview",
-		messages: openaiMessages,
-		// max_tokens: 2048 || maxTokens || 4096 - totalTokens,
+		messages,
+		max_tokens,
+		temperature,
 		response_format: { type: isJSON ? "json_object" : "text" },
 	});
 
 	// console.log({ completion });
-	return JSON.parse(completion.choices[0].message!.content!);
+	return isJSON
+		? JSON.parse(completion.choices[0].message!.content!)
+		: completion.choices[0].message!.content!;
 };
 
 let count = 0;
