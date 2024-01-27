@@ -10,15 +10,15 @@ This plugin adds three actions to the Menu of a note in the Canvas View.
 
 1. Ask GPT on a specific note, the note content will be used as prompt. A new note will be created underneath the prompt note containing the AI response.
 
-![Augmented-Canvas-poc](./assets/AugmentedCanvas-AskAI.gif)
+![Augmented-Canvas-AskAI](./assets/AugmentedCanvas-AskAI.gif)
 
 2. Ask question about a note. Also makes GPT generate a new note, the question is placed on the link between the two notes.
 
-![Augmented-Canvas-poc](./assets/AugmentedCanvas-AskquestionwithAI.gif)
+![Augmented-Canvas-AskquestionswithAI](./assets/AugmentedCanvas-AskquestionwithAI.gif)
 
 3. Generate questions on a specific note using GPT. The generated questions help you easily dig further into the subject of the note.
 
-![Augmented-Canvas-poc](./assets/AugmentedCanvas-AIgeneratedquestions.gif)
+![Augmented-Canvas-AIgeneratedquestions](./assets/AugmentedCanvas-AIgeneratedquestions.gif)
 
 The links between notes are used to create the chat history sent to GPT.
 
@@ -26,7 +26,7 @@ The links between notes are used to create the chat history sent to GPT.
 
 -   The plugin adds a command to insert system prompts on the Canvas. The system prompts are fetch from [f/awesome-chatgpt-prompts (github.com)](https://github.com/f/awesome-chatgpt-prompts). You can also add your own system prompts in the settings.
 
-![Augmented-Canvas-poc](./assets/AugmentedCanvas-Insertsystemprompt.gif)
+![Augmented-Canvas-Insertsystemprompt](./assets/AugmentedCanvas-Insertsystemprompt.gif)
 
 ## Installation
 
