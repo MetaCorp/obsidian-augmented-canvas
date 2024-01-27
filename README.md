@@ -10,7 +10,7 @@ This plugin adds three actions to the Menu of a note in the Canvas View.
 
 1. Ask GPT on a specific note, the note content will be used as prompt. A new note will be created underneath the prompt note containing the AI response.
 
-![Augmented-Canvas-poc](./assets/Augmented Canvas - Ask AI.gif)
+![Augmented-Canvas-poc](./assets/AugmentedCanvas-AskAI.gif)
 
 2. Ask question about a note. Also makes GPT generate a new note, the question is placed on the link between the two notes.
 
