@@ -36,7 +36,7 @@ export const createFlashcards = async (
 	const canvas = getActiveCanvas(app);
 	if (!canvas) return;
 
-	new Notice("Flashcard file being created");
+	new Notice("Flashcard file being created...");
 
 	const node = <CanvasNode>Array.from(canvas.selection)?.first()!;
 
@@ -77,7 +77,7 @@ export const createFlashcards = async (
 			isJSON: true,
 		}
 	);
-	console.log({ gptResponse });
+	// console.log({ gptResponse });
 
 	const content = `
 ${gptResponse.flashcards
