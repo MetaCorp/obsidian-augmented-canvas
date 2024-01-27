@@ -278,8 +278,8 @@ export default class AugmentedCanvasPlugin extends Plugin {
 		const app = this.app;
 
 		this.addCommand({
-			id: "add-system-prompt",
-			name: "Add system prompt",
+			id: "insert-system-prompt",
+			name: "Insert system prompt",
 			checkCallback: (checking: boolean) => {
 				if (checking) {
 					console.log({ checkCallback: checking });

@@ -9,12 +9,13 @@ You need a OpenAI API Key to use this plugin, you can input it in the settings. 
 This plugin adds three actions to the Menu of a note in the Canvas View.
 
 1. Ask GPT on a specific note, the note content will be used as prompt. A new note will be created underneath the prompt note containing the AI response.
+
+![Augmented-Canvas-poc](./assets/Augmented Canvas - Ask AI.mp4)
+
 2. Ask question about a note. Also makes GPT generate a new note, the question is placed on the link between the two notes.
 3. Generate questions on a specific note using GPT. The generated questions help you easily dig further into the subject of the note.
 
 The links between notes are used to create the chat history sent to GPT.
-
-![Augmented-Canvas-poc](./assets/Augmented-Canvas-poc.gif)
 
 ## Additional Features
 
