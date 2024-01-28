@@ -62,7 +62,13 @@ const pdfToMarkdown = async (app: App, file: TFile) => {
 	return markdownContent;
 };
 
+const epubToMarkdown = async (app: App, file: TFile) => {
+	// TODO
+	return "";
+};
+
 const readDifferentExtensionFileContent = async (app: App, file: TFile) => {
+	// console.log({ file });
 	switch (file.extension) {
 		case "md":
 			const body = await app.vault.cachedRead(file);
@@ -70,6 +76,9 @@ const readDifferentExtensionFileContent = async (app: App, file: TFile) => {
 
 		case "pdf":
 			return pdfToMarkdown(app, file);
+
+		case "epub":
+			return epubToMarkdown(app, file);
 
 		default:
 			break;
