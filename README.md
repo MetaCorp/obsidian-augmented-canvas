@@ -28,6 +28,10 @@ The links between notes are used to create the chat history sent to GPT.
 
 ![Augmented-Canvas-Insertsystemprompt](./assets/AugmentedCanvas-Insertsystemprompt.gif)
 
+-   The plugin can create flashcards for you which can be revised using the [Spaced Repetition plugin](https://github.com/st3v3nmw/obsidian-spaced-repetition).
+
+![Augmented-Canvas-Createflashcards](./assets/AugmentedCanvas-Createflashcards.gif)
+
 ## Installation
 
 -   Not ready for market yet
