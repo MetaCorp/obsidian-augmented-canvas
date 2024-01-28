@@ -130,6 +130,15 @@ export default class AugmentedCanvasPlugin extends Plugin {
 						)
 							return result;
 
+						const selectedNode = Array.from(
+							maybeCanvasView.canvas?.selection
+						)[0];
+						if (
+							// @ts-expect-error
+							selectedNode.from
+						)
+							return result;
+
 						if (this.menuEl.querySelector(".gpt-menu-item"))
 							return result;
 

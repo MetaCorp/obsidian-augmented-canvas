@@ -9,26 +9,6 @@ import {
 } from "./settings/AugmentedCanvasSettings";
 import { getResponse } from "./chatgpt";
 
-const SYSTEM_PROMPT = `
-You will create a file containing flashcards.
-
-The front of the flashcard must be a question.
-
-The question must not give the answer, If the question is too precise, ask a more general question.
-
-If there is a list in the text given by the user. Start by creating a flashcard asking about this list.
-
-You must respond in this JSON format: {
-	"filename": The filename, can be written with spaces, must not contain the word "flashcard", must tell the subjects of the flashcards,
-	"flashcards": {
-		"front": string,
-		"back": string
-	}[]
-}
-
-You must respond in the language the user used.
-`.trim();
-
 export const createFlashcards = async (
 	app: App,
 	settings: AugmentedCanvasSettings
@@ -63,7 +43,7 @@ export const createFlashcards = async (
 		[
 			{
 				role: "system",
-				content: SYSTEM_PROMPT,
+				content: settings.flashcardsSystemPrompt,
 			},
 			{
 				role: "user",

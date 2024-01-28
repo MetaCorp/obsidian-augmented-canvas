@@ -57,6 +57,11 @@ export interface AugmentedCanvasSettings {
 	 * User system prompts
 	 */
 	userSystemPrompts: SystemPrompt[];
+
+	/**
+	 * System prompt used to generate flashcards file
+	 */
+	flashcardsSystemPrompt: string;
 }
 
 // export const DEFAULT_SYSTEM_PROMPT = `
@@ -72,6 +77,26 @@ You must respond in markdown.
 The response must be in the same language the user used.
 `.trim();
 
+const FLASHCARDS_SYSTEM_PROMPT = `
+You will create a file containing flashcards.
+
+The front of the flashcard must be a question.
+
+The question must not give the answer, If the question is too precise, ask a more general question.
+
+If there is a list in the text given by the user. Start by creating a flashcard asking about this list.
+
+You must respond in this JSON format: {
+	"filename": The filename, can be written with spaces, must not contain the word "flashcard", must tell the subjects of the flashcards,
+	"flashcards": {
+		"front": string,
+		"back": string
+	}[]
+}
+
+You must respond in the language the user used.
+`.trim();
+
 export const DEFAULT_SETTINGS: AugmentedCanvasSettings = {
 	apiKey: "",
 	apiModel: CHAT_MODELS.GPT_4_1106_PREVIEW.name,
@@ -83,6 +108,7 @@ export const DEFAULT_SETTINGS: AugmentedCanvasSettings = {
 	maxDepth: 0,
 	systemPrompts: [],
 	userSystemPrompts: [],
+	flashcardsSystemPrompt: FLASHCARDS_SYSTEM_PROMPT,
 };
 
 export function getModels() {

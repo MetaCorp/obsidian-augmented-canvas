@@ -72,6 +72,21 @@ export class SettingsTab extends PluginSettingTab {
 		this.displaySystemPromptsSettings(containerEl);
 
 		new Setting(containerEl)
+			.setName("Flashcards system prompt")
+			.setDesc(`The system prompt used to generate the flashcards file.`)
+			.addTextArea((component) => {
+				component.inputEl.rows = 6;
+				// component.inputEl.style.width = "300px";
+				// component.inputEl.style.fontSize = "10px";
+				component.inputEl.addClass("augmented-canvas-settings-prompt");
+				component.setValue(this.plugin.settings.flashcardsSystemPrompt);
+				component.onChange(async (value) => {
+					this.plugin.settings.flashcardsSystemPrompt = value;
+					await this.plugin.saveSettings();
+				});
+			});
+
+		new Setting(containerEl)
 			.setName("Max input tokens")
 			.setDesc(
 				"The maximum number of tokens to send (within model limit). 0 means as many as possible"
