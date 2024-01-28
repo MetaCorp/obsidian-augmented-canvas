@@ -279,11 +279,12 @@ export default class AugmentedCanvasPlugin extends Plugin {
 			menu.addSeparator();
 			menu.addItem((item) => {
 				item.setTitle("Create flashcards")
-					// ! Does not work
-					.setIcon("lucide-asterisk-square")
+					.setIcon("lucide-wallet-cards")
 					.onClick(() => {
 						createFlashcards(this.app, settings);
 					});
+
+				// setIcon(item., "")
 			});
 		});
 	}
