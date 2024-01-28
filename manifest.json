@@ -1,7 +1,7 @@
 {
 	"id": "augmented-canvas",
 	"name": "Augmented Canvas",
-	"version": "0.1.4",
+	"version": "0.1.8",
 	"minAppVersion": "1.1.0",
 	"description": "Obsidian Canvas with AI features.",
 	"author": "MetaCorp",
