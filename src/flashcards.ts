@@ -9,6 +9,18 @@ import {
 } from "./settings/AugmentedCanvasSettings";
 import { getResponse } from "./chatgpt";
 
+const FLASHCARDS_SYSTEM_PROMPT = `
+You must respond in this JSON format: {
+	"filename": The filename,
+	"flashcards": {
+		"front": string,
+		"back": string
+	}[]
+}
+
+You must respond in the language the user used, default to english.
+`.trim();
+
 export const createFlashcards = async (
 	app: App,
 	settings: AugmentedCanvasSettings
@@ -43,7 +55,9 @@ export const createFlashcards = async (
 		[
 			{
 				role: "system",
-				content: settings.flashcardsSystemPrompt,
+				content: `${FLASHCARDS_SYSTEM_PROMPT}
+
+${settings.flashcardsSystemPrompt}`,
 			},
 			{
 				role: "user",

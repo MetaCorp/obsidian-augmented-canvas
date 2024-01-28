@@ -86,15 +86,7 @@ The question must not give the answer, If the question is too precise, ask a mor
 
 If there is a list in the text given by the user. Start by creating a flashcard asking about this list.
 
-You must respond in this JSON format: {
-	"filename": The filename, can be written with spaces, must not contain the word "flashcard", must tell the subjects of the flashcards,
-	"flashcards": {
-		"front": string,
-		"back": string
-	}[]
-}
-
-You must respond in the language the user used, default to english.
+The filename, can be written with spaces, must not contain the word "flashcard", must tell the subjects of the flashcards.
 `.trim();
 
 export const DEFAULT_SETTINGS: AugmentedCanvasSettings = {
