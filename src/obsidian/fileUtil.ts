@@ -41,7 +41,14 @@ const pdfToMarkdown = async (app: App, file: TFile) => {
 	const loadingTask = pdfjsLib.getDocument({ data: pdfBuffer });
 	const pdf = await loadingTask.promise;
 
-	let markdownContent = "";
+	const ebookTitle = file
+		.path!.split("/")
+		.pop()!
+		.replace(/\.pdf$/i, "");
+
+	let markdownContent = `# ${ebookTitle}
+
+`;
 
 	for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
 		const page = await pdf.getPage(pageNum);
