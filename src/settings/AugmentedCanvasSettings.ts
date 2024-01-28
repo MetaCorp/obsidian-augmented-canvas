@@ -74,7 +74,7 @@ export interface AugmentedCanvasSettings {
 
 const DEFAULT_SYSTEM_PROMPT = `
 You must respond in markdown.
-The response must be in the same language the user used.
+The response must be in the same language the user used, default to english.
 `.trim();
 
 const FLASHCARDS_SYSTEM_PROMPT = `
@@ -94,7 +94,7 @@ You must respond in this JSON format: {
 	}[]
 }
 
-You must respond in the language the user used.
+You must respond in the language the user used, default to english.
 `.trim();
 
 export const DEFAULT_SETTINGS: AugmentedCanvasSettings = {
