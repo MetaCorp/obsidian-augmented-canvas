@@ -102,7 +102,7 @@ export const createCanvasGroup = (
 	if (!canvas) return;
 
 	const NOTE_WIDTH = 500;
-	const NOTE_HEIGHT = 130;
+	const NOTE_HEIGHT = 150;
 	const NOTE_GAP = 20;
 
 	const NOTES_BY_ROW = 3;
@@ -113,8 +113,9 @@ export const createCanvasGroup = (
 	};
 
 	// @ts-expect-error
-	canvas.createGroupNode({
-		text: groupName,
+	const newGroup = canvas.createGroupNode({
+		// TODO : does not work
+		groupText: groupName,
 		pos: {
 			x: startPos.x - NOTE_GAP,
 			y: startPos.y - NOTE_GAP,
@@ -128,7 +129,7 @@ export const createCanvasGroup = (
 	let countRow = 0;
 	let countColumn = 0;
 	for (const noteContent of notesContents) {
-		canvas.createTextNode({
+		const newNode = canvas.createTextNode({
 			text: noteContent,
 			pos: {
 				x: startPos.x + countRow * (NOTE_WIDTH + NOTE_GAP),
@@ -139,8 +140,14 @@ export const createCanvasGroup = (
 				height: NOTE_HEIGHT,
 			},
 		});
+		canvas.addNode(newNode)
 		countColumn =
 			countRow + 1 > NOTES_BY_ROW - 1 ? countColumn + 1 : countColumn;
 		countRow = countRow + 1 > NOTES_BY_ROW - 1 ? 0 : countRow + 1;
 	}
+
+	// @ts-expect-error
+	canvas.addGroup(newGroup)
+
+	canvas.
 };

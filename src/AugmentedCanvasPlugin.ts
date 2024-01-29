@@ -352,7 +352,7 @@ ${RELEVANT_QUESTION_SYSTEM_PROMPT}
 				],
 				{ isJSON: true }
 			);
-			console.log({ gptResponse });
+			// console.log({ gptResponse });
 
 			await createCanvasGroup(app, "Questions", gptResponse.questions);
 
