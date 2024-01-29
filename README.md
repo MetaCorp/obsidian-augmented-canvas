@@ -28,7 +28,7 @@ The links between notes are used to create the chat history sent to GPT.
 
 ![Augmented-Canvas-Insertsystemprompt](./assets/AugmentedCanvas-Insertsystemprompt.gif)
 
--   The plugin can create flashcards for you which can be revised using the [Spaced Repetition plugin](https://github.com/st3v3nmw/obsidian-spaced-repetition). Right click on a note to create flashcards.
+-   The plugin can create flashcards for you which can be revised using the [Spaced Repetition plugin](https://github.com/st3v3nmw/obsidian-spaced-repetition). Right click on a note to create flashcards. Then wait for GPT response and a new file will be created inside the folder specified in the settings. You can then revise this specific deck. Think about activating "Convert folders to decks and subdecks?" option in the settings of the SSpaced Repetition plugin.
 
 ![Augmented-Canvas-Createflashcards](./assets/AugmentedCanvas-Createflashcards.gif)
 
