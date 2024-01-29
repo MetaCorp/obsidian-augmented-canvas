@@ -6,6 +6,7 @@ import {
 	Menu,
 	MenuItem,
 	TFile,
+	CanvasGroupNode,
 } from "obsidian";
 import { CanvasView } from "./obsidian/canvas-patches";
 import { readFileContent } from "./obsidian/fileUtil";
@@ -113,9 +114,9 @@ export const createCanvasGroup = (
 	};
 
 	// @ts-expect-error
-	const newGroup = canvas.createGroupNode({
+	const newGroup: CanvasGroupNode = canvas.createGroupNode({
 		// TODO : does not work
-		groupText: groupName,
+		label: groupName,
 		pos: {
 			x: startPos.x - NOTE_GAP,
 			y: startPos.y - NOTE_GAP,
@@ -125,6 +126,8 @@ export const createCanvasGroup = (
 			height: (NOTE_HEIGHT + NOTE_GAP) * 2 + NOTE_GAP,
 		},
 	});
+	// TODO : does not work
+	newGroup.label = groupName;
 
 	let countRow = 0;
 	let countColumn = 0;
@@ -140,14 +143,12 @@ export const createCanvasGroup = (
 				height: NOTE_HEIGHT,
 			},
 		});
-		canvas.addNode(newNode)
+		canvas.addNode(newNode);
 		countColumn =
 			countRow + 1 > NOTES_BY_ROW - 1 ? countColumn + 1 : countColumn;
 		countRow = countRow + 1 > NOTES_BY_ROW - 1 ? 0 : countRow + 1;
 	}
 
 	// @ts-expect-error
-	canvas.addGroup(newGroup)
-
-	canvas.
+	canvas.addGroup(newGroup);
 };
