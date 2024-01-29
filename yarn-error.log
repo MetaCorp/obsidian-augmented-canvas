@@ -1,5 +1,5 @@
 Arguments: 
-  C:\Program Files\nodejs\node.exe C:\Program Files (x86)\Yarn\bin\yarn.js add @gxl/epub-parser
+  C:\Program Files\nodejs\node.exe C:\Program Files (x86)\Yarn\bin\yarn.js remove csv-string
 
 PATH: 
   C:\Program Files\Microsoft\jdk-17.0.8.7-hotspot\bin;C:\Program Files\Eclipse Adoptium\jdk-17.0.7.7-hotspot\bin;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\NVIDIA Corporation\NVIDIA NvDLISR;C:\Program Files\Git\cmd;C:\ProgramData\chocolatey\bin;C:\ProgramData\nvm;C:\Program Files\nodejs;C:\Program Files (x86)\Yarn\bin\;C:\Program Files\dotnet\;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\Docker\Docker\resources\bin;C:\ProgramData\DockerDesktop\version-bin;C:\Program Files\Git LFS;C:\Program Files\Airshipper\;C:\Users\leopo\.console-ninja\.bin;C:\Users\leopo\AppData\Local\Programs\Python\Python311\Scripts\;C:\Users\leopo\AppData\Local\Programs\Python\Python311\;C:\Users\leopo\scoop\shims;C:\Users\leopo\AppData\Local\pnpm;C:\Users\leopo\AppData\Local\Microsoft\WindowsApps;C:\Users\leopo\AppData\Local\Programs\Microsoft VS Code\bin;C:\ProgramData\nvm;C:\Program Files\nodejs;C:\Users\leopo\AppData\Local\Yarn\bin;C:\platform-tools;C:\Users\leopo\AppData\Local\Android\Sdk\platform-tools;C:\src\flutter\bin;C:\Users\leopo\.dotnet\tools;C:\Program Files\Java\jdk1.8.0_202;
@@ -19,7 +19,7 @@ Trace:
 npm manifest: 
   {
   	"name": "obsidian-augmented-canvas",
-  	"version": "0.1.4",
+  	"version": "0.1.10",
   	"description": "Obsidian Canvas with AI features.",
   	"main": "main.js",
   	"scripts": {
@@ -41,7 +41,6 @@ npm manifest:
   		"typescript": "4.7.4"
   	},
   	"dependencies": {
-  		"csv-string": "^4.1.1",
   		"fuse.js": "^7.0.0",
   		"js-tiktoken": "^1.0.8",
   		"monkey-around": "^2.3.0",
