@@ -109,8 +109,10 @@ export const createCanvasGroup = (
 	const NOTES_BY_ROW = 3;
 
 	let startPos = {
-		x: 0 - ((NOTE_WIDTH + NOTE_GAP) * NOTES_BY_ROW) / 2,
-		y: 0 - ((NOTE_HEIGHT + NOTE_GAP) * 2) / 2,
+		// @ts-expect-error
+		x: canvas.x - ((NOTE_WIDTH + NOTE_GAP) * NOTES_BY_ROW) / 2,
+		// @ts-expect-error
+		y: canvas.y - ((NOTE_HEIGHT + NOTE_GAP) * 2) / 2,
 	};
 
 	// @ts-expect-error

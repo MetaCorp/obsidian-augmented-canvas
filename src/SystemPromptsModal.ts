@@ -105,10 +105,11 @@ ${systemPrompt.prompt.trim()}
 
 		const NODE_WIDTH = 800;
 		const NODE_HEIGHT = 300;
-		// @ts-expect-error
 		const newNode = canvas.createTextNode({
 			pos: {
+				// @ts-expect-error
 				x: canvas.x - NODE_WIDTH / 2,
+				// @ts-expect-error
 				y: canvas.y - NODE_HEIGHT / 2,
 			},
 			// position: "left",
@@ -119,7 +120,6 @@ ${systemPrompt.prompt.trim()}
 			text,
 			focus: false,
 		});
-		// @ts-expect-error
 		canvas.addNode(newNode);
 		// canvas.menu.menuEl.append(new MenuItem())
 	}
