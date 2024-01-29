@@ -283,8 +283,6 @@ export default class AugmentedCanvasPlugin extends Plugin {
 					.onClick(() => {
 						createFlashcards(this.app, settings);
 					});
-
-				// setIcon(item., "")
 			});
 		});
 	}

@@ -1,5 +1,5 @@
 import { App } from "obsidian";
-import { noteGenerator } from "./noteGenerator";
+import { getTokenLimit, noteGenerator } from "./noteGenerator";
 import { AugmentedCanvasSettings } from "./settings/AugmentedCanvasSettings";
 import { CanvasNode } from "./obsidian/canvas-internal";
 import { getResponse } from "./chatgpt";
@@ -74,24 +74,19 @@ export const handleCallGPT_Questions = async (
 	node: CanvasNode
 ) => {
 	const { buildMessages } = noteGenerator(app, settings);
-	const { messages, tokenCount } = await buildMessages(node);
-	if (!messages.length) return;
-
-	const messages2 = [
-		{
-			role: "system",
-			content: SYSTEM_PROMPT_QUESTIONS,
-		},
-		...messages,
-	];
+	const { messages, tokenCount } = await buildMessages(node, {
+		systemPrompt: SYSTEM_PROMPT_QUESTIONS,
+	});
+	if (messages.length <= 1) return;
 
 	const gptResponse = await getResponse(
 		settings.apiKey,
 		// settings.apiModel,
-		messages2,
+		messages,
 		{
 			model: settings.apiModel,
 			max_tokens: settings.maxResponseTokens || undefined,
+			// max_tokens: getTokenLimit(settings) - tokenCount - 1,
 			temperature: settings.temperature,
 			isJSON: true,
 		}

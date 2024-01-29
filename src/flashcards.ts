@@ -8,6 +8,7 @@ import {
 	DEFAULT_SETTINGS,
 } from "./settings/AugmentedCanvasSettings";
 import { getResponse } from "./chatgpt";
+import { getTokenLimit } from "./noteGenerator";
 
 const FLASHCARDS_SYSTEM_PROMPT = `
 You must respond in this JSON format: {

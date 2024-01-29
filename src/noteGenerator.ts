@@ -62,88 +62,6 @@ export function noteGenerator(
 		return true;
 	};
 
-	const generateGptNote = async (
-		messages: any[],
-		parentNodeWidth: number
-	) => {
-		logDebug("Creating user note");
-
-		const canvas = getActiveCanvas();
-		if (!canvas) {
-			logDebug("No active canvas");
-			return;
-		}
-
-		await canvas.requestFrame();
-
-		const selection = canvas.selection;
-		if (selection?.size !== 1) return;
-		const values = Array.from(selection.values()) as CanvasNode[];
-		const node = values[0];
-
-		if (!node) return;
-
-		const created = createNode(
-			canvas,
-			node,
-			{
-				text: `\`\`\`Calling AI (${settings.apiModel})...\`\`\``,
-				// text: "```loading...```",
-				size: {
-					height: emptyNoteHeight,
-					// width: Math.min(parentNodeWidth, NOTE_MAX_WIDTH),
-					width: parentNodeWidth,
-				},
-			},
-			{
-				color: assistantColor,
-				chat_role: "assistant",
-			},
-			messages.length > 1
-				? messages[messages.length - 1].content
-				: undefined
-		);
-
-		// if (created == null) {
-		// 	new Notice(`Empty or unreadable response from GPT`);
-		// 	canvas.removeNode(created);
-		// 	return;
-		// }
-
-		// canvas.selectOnly(created, true /* startEditing */);
-
-		// startEditing() doesn't work if called immediately
-		await canvas.requestSave();
-
-		// await sleep(100);
-		// created.startEditing();
-
-		const generated = await getResponse("", [
-			{
-				role: "system",
-				content: SYSTEM_PROMPT,
-			},
-			...messages,
-		]);
-
-		created.setText(generated.response);
-		created.setData({
-			questions: generated.questions,
-		});
-		const height = calcHeight({
-			text: generated.response,
-			parentHeight: node.height,
-		});
-		created.moveAndResize({
-			height,
-			width: created.width,
-			x: created.x,
-			y: created.y,
-		});
-		// console.log({ created });
-		await canvas.requestSave();
-	};
-
 	const getActiveCanvas = () => {
 		const maybeCanvasView = app.workspace.getActiveViewOfType(
 			ItemView
@@ -171,7 +89,16 @@ export function noteGenerator(
 		return foundPrompt || settings.systemPrompt;
 	};
 
-	const buildMessages = async (node: CanvasNode) => {
+	const buildMessages = async (
+		node: CanvasNode,
+		{
+			systemPrompt,
+			prompt,
+		}: {
+			systemPrompt?: string;
+			prompt?: string;
+		} = {}
+	) => {
 		// return { messages: [], tokenCount: 0 };
 
 		const encoding = encodingForModel(
@@ -183,9 +110,9 @@ export function noteGenerator(
 
 		// Note: We are not checking for system prompt longer than context window.
 		// That scenario makes no sense, though.
-		const systemPrompt = await getSystemPrompt(node);
-		if (systemPrompt) {
-			tokenCount += encoding.encode(systemPrompt).length;
+		const systemPrompt2 = systemPrompt || (await getSystemPrompt(node));
+		if (systemPrompt2) {
+			tokenCount += encoding.encode(systemPrompt2).length;
 		}
 
 		const visit = async (
@@ -216,9 +143,16 @@ export function noteGenerator(
 					const keepTokens = nodeTokens.slice(
 						0,
 						inputLimit - tokenCount - 1
+						// * needed because very large context is a little above
+						// * should this be a number from settings.maxInput ?
+						// TODO
+						// (nodeTokens.length > 100000 ? 20 : 1)
 					);
 					const truncateTextTo = encoding.decode(keepTokens).length;
 					logDebug(
+						`Truncating node text from ${nodeText.length} to ${truncateTextTo} characters`
+					);
+					new Notice(
 						`Truncating node text from ${nodeText.length} to ${truncateTextTo} characters`
 					);
 					nodeText = nodeText.slice(0, truncateTextTo);
@@ -250,17 +184,23 @@ export function noteGenerator(
 		await visitNodeAndAncestors(node, visit);
 
 		// if (messages.length) {
-		if (systemPrompt) {
+		if (systemPrompt2)
 			messages.unshift({
-				content: systemPrompt,
 				role: "system",
+				content: systemPrompt2,
 			});
-			// }
+		// }
 
-			return { messages, tokenCount };
-		} else {
-			return { messages: [], tokenCount: 0 };
-		}
+		if (prompt)
+			messages.push({
+				role: "user",
+				content: prompt,
+			});
+
+		return { messages, tokenCount };
+		// } else {
+		// 	return { messages: [], tokenCount: 0 };
+		// }
 	};
 
 	const generateNote = async (question?: string) => {
@@ -286,7 +226,9 @@ export function noteGenerator(
 			await canvas.requestSave();
 			await sleep(200);
 
-			const { messages, tokenCount } = await buildMessages(node);
+			const { messages, tokenCount } = await buildMessages(node, {
+				prompt: question,
+			});
 			// console.log({ messages });
 			if (!messages.length) return;
 
@@ -306,29 +248,10 @@ export function noteGenerator(
 				question
 			);
 
-			const messages2 = question
-				? [
-						// {
-						// 	role: "system",
-						// 	content: SYSTEM_PROMPT,
-						// },
-						...messages,
-						{
-							role: "user",
-							content: question,
-						},
-				  ]
-				: [
-						// {
-						// 	role: "system",
-						// 	content: SYSTEM_PROMPT,
-						// },
-						...messages,
-				  ];
 			// TODO : update tokenCount with new messages
 
 			new Notice(
-				`Sending ${messages2.length} notes with ${tokenCount} tokens to GPT`
+				`Sending ${messages.length} notes with ${tokenCount} tokens to GPT`
 			);
 
 			try {
@@ -338,9 +261,11 @@ export function noteGenerator(
 				await streamResponse(
 					settings.apiKey,
 					// settings.apiModel,
-					messages2,
+					messages,
 					{
 						model: settings.apiModel,
+						max_tokens: settings.maxResponseTokens || undefined,
+						// max_tokens: getTokenLimit(settings) - tokenCount - 1,
 					},
 					// {
 					// 	max_tokens: settings.maxResponseTokens || undefined,
@@ -439,10 +364,13 @@ export function noteGenerator(
 	return { generateNote, buildMessages };
 }
 
-function getTokenLimit(settings: AugmentedCanvasSettings) {
+export function getTokenLimit(settings: AugmentedCanvasSettings) {
 	const model =
 		chatModelByName(settings.apiModel) || CHAT_MODELS.GPT_4_1106_PREVIEW;
-	return settings.maxInputTokens
+	const tokenLimit = settings.maxInputTokens
 		? Math.min(settings.maxInputTokens, model.tokenLimit)
 		: model.tokenLimit;
+
+	// console.log({ settings, tokenLimit });
+	return tokenLimit;
 }
