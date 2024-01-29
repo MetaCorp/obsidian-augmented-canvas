@@ -62,8 +62,17 @@ export interface AugmentedCanvasSettings {
 	 * System prompt used to generate flashcards file
 	 */
 	flashcardsSystemPrompt: string;
-}
 
+	/**
+	 * System prompt used to generate flashcards file
+	 */
+	insertRelevantQuestionsFilesCount: number;
+
+	/**
+	 * System prompt used to generate flashcards file
+	 */
+	relevantQuestionsSystemPrompt: string;
+}
 // export const DEFAULT_SYSTEM_PROMPT = `
 // You are a critical-thinking assistant bot.
 // Consider the intent of my questions before responding.
@@ -89,6 +98,14 @@ If there is a list in the text given by the user. Start by creating a flashcard 
 The filename, can be written with spaces, must not contain the word "flashcard", must tell the subjects of the flashcards.
 `.trim();
 
+const RELEVANT_QUESTION_SYSTEM_PROMPT = `
+You will ask relevant questions based on the user input.
+
+These questions must be opened questions.
+
+Priories questions that connect different topics together.
+`.trim();
+
 export const DEFAULT_SETTINGS: AugmentedCanvasSettings = {
 	apiKey: "",
 	apiModel: CHAT_MODELS.GPT_4_1106_PREVIEW.name,
@@ -101,6 +118,8 @@ export const DEFAULT_SETTINGS: AugmentedCanvasSettings = {
 	systemPrompts: [],
 	userSystemPrompts: [],
 	flashcardsSystemPrompt: FLASHCARDS_SYSTEM_PROMPT,
+	insertRelevantQuestionsFilesCount: 10,
+	relevantQuestionsSystemPrompt: RELEVANT_QUESTION_SYSTEM_PROMPT,
 };
 
 export function getModels() {

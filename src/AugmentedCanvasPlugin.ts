@@ -4,6 +4,7 @@ import {
 	ItemView,
 	Menu,
 	MenuItem,
+	Notice,
 	Plugin,
 	setIcon,
 	setTooltip,
@@ -19,11 +20,13 @@ import SettingsTab from "./settings/SettingsTab";
 import { CustomQuestionModal } from "./CustomQuestionModal";
 import { CanvasNode } from "./obsidian/canvas-internal";
 import { handlePatchNoteMenu } from "./noteMenuPatch";
-import { getActiveCanvas } from "./utils";
+import { createCanvasGroup, getActiveCanvas } from "./utils";
 import SystemPromptsModal from "./SystemPromptsModal";
 
 import * as CSV from "csv-string";
 import { createFlashcards } from "./flashcards";
+import { getFilesContent } from "./obsidian/fileUtil";
+import { getResponse } from "./chatgpt";
 
 export default class AugmentedCanvasPlugin extends Plugin {
 	triggerByPlugin: boolean = false;
@@ -301,9 +304,76 @@ export default class AugmentedCanvasPlugin extends Plugin {
 					return true;
 				}
 
-				new SystemPromptsModal(this.app, this.settings).open();
+				new SystemPromptsModal(app, this.settings).open();
 			},
-			callback: () => {},
+			// callback: () => {},
+		});
+
+		const RELEVANT_QUESTION_SYSTEM_PROMPT = `
+There must be 6 questions.
+
+You must respond in this JSON format: {
+	"questions": The questions
+}
+
+You must respond in the language the user used.
+`.trim();
+
+		const handleAddRelevantQuestions = async () => {
+			new Notice("Generating relevant questions...");
+
+			const files = await app.vault.getMarkdownFiles();
+
+			const sortedFiles = files.sort(
+				(a, b) => b.stat.mtime - a.stat.mtime
+			);
+
+			const actualFiles = sortedFiles.slice(
+				0,
+				this.settings.insertRelevantQuestionsFilesCount
+			);
+
+			const filesContent = await getFilesContent(app, actualFiles);
+
+			const gptResponse = await getResponse(
+				this.settings.apiKey,
+				[
+					{
+						role: "system",
+						content: `
+${this.settings.relevantQuestionsSystemPrompt}
+${RELEVANT_QUESTION_SYSTEM_PROMPT}
+`,
+					},
+					{
+						role: "user",
+						content: filesContent,
+					},
+				],
+				{ isJSON: true }
+			);
+			console.log({ gptResponse });
+
+			await createCanvasGroup(app, "Questions", gptResponse.questions);
+
+			new Notice("Generating relevant questions done successfully.");
+		};
+
+		this.addCommand({
+			id: "insert-relevant-questions",
+			name: "Insert relevant questions",
+			checkCallback: (checking: boolean) => {
+				if (checking) {
+					// console.log({ checkCallback: checking });
+					if (!getActiveCanvas(app)) return false;
+
+					return true;
+				}
+
+				// new SystemPromptsModal(this.app, this.settings).open();
+				handleAddRelevantQuestions();
+			},
+			// callback: async () => {},
 		});
 	}
 

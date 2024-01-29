@@ -87,6 +87,45 @@ export class SettingsTab extends PluginSettingTab {
 			});
 
 		new Setting(containerEl)
+			.setName("Relevant questions system prompt")
+			.setDesc(
+				`The system prompt used to generate relevant questions for the command "Insert relevant questions".`
+			)
+			.addTextArea((component) => {
+				component.inputEl.rows = 6;
+				// component.inputEl.style.width = "300px";
+				// component.inputEl.style.fontSize = "10px";
+				component.inputEl.addClass("augmented-canvas-settings-prompt");
+				component.setValue(
+					this.plugin.settings.relevantQuestionsSystemPrompt
+				);
+				component.onChange(async (value) => {
+					this.plugin.settings.relevantQuestionsSystemPrompt = value;
+					await this.plugin.saveSettings();
+				});
+			});
+
+		new Setting(containerEl)
+			.setName("Insert relevant questions files count")
+			.setDesc(
+				'The number of files that are taken into account by the "Insert relevant questions" command.'
+			)
+			.addText((text) =>
+				text
+					.setValue(
+						this.plugin.settings.insertRelevantQuestionsFilesCount.toString()
+					)
+					.onChange(async (value) => {
+						const parsed = parseInt(value);
+						if (!isNaN(parsed)) {
+							this.plugin.settings.insertRelevantQuestionsFilesCount =
+								parsed;
+							await this.plugin.saveSettings();
+						}
+					})
+			);
+
+		new Setting(containerEl)
 			.setName("Max input tokens")
 			.setDesc(
 				"The maximum number of tokens to send (within model limit). 0 means as many as possible"

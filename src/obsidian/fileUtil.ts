@@ -6,6 +6,7 @@ export async function readFileContent(
 	file: TFile,
 	subpath?: string | undefined
 ) {
+	// TODO: remove frontmatter
 	const body = await app.vault.read(file);
 
 	if (subpath) {
@@ -111,3 +112,19 @@ export async function readNodeContent(node: CanvasNode) {
 			}
 	}
 }
+
+export const getFilesContent = async (app: App, files: TFile[]) => {
+	let content = "";
+
+	for (const file of files) {
+		const fileContent = await readFileContent(app, file);
+
+		content += `# ${file.basename}
+
+${fileContent}
+
+`;
+	}
+
+	return content;
+};

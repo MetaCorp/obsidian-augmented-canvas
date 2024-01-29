@@ -1,5 +1,14 @@
-import { App, Canvas, CanvasCoords, ItemView, Menu, MenuItem } from "obsidian";
+import {
+	App,
+	Canvas,
+	CanvasCoords,
+	ItemView,
+	Menu,
+	MenuItem,
+	TFile,
+} from "obsidian";
 import { CanvasView } from "./obsidian/canvas-patches";
+import { readFileContent } from "./obsidian/fileUtil";
 
 // TODO : ask GPT and add subMenu items
 export const handleCanvasMenu_Loading = async (
@@ -82,4 +91,56 @@ export const getActiveCanvas = (app: App) => {
 		ItemView
 	) as CanvasView | null;
 	return maybeCanvasView ? maybeCanvasView["canvas"] : null;
+};
+
+export const createCanvasGroup = (
+	app: App,
+	groupName: string,
+	notesContents: string[]
+) => {
+	const canvas = getActiveCanvas(app);
+	if (!canvas) return;
+
+	const NOTE_WIDTH = 500;
+	const NOTE_HEIGHT = 130;
+	const NOTE_GAP = 20;
+
+	const NOTES_BY_ROW = 3;
+
+	let startPos = {
+		x: 0 - ((NOTE_WIDTH + NOTE_GAP) * NOTES_BY_ROW) / 2,
+		y: 0 - ((NOTE_HEIGHT + NOTE_GAP) * 2) / 2,
+	};
+
+	// @ts-expect-error
+	canvas.createGroupNode({
+		text: groupName,
+		pos: {
+			x: startPos.x - NOTE_GAP,
+			y: startPos.y - NOTE_GAP,
+		},
+		size: {
+			width: NOTES_BY_ROW * (NOTE_WIDTH + NOTE_GAP) + NOTE_GAP,
+			height: (NOTE_HEIGHT + NOTE_GAP) * 2 + NOTE_GAP,
+		},
+	});
+
+	let countRow = 0;
+	let countColumn = 0;
+	for (const noteContent of notesContents) {
+		canvas.createTextNode({
+			text: noteContent,
+			pos: {
+				x: startPos.x + countRow * (NOTE_WIDTH + NOTE_GAP),
+				y: startPos.y + countColumn * (NOTE_HEIGHT + NOTE_GAP),
+			},
+			size: {
+				width: NOTE_WIDTH,
+				height: NOTE_HEIGHT,
+			},
+		});
+		countColumn =
+			countRow + 1 > NOTES_BY_ROW - 1 ? countColumn + 1 : countColumn;
+		countRow = countRow + 1 > NOTES_BY_ROW - 1 ? 0 : countRow + 1;
+	}
 };
