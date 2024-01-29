@@ -23,10 +23,10 @@ import { handlePatchNoteMenu } from "./noteMenuPatch";
 import { createCanvasGroup, getActiveCanvas } from "./utils";
 import SystemPromptsModal from "./SystemPromptsModal";
 
-import * as CSV from "csv-string";
 import { createFlashcards } from "./flashcards";
 import { getFilesContent } from "./obsidian/fileUtil";
 import { getResponse } from "./chatgpt";
+import { parseCsv } from "./csvUtils";
 
 export default class AugmentedCanvasPlugin extends Plugin {
 	triggerByPlugin: boolean = false;
@@ -45,7 +45,7 @@ export default class AugmentedCanvasPlugin extends Plugin {
 		// this.patchCanvas();
 		setTimeout(() => {
 			this.patchCanvasMenu();
-			this.addComands();
+			this.addCommands();
 			this.patchNoteContextMenu();
 
 			if (this.settings.systemPrompts.length === 0) {
@@ -260,7 +260,8 @@ export default class AugmentedCanvasPlugin extends Plugin {
 			"https://raw.githubusercontent.com/f/awesome-chatgpt-prompts/main/prompts.csv"
 		);
 		const text = await response.text();
-		const parsedCsv = CSV.parse(text);
+		const parsedCsv = parseCsv(text);
+		console.log({ parsedCsv });
 
 		const systemPrompts: SystemPrompt[] = parsedCsv
 			.slice(1)
@@ -269,6 +270,7 @@ export default class AugmentedCanvasPlugin extends Plugin {
 				act: value[0],
 				prompt: value[1],
 			}));
+		console.log({ systemPrompts });
 
 		this.settings.systemPrompts = systemPrompts;
 
@@ -290,7 +292,7 @@ export default class AugmentedCanvasPlugin extends Plugin {
 		});
 	}
 
-	addComands() {
+	addCommands() {
 		const app = this.app;
 
 		this.addCommand({
