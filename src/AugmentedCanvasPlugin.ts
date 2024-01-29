@@ -334,6 +334,7 @@ You must respond in the language the user used.
 				0,
 				this.settings.insertRelevantQuestionsFilesCount
 			);
+			console.log({ actualFiles });
 
 			const filesContent = await getFilesContent(app, actualFiles);
 

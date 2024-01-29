@@ -115,6 +115,8 @@ export const createCanvasGroup = (
 
 	// @ts-expect-error
 	const newGroup: CanvasGroupNode = canvas.createGroupNode({
+		// TODO : does not work
+		label: groupName,
 		pos: {
 			x: startPos.x - NOTE_GAP,
 			y: startPos.y - NOTE_GAP,
@@ -124,6 +126,7 @@ export const createCanvasGroup = (
 			height: (NOTE_HEIGHT + NOTE_GAP) * 2 + NOTE_GAP,
 		},
 	});
+	newGroup.label = groupName;
 	newGroup.labelEl.setText(groupName);
 
 	let countRow = 0;
