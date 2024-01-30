@@ -42,8 +42,8 @@ export class SettingsTab extends PluginSettingTab {
 			});
 
 		new Setting(containerEl)
-			.setName("Model")
-			.setDesc("Select the GPT model to use.")
+			.setName("Image Model")
+			.setDesc("Select the GPT model to generate images.")
 			.addDropdown((cb) => {
 				getImageModels().forEach((model) => {
 					cb.addOption(model, model);
