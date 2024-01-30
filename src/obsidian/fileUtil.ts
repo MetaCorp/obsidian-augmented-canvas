@@ -1,5 +1,5 @@
 import { App, TFile, loadPdfJs, resolveSubpath } from "obsidian";
-import { CanvasNode } from "./canvas-internal";
+import { Canvas, CanvasNode, CreateNodeOptions } from "./canvas-internal";
 import { AugmentedCanvasSettings } from "src/settings/AugmentedCanvasSettings";
 
 export async function readFileContent(
@@ -128,4 +128,14 @@ ${fileContent}
 	}
 
 	return content;
+};
+
+export const updateNodeAndSave = async (
+	canvas: Canvas,
+	node: CanvasNode,
+	// TODO: only accepts .text
+	nodeOptions: CreateNodeOptions
+) => {
+	node.setText(nodeOptions.text);
+	await canvas.requestSave();
 };

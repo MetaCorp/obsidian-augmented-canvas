@@ -234,12 +234,12 @@ export function noteGenerator(
 
 			const created = createNode(
 				canvas,
-				node,
 				{
 					// text: "```loading...```",
 					text: `\`\`\`Calling AI (${settings.apiModel})...\`\`\``,
 					size: { height: placeholderNoteHeight },
 				},
+				node,
 				{
 					color: assistantColor,
 					// TODO : debug

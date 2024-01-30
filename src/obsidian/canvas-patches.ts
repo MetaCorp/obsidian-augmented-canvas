@@ -62,14 +62,17 @@ export const calcHeight = (options: { parentHeight: number; text: string }) => {
 	// return Math.max(options.parentHeight, calcTextHeight);
 };
 
+const DEFAULT_NODE_WIDTH = 400;
+const DEFAULT_NODE_HEIGHT = DEFAULT_NODE_WIDTH * (1024 / 1792) + 20;
+
 /**
  * Create new node as descendant from the parent node.
  * Align and offset relative to siblings.
  */
 export const createNode = (
 	canvas: Canvas,
-	parentNode: CanvasNode,
 	nodeOptions: CreateNodeOptions,
+	parentNode?: CanvasNode,
 	nodeData?: Partial<AllCanvasNodeData>,
 	edgeLabel?: string
 ) => {
@@ -78,45 +81,57 @@ export const createNode = (
 	}
 
 	const { text } = nodeOptions;
-	const width =
-		nodeOptions?.size?.width || Math.max(minWidth, parentNode?.width);
-	const height =
-		nodeOptions?.size?.height ||
-		Math.max(
-			minHeight,
-			parentNode && calcHeight({ text, parentHeight: parentNode.height })
-		);
-
-	const siblings =
-		parent &&
-		canvas
-			.getEdgesForNode(parentNode)
-			.filter((n) => n.from.node.id == parentNode.id)
-			.map((e) => e.to.node);
-
-	// Failsafe leftmost value.
-	const farLeft = parentNode.y - parentNode.width * 5;
-	const siblingsRight = siblings?.length
-		? siblings.reduce(
-				(right, sib) => Math.max(right, sib.x + sib.width),
-				farLeft
+	const width = parentNode
+		? nodeOptions?.size?.width || Math.max(minWidth, parentNode?.width)
+		: DEFAULT_NODE_WIDTH;
+	const height = parentNode
+		? nodeOptions?.size?.height ||
+		  Math.max(
+				minHeight,
+				parentNode &&
+					calcHeight({ text, parentHeight: parentNode.height })
 		  )
-		: undefined;
-	const priorSibling = siblings[siblings.length - 1];
+		: DEFAULT_NODE_HEIGHT;
 
-	// Position left at right of prior sibling, otherwise aligned with parent
-	const x =
-		siblingsRight != null ? siblingsRight + newNoteMargin : parentNode.x;
+	// @ts-expect-error
+	let x = canvas.x;
+	// @ts-expect-error
+	let y = canvas.y;
 
-	// Position top at prior sibling top, otherwise offset below parent
-	const y =
-		(priorSibling
-			? priorSibling.y
-			: parentNode.y +
-			  parentNode.height +
-			  (edgeLabel ? newNoteMarginWithLabel : newNoteMargin)) +
-		// Using position=left, y value is treated as vertical center
-		height * 0.5;
+	if (parentNode) {
+		const siblings =
+			parent &&
+			canvas
+				.getEdgesForNode(parentNode)
+				.filter((n) => n.from.node.id == parentNode.id)
+				.map((e) => e.to.node);
+
+		// Failsafe leftmost value.
+		const farLeft = parentNode.y - parentNode.width * 5;
+		const siblingsRight = siblings?.length
+			? siblings.reduce(
+					(right, sib) => Math.max(right, sib.x + sib.width),
+					farLeft
+			  )
+			: undefined;
+		const priorSibling = siblings[siblings.length - 1];
+
+		// Position left at right of prior sibling, otherwise aligned with parent
+		x =
+			siblingsRight != null
+				? siblingsRight + newNoteMargin
+				: parentNode.x;
+
+		// Position top at prior sibling top, otherwise offset below parent
+		y =
+			(priorSibling
+				? priorSibling.y
+				: parentNode.y +
+				  parentNode.height +
+				  (edgeLabel ? newNoteMarginWithLabel : newNoteMargin)) +
+			// Using position=left, y value is treated as vertical center
+			height * 0.5;
+	}
 
 	const newNode = canvas.createTextNode({
 		pos: { x, y },
@@ -133,21 +148,23 @@ export const createNode = (
 	canvas.deselectAll();
 	canvas.addNode(newNode);
 
-	addEdge(
-		canvas,
-		randomHexString(16),
-		{
-			fromOrTo: "from",
-			side: "bottom",
-			node: parentNode,
-		},
-		{
-			fromOrTo: "to",
-			side: "top",
-			node: newNode,
-		},
-		edgeLabel
-	);
+	if (parentNode) {
+		addEdge(
+			canvas,
+			randomHexString(16),
+			{
+				fromOrTo: "from",
+				side: "bottom",
+				node: parentNode,
+			},
+			{
+				fromOrTo: "to",
+				side: "top",
+				node: newNode,
+			},
+			edgeLabel
+		);
+	}
 
 	return newNode;
 };

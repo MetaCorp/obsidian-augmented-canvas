@@ -179,26 +179,30 @@ export const getCanvasActiveNoteText = (app: App) => {
 	return readNodeContent(canvasNode);
 };
 
-export const addImageToCanvas = (app: App, imageName: string) => {
-	const canvas = getActiveCanvas(app);
-	if (!canvas) return;
+// export const addImageToCanvas = (app: App, imageFileName: string) => {
+// 	const canvas = getActiveCanvas(app);
+// 	if (!canvas) return;
 
-	const IMAGE_WIDTH = 400;
-	const IMAGE_HEIGHT = IMAGE_WIDTH * (1024 / 1792) + 20;
+// 	const parentNode = getActiveCanvasNodes(app)?.[0];
+// 	if (!parentNode) return;
 
-	const parentNode = getActiveCanvasNodes(app)?.[0];
-	if (!parentNode) return;
+// 	const IMAGE_WIDTH = parentNode.width;
+// 	const IMAGE_HEIGHT = IMAGE_WIDTH * (1024 / 1792) + 20;
 
-	createNode(canvas, parentNode, {
-		text: `![[${imageName}]]`,
-		size: {
-			width: IMAGE_WIDTH,
-			height: IMAGE_HEIGHT,
-		},
-	});
+// 	createNode(
+// 		canvas,
+// 		{
+// 			text: `![[${imageFileName}]]`,
+// 			size: {
+// 				width: IMAGE_WIDTH,
+// 				height: IMAGE_HEIGHT,
+// 			},
+// 		},
+// 		parentNode
+// 	);
 
-	canvas.requestSave();
-};
+// 	canvas.requestSave();
+// };
 
 export const getImageSaveFolderPath = (settings: AugmentedCanvasSettings) => {
 	return settings.imagesPath;
