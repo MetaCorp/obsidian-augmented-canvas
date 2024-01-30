@@ -1,5 +1,6 @@
 import { App, TFile, loadPdfJs, resolveSubpath } from "obsidian";
 import { CanvasNode } from "./canvas-internal";
+import { AugmentedCanvasSettings } from "src/settings/AugmentedCanvasSettings";
 
 export async function readFileContent(
 	app: App,

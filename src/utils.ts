@@ -8,8 +8,10 @@ import {
 	TFile,
 	CanvasGroupNode,
 } from "obsidian";
-import { CanvasView } from "./obsidian/canvas-patches";
-import { readFileContent } from "./obsidian/fileUtil";
+import { CanvasView, createNode } from "./obsidian/canvas-patches";
+import { readFileContent, readNodeContent } from "./obsidian/fileUtil";
+import { CanvasNode } from "./obsidian/canvas-internal";
+import { AugmentedCanvasSettings } from "./settings/AugmentedCanvasSettings";
 
 // TODO : ask GPT and add subMenu items
 export const handleCanvasMenu_Loading = async (
@@ -153,4 +155,51 @@ export const createCanvasGroup = (
 
 	// @ts-expect-error
 	canvas.addGroup(newGroup);
+};
+
+export const canvasNodeIsNote = (canvasNode: CanvasNode) => {
+	// @ts-expect-error
+	return !canvasNode.from;
+};
+
+export const getActiveCanvasNodes = (app: App) => {
+	const canvas = getActiveCanvas(app);
+	if (!canvas) return;
+
+	return <CanvasNode[]>Array.from(canvas.selection)!;
+};
+
+export const getCanvasActiveNoteText = (app: App) => {
+	const canvasNodes = getActiveCanvasNodes(app);
+	if (!canvasNodes || canvasNodes.length !== 1) return;
+
+	const canvasNode = canvasNodes.first()!;
+	if (!canvasNodeIsNote(canvasNode)) return;
+
+	return readNodeContent(canvasNode);
+};
+
+export const addImageToCanvas = (app: App, imageName: string) => {
+	const canvas = getActiveCanvas(app);
+	if (!canvas) return;
+
+	const IMAGE_WIDTH = 400;
+	const IMAGE_HEIGHT = IMAGE_WIDTH * (1024 / 1792) + 20;
+
+	const parentNode = getActiveCanvasNodes(app)?.[0];
+	if (!parentNode) return;
+
+	createNode(canvas, parentNode, {
+		text: `![[${imageName}]]`,
+		size: {
+			width: IMAGE_WIDTH,
+			height: IMAGE_HEIGHT,
+		},
+	});
+
+	canvas.requestSave();
+};
+
+export const getImageSaveFolderPath = (settings: AugmentedCanvasSettings) => {
+	return settings.imagesPath;
 };

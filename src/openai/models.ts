@@ -21,6 +21,16 @@ export const CHAT_MODELS = {
 	// },
 };
 
+export const IMAGE_MODELS = {
+	DALL_E_2: {
+		name: "dall-e-2",
+		// tokenLimit: 128000,
+	},
+	DALL_E_3: {
+		name: "dall-e-3",
+		// tokenLimit: 128000,
+	},
+};
 export function chatModelByName(name: string) {
 	return Object.values(CHAT_MODELS).find((model) => model.name === name);
 }

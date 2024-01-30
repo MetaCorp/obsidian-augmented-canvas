@@ -8,7 +8,11 @@ import {
 	TextComponent,
 } from "obsidian";
 import ChatStreamPlugin from "./../AugmentedCanvasPlugin";
-import { SystemPrompt, getModels } from "./AugmentedCanvasSettings";
+import {
+	SystemPrompt,
+	getImageModels,
+	getModels,
+} from "./AugmentedCanvasSettings";
 
 export class SettingsTab extends PluginSettingTab {
 	plugin: ChatStreamPlugin;
@@ -33,6 +37,20 @@ export class SettingsTab extends PluginSettingTab {
 				cb.setValue(this.plugin.settings.apiModel);
 				cb.onChange(async (value) => {
 					this.plugin.settings.apiModel = value;
+					await this.plugin.saveSettings();
+				});
+			});
+
+		new Setting(containerEl)
+			.setName("Model")
+			.setDesc("Select the GPT model to use.")
+			.addDropdown((cb) => {
+				getImageModels().forEach((model) => {
+					cb.addOption(model, model);
+				});
+				cb.setValue(this.plugin.settings.imageModel);
+				cb.onChange(async (value) => {
+					this.plugin.settings.imageModel = value;
 					await this.plugin.saveSettings();
 				});
 			});

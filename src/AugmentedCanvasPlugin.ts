@@ -28,6 +28,7 @@ import { getFilesContent } from "./obsidian/fileUtil";
 import { getResponse } from "./chatgpt";
 import { parseCsv } from "./csvUtils";
 import { handleAddRelevantQuestions } from "./relevantQuestions";
+import { handleGenerateImage } from "./generateImage";
 
 export default class AugmentedCanvasPlugin extends Plugin {
 	triggerByPlugin: boolean = false;
@@ -288,6 +289,13 @@ export default class AugmentedCanvasPlugin extends Plugin {
 					.setIcon("lucide-wallet-cards")
 					.onClick(() => {
 						createFlashcards(this.app, settings);
+					});
+			});
+			menu.addItem((item) => {
+				item.setTitle("Generate image")
+					.setIcon("lucide-image")
+					.onClick(() => {
+						handleGenerateImage(this.app, settings);
 					});
 			});
 		});
