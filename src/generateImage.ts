@@ -9,7 +9,7 @@ import {
 } from "./utils";
 import { saveBase64Image } from "./obsidian/imageUtils";
 import { createNode } from "./obsidian/canvas-patches";
-import { updateNodeAndSave } from "./obsidian/fileUtil";
+import { generateFileName, updateNodeAndSave } from "./obsidian/fileUtil";
 
 export const handleGenerateImage = async (
 	app: App,
@@ -25,15 +25,20 @@ export const handleGenerateImage = async (
 
 	const parentNode = activeCanvasNodes[0];
 
-	// TODO : create node with "loading image", then get that node, add pass it to addImageToCanvas
-	// TODO : update create node to add a non-parent node and to place it in the center of the canvas
 	const nodeText = await getCanvasActiveNoteText(app);
 	if (!nodeText) return;
+
+	const IMAGE_WIDTH = parentNode.width;
+	const IMAGE_HEIGHT = IMAGE_WIDTH * (1024 / 1792) + 20;
 
 	const node = createNode(
 		canvas,
 		{
 			text: `\`Calling AI (${settings.imageModel})...\``,
+			size: {
+				width: IMAGE_WIDTH,
+				height: IMAGE_HEIGHT,
+			},
 		},
 		parentNode
 	);
@@ -42,10 +47,11 @@ export const handleGenerateImage = async (
 		model: settings.imageModel,
 	});
 
-	// TODO
-	const imageFileName = "Test Image";
+	const imageFileName = generateFileName("AI-Image");
 	await saveBase64Image(app, settings, imageFileName, b64Image);
 	new Notice(`Generating image "${imageFileName}" done successfully.`);
 
-	updateNodeAndSave(canvas, node, { text: `![[${imageFileName}.png]]` });
+	updateNodeAndSave(canvas, node, {
+		text: `![[${imageFileName}.png]]`,
+	});
 };

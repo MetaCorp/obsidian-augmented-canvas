@@ -133,9 +133,23 @@ ${fileContent}
 export const updateNodeAndSave = async (
 	canvas: Canvas,
 	node: CanvasNode,
-	// TODO: only accepts .text
+	// TODO: only accepts .text .size not working (is it Obsidian API?)
 	nodeOptions: CreateNodeOptions
 ) => {
-	node.setText(nodeOptions.text);
+	console.log({ nodeOptions });
+	// node.setText(nodeOptions.text);
+	node.setData(nodeOptions);
 	await canvas.requestSave();
+};
+
+export const generateFileName = (prefix: string = "file"): string => {
+	const now = new Date();
+	const year = now.getUTCFullYear();
+	const month = (now.getUTCMonth() + 1).toString().padStart(2, "0");
+	const day = now.getUTCDate().toString().padStart(2, "0");
+	const hours = now.getUTCHours().toString().padStart(2, "0");
+	const minutes = now.getUTCMinutes().toString().padStart(2, "0");
+	const seconds = now.getUTCSeconds().toString().padStart(2, "0");
+
+	return `${prefix}_${year}-${month}-${day}_${hours}-${minutes}-${seconds}`;
 };
