@@ -97,7 +97,7 @@ ${gptResponse.flashcards
 		content
 	);
 
-	new Notice("Flashcard file created successfully");
+	new Notice(`Flashcard file "${gptResponse.filename}" created successfully`);
 
 	// await app.workspace.openLinkText(
 	// 	`Flashcards/${gptResponse.filename}.md`,
