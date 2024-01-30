@@ -4,7 +4,7 @@ import {
 	AugmentedCanvasSettings,
 	SystemPrompt,
 } from "./settings/AugmentedCanvasSettings";
-import { calcHeight } from "./obsidian/canvas-patches";
+import { calcHeight, createNode } from "./obsidian/canvas-patches";
 import Fuse, { FuseResult } from "fuse.js";
 
 /**
@@ -104,7 +104,7 @@ ${systemPrompt.prompt.trim()}
 
 		const NODE_WIDTH = 800;
 		const NODE_HEIGHT = 300;
-		const newNode = canvas.createTextNode({
+		const newNode = createNode(canvas, {
 			pos: {
 				// @ts-expect-error
 				x: canvas.x - NODE_WIDTH / 2,
@@ -119,7 +119,6 @@ ${systemPrompt.prompt.trim()}
 			text,
 			focus: false,
 		});
-		canvas.addNode(newNode);
 		// canvas.menu.menuEl.append(new MenuItem())
 	}
 }

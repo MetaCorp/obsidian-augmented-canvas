@@ -94,9 +94,9 @@ export const createNode = (
 		: DEFAULT_NODE_HEIGHT;
 
 	// @ts-expect-error
-	let x = canvas.x;
+	let x = canvas.x - width / 2;
 	// @ts-expect-error
-	let y = canvas.y;
+	let y = canvas.y - height / 2;
 
 	if (parentNode) {
 		const siblings =
