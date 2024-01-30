@@ -47,5 +47,5 @@ export const handleGenerateImage = async (
 	await saveBase64Image(app, settings, imageFileName, b64Image);
 	new Notice(`Generating image "${imageFileName}" done successfully.`);
 
-	updateNodeAndSave(canvas, node, { text: `![[${imageFileName}]]` });
+	updateNodeAndSave(canvas, node, { text: `![[${imageFileName}.png]]` });
 };
