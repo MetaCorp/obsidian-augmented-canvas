@@ -27,6 +27,7 @@ import { createFlashcards } from "./flashcards";
 import { getFilesContent } from "./obsidian/fileUtil";
 import { getResponse } from "./chatgpt";
 import { parseCsv } from "./csvUtils";
+import { handleAddRelevantQuestions } from "./relevantQuestions";
 
 export default class AugmentedCanvasPlugin extends Plugin {
 	triggerByPlugin: boolean = false;
@@ -311,57 +312,6 @@ export default class AugmentedCanvasPlugin extends Plugin {
 			// callback: () => {},
 		});
 
-		const RELEVANT_QUESTION_SYSTEM_PROMPT = `
-There must be 6 questions.
-
-You must respond in this JSON format: {
-	"questions": The questions
-}
-
-You must respond in the language the user used.
-`.trim();
-
-		const handleAddRelevantQuestions = async () => {
-			new Notice("Generating relevant questions...");
-
-			const files = await app.vault.getMarkdownFiles();
-
-			const sortedFiles = files.sort(
-				(a, b) => b.stat.mtime - a.stat.mtime
-			);
-
-			const actualFiles = sortedFiles.slice(
-				0,
-				this.settings.insertRelevantQuestionsFilesCount
-			);
-			console.log({ actualFiles });
-
-			const filesContent = await getFilesContent(app, actualFiles);
-
-			const gptResponse = await getResponse(
-				this.settings.apiKey,
-				[
-					{
-						role: "system",
-						content: `
-${this.settings.relevantQuestionsSystemPrompt}
-${RELEVANT_QUESTION_SYSTEM_PROMPT}
-`,
-					},
-					{
-						role: "user",
-						content: filesContent,
-					},
-				],
-				{ isJSON: true }
-			);
-			// console.log({ gptResponse });
-
-			await createCanvasGroup(app, "Questions", gptResponse.questions);
-
-			new Notice("Generating relevant questions done successfully.");
-		};
-
 		this.addCommand({
 			id: "insert-relevant-questions",
 			name: "Insert relevant questions",
@@ -369,12 +319,11 @@ ${RELEVANT_QUESTION_SYSTEM_PROMPT}
 				if (checking) {
 					// console.log({ checkCallback: checking });
 					if (!getActiveCanvas(app)) return false;
-
 					return true;
 				}
 
 				// new SystemPromptsModal(this.app, this.settings).open();
-				handleAddRelevantQuestions();
+				handleAddRelevantQuestions(app, this.settings);
 			},
 			// callback: async () => {},
 		});

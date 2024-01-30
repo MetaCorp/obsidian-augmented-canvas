@@ -96,7 +96,13 @@ let count = 0;
 export const createImage = async (
 	apiKey: string,
 	prompt: string,
-	isVertical: boolean = false
+	{
+		isVertical = false,
+		model,
+	}: {
+		isVertical?: boolean;
+		model?: string;
+	}
 ) => {
 	const openai = new OpenAI({
 		apiKey: apiKey,
@@ -106,7 +112,7 @@ export const createImage = async (
 	count++;
 	// console.log({ createImage: { prompt, count } });
 	const response = await openai.images.generate({
-		model: "dall-e-3",
+		model: model || "dall-e-3",
 		prompt,
 		n: 1,
 		size: isVertical ? "1024x1792" : "1792x1024",
