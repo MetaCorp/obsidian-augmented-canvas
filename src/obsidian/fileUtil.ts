@@ -136,7 +136,7 @@ export const updateNodeAndSave = async (
 	// TODO: only accepts .text .size not working (is it Obsidian API?)
 	nodeOptions: CreateNodeOptions
 ) => {
-	console.log({ nodeOptions });
+	// console.log({ nodeOptions });
 	// node.setText(nodeOptions.text);
 	node.setData(nodeOptions);
 	await canvas.requestSave();
