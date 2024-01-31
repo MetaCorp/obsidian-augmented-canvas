@@ -1,15 +1,15 @@
-import { App, Notice } from "obsidian";
-import { AugmentedCanvasSettings } from "./settings/AugmentedCanvasSettings";
-import { createImage } from "./chatgpt";
+import { App, Notice, TFile } from "obsidian";
+import { AugmentedCanvasSettings } from "../settings/AugmentedCanvasSettings";
+import { createImage } from "../utils/chatgpt";
 import {
 	getActiveCanvas,
 	getActiveCanvasNodes,
 	getCanvasActiveNoteText,
 	getImageSaveFolderPath,
-} from "./utils";
-import { saveBase64Image } from "./obsidian/imageUtils";
-import { createNode } from "./obsidian/canvas-patches";
-import { generateFileName, updateNodeAndSave } from "./obsidian/fileUtil";
+} from "../utils";
+import { saveBase64Image } from "../obsidian/imageUtils";
+import { createNode } from "../obsidian/canvas-patches";
+import { generateFileName, updateNodeAndSave } from "../obsidian/fileUtil";
 
 export const handleGenerateImage = async (
 	app: App,
@@ -54,4 +54,35 @@ export const handleGenerateImage = async (
 	updateNodeAndSave(canvas, node, {
 		text: `![[${imageFileName}.png]]`,
 	});
+
+	// TODO : For now Obsidian API to .createFileNode is bugged
+	// canvas.removeNode(node);
+
+	// await sleep(100);
+
+	// const file = app.vault.getAbstractFileByPath(
+	// 	`${imageFileName}.png`
+	// ) as TFile;
+	// console.log({ file });
+
+	// const node2 = createNode(
+	// 	canvas,
+	// 	{
+	// 		type: "file",
+	// 		file,
+	// 		size: {
+	// 			width: IMAGE_WIDTH,
+	// 			height: IMAGE_HEIGHT,
+	// 		},
+	// 	},
+	// 	parentNode
+	// );
+	// node2.moveAndResize({
+	// 	size: {
+	// 		width: IMAGE_WIDTH,
+	// 		height: IMAGE_HEIGHT,
+	// 	},
+	// });
+
+	canvas.requestSave();
 };

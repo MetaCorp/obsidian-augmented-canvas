@@ -81,17 +81,21 @@ export const createNode = (
 	}
 
 	const { text } = nodeOptions;
+
 	const width = parentNode
 		? nodeOptions?.size?.width || Math.max(minWidth, parentNode?.width)
 		: DEFAULT_NODE_WIDTH;
-	const height = parentNode
-		? nodeOptions?.size?.height ||
-		  Math.max(
-				minHeight,
-				parentNode &&
-					calcHeight({ text, parentHeight: parentNode.height })
-		  )
-		: DEFAULT_NODE_HEIGHT;
+
+	const height = text
+		? parentNode
+			? nodeOptions?.size?.height ||
+			  Math.max(
+					minHeight,
+					parentNode &&
+						calcHeight({ text, parentHeight: parentNode.height })
+			  )
+			: DEFAULT_NODE_HEIGHT
+		: undefined;
 
 	// @ts-expect-error
 	let x = canvas.x - width / 2;
@@ -130,16 +134,26 @@ export const createNode = (
 				  parentNode.height +
 				  (edgeLabel ? newNoteMarginWithLabel : newNoteMargin)) +
 			// Using position=left, y value is treated as vertical center
-			height * 0.5;
+			height! * 0.5;
 	}
 
-	const newNode = canvas.createTextNode({
-		pos: { x, y },
-		position: "left",
-		size: { height, width },
-		text,
-		focus: false,
-	});
+	const newNode =
+		nodeOptions.type === "file"
+			? //  @ts-expect-error
+			  canvas.createFileNode({
+					file: nodeOptions.file,
+					pos: { x, y },
+					// // position: "left",
+					// size: { height, width },
+					// focus: false,
+			  })
+			: canvas.createTextNode({
+					pos: { x, y },
+					position: "left",
+					size: { height, width },
+					text,
+					focus: false,
+			  });
 
 	if (nodeData) {
 		newNode.setData(nodeData);

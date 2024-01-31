@@ -1,8 +1,8 @@
 import { App, Notice } from "obsidian";
-import { AugmentedCanvasSettings } from "./settings/AugmentedCanvasSettings";
-import { getFilesContent } from "./obsidian/fileUtil";
-import { getResponse } from "./chatgpt";
-import { createCanvasGroup } from "./utils";
+import { AugmentedCanvasSettings } from "../settings/AugmentedCanvasSettings";
+import { getFilesContent } from "../obsidian/fileUtil";
+import { getResponse } from "../utils/chatgpt";
+import { createCanvasGroup } from "../utils";
 
 const RELEVANT_QUESTION_SYSTEM_PROMPT = `
 There must be 6 questions.

@@ -1,10 +1,10 @@
 import { Editor, Notice, SuggestModal, App } from "obsidian";
-import { getActiveCanvas } from "./utils";
+import { getActiveCanvas } from "../utils";
 import {
 	AugmentedCanvasSettings,
 	SystemPrompt,
-} from "./settings/AugmentedCanvasSettings";
-import { calcHeight, createNode } from "./obsidian/canvas-patches";
+} from "../settings/AugmentedCanvasSettings";
+import { calcHeight, createNode } from "../obsidian/canvas-patches";
 import Fuse, { FuseResult } from "fuse.js";
 
 /**

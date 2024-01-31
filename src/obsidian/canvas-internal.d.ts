@@ -1,4 +1,4 @@
-import { App } from "obsidian";
+import { App, TFile } from "obsidian";
 import { AllCanvasNodeData, CanvasData } from "obsidian/canvas";
 
 export interface CanvasNode {
@@ -72,7 +72,9 @@ export interface Canvas {
 }
 
 export interface CreateNodeOptions {
-	text: string;
+	type?: string;
+	text?: string;
+	file?: TFile;
 	pos?: { x: number; y: number };
 	position?: "left" | "right" | "top" | "bottom";
 	size?: { height?: number; width?: number };

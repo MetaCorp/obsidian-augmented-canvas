@@ -10,25 +10,28 @@ import {
 	setTooltip,
 } from "obsidian";
 import { around } from "monkey-around";
-import { handleCallGPT, handleCallGPT_Question } from "./advancedCanvas";
+import {
+	handleCallGPT,
+	handleCallGPT_Question,
+} from "./canvasNodeMenuActions/advancedCanvas";
 import {
 	AugmentedCanvasSettings,
 	DEFAULT_SETTINGS,
 	SystemPrompt,
 } from "./settings/AugmentedCanvasSettings";
 import SettingsTab from "./settings/SettingsTab";
-import { CustomQuestionModal } from "./CustomQuestionModal";
+import { CustomQuestionModal } from "./Modals/CustomQuestionModal";
 import { CanvasNode } from "./obsidian/canvas-internal";
-import { handlePatchNoteMenu } from "./noteMenuPatch";
+import { handlePatchNoteMenu } from "./menuPatches/noteMenuPatch";
 import { createCanvasGroup, getActiveCanvas } from "./utils";
-import SystemPromptsModal from "./SystemPromptsModal";
+import SystemPromptsModal from "./Modals/SystemPromptsModal";
 
-import { createFlashcards } from "./flashcards";
+import { createFlashcards } from "./canvasNodeContextMenuActions/flashcards";
 import { getFilesContent } from "./obsidian/fileUtil";
-import { getResponse } from "./chatgpt";
-import { parseCsv } from "./csvUtils";
-import { handleAddRelevantQuestions } from "./relevantQuestions";
-import { handleGenerateImage } from "./generateImage";
+import { getResponse } from "./utils/chatgpt";
+import { parseCsv } from "./utils/csvUtils";
+import { handleAddRelevantQuestions } from "./commands/relevantQuestions";
+import { handleGenerateImage } from "./canvasNodeContextMenuActions/generateImage";
 
 export default class AugmentedCanvasPlugin extends Plugin {
 	triggerByPlugin: boolean = false;
@@ -53,7 +56,7 @@ export default class AugmentedCanvasPlugin extends Plugin {
 			if (this.settings.systemPrompts.length === 0) {
 				this.fetchSystemPrompts();
 			}
-		}, 100);
+		}, 200);
 		// this.patchCanvasInteraction();
 		// this.patchCanvasNode();
 

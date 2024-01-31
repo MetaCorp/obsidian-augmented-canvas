@@ -1,12 +1,12 @@
 import { App, Canvas, Menu } from "obsidian";
-import { CanvasNode } from "./obsidian/canvas-internal";
-import { AugmentedCanvasSettings } from "./settings/AugmentedCanvasSettings";
-import { CustomQuestionModal } from "./CustomQuestionModal";
+import { CanvasNode } from "../obsidian/canvas-internal";
+import { AugmentedCanvasSettings } from "../settings/AugmentedCanvasSettings";
+import { CustomQuestionModal } from "../Modals/CustomQuestionModal";
 import {
 	handleCallGPT_Question,
 	handleCallGPT_Questions,
-} from "./advancedCanvas";
-import { handleCanvasMenu_Loaded, handleCanvasMenu_Loading } from "./utils";
+} from "../canvasNodeMenuActions/advancedCanvas";
+import { handleCanvasMenu_Loading, handleCanvasMenu_Loaded } from "./utils";
 
 export const handlePatchNoteMenu = async (
 	buttonEl_AskQuestions: HTMLButtonElement,
@@ -38,7 +38,7 @@ export const handlePatchNoteMenu = async (
 		handleCanvasMenu_Loading(
 			menu,
 			node.unknownData.questions,
-			async (question) => {
+			async (question: string) => {
 				if (!question) {
 				} else {
 					handleCallGPT_Question(

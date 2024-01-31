@@ -1,8 +1,8 @@
 import { App } from "obsidian";
 import { getTokenLimit, noteGenerator } from "./noteGenerator";
-import { AugmentedCanvasSettings } from "./settings/AugmentedCanvasSettings";
-import { CanvasNode } from "./obsidian/canvas-internal";
-import { getResponse } from "./chatgpt";
+import { AugmentedCanvasSettings } from "../settings/AugmentedCanvasSettings";
+import { CanvasNode } from "../obsidian/canvas-internal";
+import { getResponse } from "../utils/chatgpt";
 
 const SYSTEM_PROMPT_QUESTIONS = `
 You must respond in this JSON format: {
