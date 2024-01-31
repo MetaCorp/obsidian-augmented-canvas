@@ -80,7 +80,7 @@ export interface AugmentedCanvasSettings {
 	/**
 	 * Model used for image generation
 	 */
-	imagesPath: string;
+	imagesPath?: string;
 }
 // export const DEFAULT_SYSTEM_PROMPT = `
 // You are a critical-thinking assistant bot.
@@ -130,7 +130,7 @@ export const DEFAULT_SETTINGS: AugmentedCanvasSettings = {
 	insertRelevantQuestionsFilesCount: 10,
 	relevantQuestionsSystemPrompt: RELEVANT_QUESTION_SYSTEM_PROMPT,
 	imageModel: IMAGE_MODELS.DALL_E_3.name,
-	imagesPath: "/",
+	imagesPath: undefined,
 };
 
 export function getModels() {

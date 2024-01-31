@@ -140,6 +140,10 @@ export const getCanvasActiveNoteText = (app: App) => {
 // 	canvas.requestSave();
 // };
 
-export const getImageSaveFolderPath = (settings: AugmentedCanvasSettings) => {
-	return settings.imagesPath;
+export const getImageSaveFolderPath = (
+	app: App,
+	settings: AugmentedCanvasSettings
+) => {
+	// @ts-expect-error
+	return settings.imagesPath || app.vault.config.attachmentFolderPath;
 };
