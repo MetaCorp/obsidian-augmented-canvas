@@ -145,5 +145,7 @@ export const getImageSaveFolderPath = (
 	settings: AugmentedCanvasSettings
 ) => {
 	// @ts-expect-error
-	return settings.imagesPath || app.vault.config.attachmentFolderPath;
+	return app.vault.config.attachmentFolderPath;
+	// // @ts-expect-error
+	// return settings.imagesPath || app.vault.config.attachmentFolderPath;
 };
