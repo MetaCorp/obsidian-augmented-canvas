@@ -175,7 +175,10 @@ ${await app.vault.cachedRead(fileOrFolder)}
 			);
 		} else {
 			filesContent.push(
-				`${readFolderMarkdownContent(app, fileOrFolder as TFolder)}`
+				`${await readFolderMarkdownContent(
+					app,
+					fileOrFolder as TFolder
+				)}`
 			);
 		}
 	}
