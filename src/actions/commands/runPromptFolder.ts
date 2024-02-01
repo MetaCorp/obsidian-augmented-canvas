@@ -102,4 +102,6 @@ export const runPromptFolder = async (
 			created.setText(newText);
 		}
 	);
+
+	canvas.requestSave();
 };

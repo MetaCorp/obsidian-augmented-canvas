@@ -163,9 +163,12 @@ export const generateFileName = (prefix: string = "file"): string => {
 };
 
 export const readFolderMarkdownContent = async (app: App, folder: TFolder) => {
+	console.log({ folder });
+
 	const filesContent: string[] = [];
 	for await (const fileOrFolder of folder.children) {
 		if (fileOrFolder instanceof TFile) {
+			// TODO special parsing for .canvas
 			filesContent.push(
 				`
 # ${fileOrFolder.path}
