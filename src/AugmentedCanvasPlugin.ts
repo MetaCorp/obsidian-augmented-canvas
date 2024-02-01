@@ -21,11 +21,11 @@ import {
 	SystemPrompt,
 } from "./settings/AugmentedCanvasSettings";
 import SettingsTab from "./settings/SettingsTab";
-import { CustomQuestionModal } from "./Modals/CustomQuestionModal";
+import { CustomQuestionModal } from "./modals/CustomQuestionModal";
 import { CanvasNode } from "./obsidian/canvas-internal";
 import { handlePatchNoteMenu } from "./actions/menuPatches/noteMenuPatch";
 import { createCanvasGroup, getActiveCanvas } from "./utils";
-import SystemPromptsModal from "./Modals/SystemPromptsModal";
+import SystemPromptsModal from "./modals/SystemPromptsModal";
 
 import { createFlashcards } from "./actions/canvasNodeContextMenuActions/flashcards";
 import { getFilesContent } from "./obsidian/fileUtil";

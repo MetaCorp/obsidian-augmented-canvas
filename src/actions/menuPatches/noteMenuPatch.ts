@@ -1,7 +1,7 @@
 import { App, Canvas, Menu } from "obsidian";
 import { CanvasNode } from "../../obsidian/canvas-internal";
 import { AugmentedCanvasSettings } from "../../settings/AugmentedCanvasSettings";
-import { CustomQuestionModal } from "../../Modals/CustomQuestionModal";
+import { CustomQuestionModal } from "../../modals/CustomQuestionModal";
 import {
 	handleCallGPT_Question,
 	handleCallGPT_Questions,

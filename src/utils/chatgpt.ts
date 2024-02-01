@@ -112,6 +112,10 @@ export const createImage = async (
 		model?: string;
 	}
 ) => {
+	logDebug("Calling AI :", {
+		prompt,
+		model,
+	});
 	const openai = new OpenAI({
 		apiKey: apiKey,
 		dangerouslyAllowBrowser: true,
