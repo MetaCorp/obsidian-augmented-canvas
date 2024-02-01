@@ -36,7 +36,7 @@ The links between notes are used to create the chat history sent to GPT.
 
 ![Augmented-Canvas-Createflashcards](./assets/AugmentedCanvas-Createflashcards.gif)
 
--   The plugin adds a command named "Insert relevant questions". This command insert AI generated questions to the current canvas. The plugin reads and then send your historical activity to GPT, reading the last X files modified (configurable in the settings).
+-   The plugin adds a command named "Insert relevant questions". This command insert AI generated questions to the current canvas. The plugin reads and then sends your historical activity to GPT, reading the last X files modified (configurable in the settings).
 
 -   The plugin adds an action to the edge context menu to regenerate an AI response.
 
