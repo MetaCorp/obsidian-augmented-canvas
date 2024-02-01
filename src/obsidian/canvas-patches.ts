@@ -176,7 +176,10 @@ export const createNode = (
 				side: "top",
 				node: newNode,
 			},
-			edgeLabel
+			edgeLabel,
+			{
+				isGenerated: true,
+			}
 		);
 	}
 
@@ -191,7 +194,10 @@ export const addEdge = (
 	edgeID: string,
 	fromEdge: CanvasEdgeIntermediate,
 	toEdge: CanvasEdgeIntermediate,
-	label?: string
+	label?: string,
+	edgeData?: {
+		isGenerated: boolean;
+	}
 ) => {
 	if (!canvas) return;
 
@@ -203,6 +209,7 @@ export const addEdge = (
 		edges: [
 			...data.edges,
 			{
+				...edgeData,
 				id: edgeID,
 				fromNode: fromEdge.node.id,
 				fromSide: fromEdge.side,

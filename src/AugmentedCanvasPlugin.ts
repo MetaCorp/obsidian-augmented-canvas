@@ -11,7 +11,8 @@ import {
 } from "obsidian";
 import { around } from "monkey-around";
 import {
-	handleCallGPT,
+	addAskAIButton,
+	addRegenerateResponse,
 	handleCallGPT_Question,
 } from "./canvasNodeMenuActions/advancedCanvas";
 import {
@@ -138,108 +139,102 @@ export default class AugmentedCanvasPlugin extends Plugin {
 						)
 							return result;
 
+						// // * If group
+						// if (node.unknownData.type === "group") return result;
+
+						if (this.menuEl.querySelector(".gpt-menu-item"))
+							return result;
+
+						// * If Edge
 						const selectedNode = Array.from(
 							maybeCanvasView.canvas?.selection
 						)[0];
 						if (
 							// @ts-expect-error
 							selectedNode.from
-						)
-							return result;
+						) {
+							if (!selectedNode.unknownData.isGenerated) return;
+							addRegenerateResponse(app, settings, this.menuEl);
+						} else {
+							// * Handles "Call GPT" button
 
-						if (this.menuEl.querySelector(".gpt-menu-item"))
-							return result;
+							addAskAIButton(app, settings, this.menuEl);
 
-						// * Handles "Call GPT" button
+							// const node = <CanvasNode>(
+							// 	Array.from(this.canvas.selection)?.first()
+							// );
 
-						const buttonEl_AskAI = createEl(
-							"button",
-							"clickable-icon gpt-menu-item"
-						);
-						setTooltip(buttonEl_AskAI, "Ask AI", {
-							placement: "top",
-						});
-						setIcon(buttonEl_AskAI, "lucide-sparkles");
-						this.menuEl.appendChild(buttonEl_AskAI);
+							// if (!node?.unknownData.questions?.length) return;
 
-						buttonEl_AskAI.addEventListener("click", () => {
-							handleCallGPT(
-								app,
-								settings,
-								<CanvasNode>(
-									Array.from(this.canvas.selection)?.first()
-								)
+							// * Handles "Ask Question" button
+							// TODO: refactor (as above)
+
+							const buttonEl_AskQuestion = createEl(
+								"button",
+								"clickable-icon gpt-menu-item"
 							);
-						});
+							setTooltip(
+								buttonEl_AskQuestion,
+								"Ask question with AI",
+								{
+									placement: "top",
+								}
+							);
+							setIcon(buttonEl_AskQuestion, "lucide-help-circle");
+							this.menuEl.appendChild(buttonEl_AskQuestion);
+							buttonEl_AskQuestion.addEventListener(
+								"click",
+								() => {
+									let modal = new CustomQuestionModal(
+										app,
+										(question2: string) => {
+											handleCallGPT_Question(
+												app,
+												settings,
+												<CanvasNode>(
+													Array.from(
+														this.canvas.selection
+													)?.first()!
+												),
+												question2
+											);
+											// Handle the input
+										}
+									);
+									modal.open();
+								}
+							);
 
-						// const node = <CanvasNode>(
-						// 	Array.from(this.canvas.selection)?.first()
-						// );
+							// * Handles "AI Questions" button
 
-						// if (!node?.unknownData.questions?.length) return;
-
-						// * Handles "Ask Question" button
-
-						const buttonEl_AskQuestion = createEl(
-							"button",
-							"clickable-icon gpt-menu-item"
-						);
-						setTooltip(
-							buttonEl_AskQuestion,
-							"Ask question with AI",
-							{
-								placement: "top",
-							}
-						);
-						setIcon(buttonEl_AskQuestion, "lucide-help-circle");
-						this.menuEl.appendChild(buttonEl_AskQuestion);
-						buttonEl_AskQuestion.addEventListener("click", () => {
-							let modal = new CustomQuestionModal(
-								app,
-								(question2: string) => {
-									handleCallGPT_Question(
+							const buttonEl_AIQuestions = createEl(
+								"button",
+								"clickable-icon gpt-menu-item"
+							);
+							setTooltip(
+								buttonEl_AIQuestions,
+								"AI generated questions",
+								{
+									placement: "top",
+								}
+							);
+							setIcon(
+								buttonEl_AIQuestions,
+								"lucide-file-question"
+							);
+							this.menuEl.appendChild(buttonEl_AIQuestions);
+							buttonEl_AIQuestions.addEventListener("click", () =>
+								handlePatchNoteMenu(
+									buttonEl_AIQuestions,
+									this.menuEl,
+									{
 										app,
 										settings,
-										<CanvasNode>(
-											Array.from(
-												this.canvas.selection
-											)?.first()!
-										),
-										question2
-									);
-									// Handle the input
-								}
+										canvas: this.canvas,
+									}
+								)
 							);
-							modal.open();
-						});
-
-						// * Handles "AI Questions" button
-
-						const buttonEl_AIQuestions = createEl(
-							"button",
-							"clickable-icon gpt-menu-item"
-						);
-						setTooltip(
-							buttonEl_AIQuestions,
-							"AI generated questions",
-							{
-								placement: "top",
-							}
-						);
-						setIcon(buttonEl_AIQuestions, "lucide-file-question");
-						this.menuEl.appendChild(buttonEl_AIQuestions);
-						buttonEl_AIQuestions.addEventListener("click", () =>
-							handlePatchNoteMenu(
-								buttonEl_AIQuestions,
-								this.menuEl,
-								{
-									app,
-									settings,
-									canvas: this.canvas,
-								}
-							)
-						);
-
+						}
 						return result;
 					},
 			});

@@ -1,8 +1,9 @@
-import { App } from "obsidian";
+import { App, setIcon, setTooltip } from "obsidian";
 import { getTokenLimit, noteGenerator } from "./noteGenerator";
 import { AugmentedCanvasSettings } from "../settings/AugmentedCanvasSettings";
 import { CanvasNode } from "../obsidian/canvas-internal";
 import { getResponse } from "../utils/chatgpt";
+import { getActiveCanvas, getActiveCanvasNodes } from "src/utils";
 
 const SYSTEM_PROMPT_QUESTIONS = `
 You must respond in this JSON format: {
@@ -11,47 +12,23 @@ You must respond in this JSON format: {
 The questions must be asked in the same language the user used.
 `.trim();
 
-const NODE_HEIGHT = 500;
-
-export const handleCallGPT = async (
+export const addAskAIButton = async (
 	app: App,
 	settings: AugmentedCanvasSettings,
-	node: CanvasNode
+	menuEl: HTMLElement
 ) => {
-	if (node.unknownData.type === "group") {
-		// (node.headerComponent as CollapseControlHeader).updateNodesInGroup();
-		return;
-	}
-	const canvasData = node.canvas.getData();
-	const nodeData = canvasData.nodes.find((t: any) => t.id === node.id);
+	const buttonEl_AskAI = createEl("button", "clickable-icon gpt-menu-item");
+	setTooltip(buttonEl_AskAI, "Ask AI", {
+		placement: "top",
+	});
+	setIcon(buttonEl_AskAI, "lucide-sparkles");
+	menuEl.appendChild(buttonEl_AskAI);
 
-	// TODO : CallGPT and update text
-	if (nodeData) {
+	buttonEl_AskAI.addEventListener("click", async () => {
 		const { generateNote } = noteGenerator(app, settings);
 
-		// console.log({ nodeData });
-		// 		nodeData.text = `# ${nodeData.text}
-
-		// ${gptResponse}`;
-
-		// nodeData.gptQuestions = ["Question 1", "Question 2", "Question 3"];
-
-		// nodeData.height =
-		// 	nodeData.height > NODE_HEIGHT ? nodeData.height : NODE_HEIGHT;
 		await generateNote();
-		// [
-		// 	{
-		// 		role: "user",
-		// 		content: nodeData.text,
-		// 	},
-		// ],
-		// nodeData.width
-	}
-
-	// node.canvas.setData(canvasData);
-	// node.canvas.requestSave(true, true);
-
-	// updateSelection(node.canvas);
+	});
 };
 
 export const handleCallGPT_Question = async (
@@ -93,4 +70,44 @@ export const handleCallGPT_Questions = async (
 	);
 
 	return gptResponse.questions;
+};
+
+const handleRegenerateResponse = async (
+	app: App,
+	settings: AugmentedCanvasSettings
+) => {
+	const activeNode = getActiveCanvasNodes(app)![0];
+
+	const canvas = getActiveCanvas(app);
+
+	// @ts-expect-error
+	const toNode = activeNode.to.node;
+
+	console.log({ toNode });
+
+	canvas!.removeNode(toNode);
+	canvas?.requestSave();
+
+	// @ts-expect-error
+	const { generateNote } = noteGenerator(app, settings, activeNode.from.node);
+
+	await generateNote();
+};
+
+export const addRegenerateResponse = async (
+	app: App,
+	settings: AugmentedCanvasSettings,
+	menuEl: HTMLElement
+) => {
+	const buttonEl_AskAI = createEl("button", "clickable-icon gpt-menu-item");
+	setTooltip(buttonEl_AskAI, "Regenerate response", {
+		placement: "top",
+	});
+	// TODO
+	setIcon(buttonEl_AskAI, "lucide-rotate-cw");
+	menuEl.appendChild(buttonEl_AskAI);
+
+	buttonEl_AskAI.addEventListener("click", () =>
+		handleRegenerateResponse(app, settings)
+	);
 };

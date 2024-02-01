@@ -49,7 +49,8 @@ The response must be in the same language the user used.
 
 export function noteGenerator(
 	app: App,
-	settings: AugmentedCanvasSettings
+	settings: AugmentedCanvasSettings,
+	node?: CanvasNode
 	// logDebug: Logger
 ) {
 	const canCallAI = () => {
@@ -217,17 +218,22 @@ export function noteGenerator(
 
 		await canvas.requestFrame();
 
-		const selection = canvas.selection;
-		if (selection?.size !== 1) return;
-		const values = Array.from(selection.values());
-		const node = values[0];
+		let node2: CanvasNode;
+		if (!node) {
+			const selection = canvas.selection;
+			if (selection?.size !== 1) return;
+			const values = Array.from(selection.values());
+			node2 = values[0];
+		} else {
+			node2 = node;
+		}
 
-		if (node) {
+		if (node2) {
 			// Last typed characters might not be applied to note yet
 			await canvas.requestSave();
 			await sleep(200);
 
-			const { messages, tokenCount } = await buildMessages(node, {
+			const { messages, tokenCount } = await buildMessages(node2, {
 				prompt: question,
 			});
 			// console.log({ messages });
@@ -240,7 +246,7 @@ export function noteGenerator(
 					text: `\`\`\`Calling AI (${settings.apiModel})...\`\`\``,
 					size: { height: placeholderNoteHeight },
 				},
-				node,
+				node2,
 				{
 					color: assistantColor,
 					chat_role: "assistant",
@@ -299,7 +305,7 @@ export function noteGenerator(
 						} else {
 							const height = calcHeight({
 								text: created.text,
-								parentHeight: node.height,
+								parentHeight: node2.height,
 							});
 							if (height > created.height) {
 								created.moveAndResize({

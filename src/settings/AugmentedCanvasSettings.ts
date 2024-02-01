@@ -77,8 +77,9 @@ export interface AugmentedCanvasSettings {
 	 * Model used for image generation
 	 */
 	imageModel: string;
+
 	/**
-	 * Model used for image generation
+	 * The path where generated images are stored
 	 */
 	imagesPath?: string;
 }
