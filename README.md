@@ -8,7 +8,7 @@ You need a OpenAI API Key to use this plugin, you can input it in the settings. 
 
 This plugin adds three actions to the Menu of a note in the Canvas View.
 
-1. Ask GPT on a specific note, the note content will be used as prompt. A new note will be created underneath the prompt note containing the AI response.
+1. Ask GPT on a specific note, the note content will be used as prompt. The note can be a text note, a md file or a PDF file. A new note will be created underneath the prompt note containing the AI response.
 
 ![Augmented-Canvas-AskAI](./assets/AugmentedCanvas-AskAI.gif)
 
@@ -23,6 +23,8 @@ This plugin adds three actions to the Menu of a note in the Canvas View.
 The links between notes are used to create the chat history sent to GPT.
 
 ## Additional Features
+
+-   The plugin adds an action to create an image in the context menu of a note in the canvas.
 
 -   The plugin adds a command to insert system prompts on the Canvas. The system prompts are fetch from [f/awesome-chatgpt-prompts (github.com)](https://github.com/f/awesome-chatgpt-prompts). You can also add your own system prompts in the settings.
 
