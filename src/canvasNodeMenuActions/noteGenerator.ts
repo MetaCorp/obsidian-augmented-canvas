@@ -50,7 +50,8 @@ The response must be in the same language the user used.
 export function noteGenerator(
 	app: App,
 	settings: AugmentedCanvasSettings,
-	node?: CanvasNode
+	fromNode?: CanvasNode,
+	toNode?: CanvasNode
 	// logDebug: Logger
 ) {
 	const canCallAI = () => {
@@ -214,45 +215,53 @@ export function noteGenerator(
 			logDebug("No active canvas");
 			return;
 		}
-		console.log({ canvas });
+		// console.log({ canvas });
 
 		await canvas.requestFrame();
 
-		let node2: CanvasNode;
-		if (!node) {
+		let node: CanvasNode;
+		if (!fromNode) {
 			const selection = canvas.selection;
 			if (selection?.size !== 1) return;
 			const values = Array.from(selection.values());
-			node2 = values[0];
+			node = values[0];
 		} else {
-			node2 = node;
+			node = fromNode;
 		}
 
-		if (node2) {
+		if (node) {
 			// Last typed characters might not be applied to note yet
 			await canvas.requestSave();
 			await sleep(200);
 
-			const { messages, tokenCount } = await buildMessages(node2, {
+			const { messages, tokenCount } = await buildMessages(node, {
 				prompt: question,
 			});
 			// console.log({ messages });
 			if (!messages.length) return;
 
-			const created = createNode(
-				canvas,
-				{
-					// text: "```loading...```",
-					text: `\`\`\`Calling AI (${settings.apiModel})...\`\`\``,
-					size: { height: placeholderNoteHeight },
-				},
-				node2,
-				{
-					color: assistantColor,
-					chat_role: "assistant",
-				},
-				question
-			);
+			let created: CanvasNode;
+			if (!toNode) {
+				created = createNode(
+					canvas,
+					{
+						// text: "```loading...```",
+						text: `\`\`\`Calling AI (${settings.apiModel})...\`\`\``,
+						size: { height: placeholderNoteHeight },
+					},
+					node,
+					{
+						color: assistantColor,
+						chat_role: "assistant",
+					},
+					question
+				);
+			} else {
+				created = toNode;
+				created.setText(
+					`\`\`\`Calling AI (${settings.apiModel})...\`\`\``
+				);
+			}
 
 			new Notice(
 				`Sending ${messages.length} notes with ${tokenCount} tokens to GPT`
@@ -305,7 +314,7 @@ export function noteGenerator(
 						} else {
 							const height = calcHeight({
 								text: created.text,
-								parentHeight: node2.height,
+								parentHeight: node.height,
 							});
 							if (height > created.height) {
 								created.moveAndResize({
@@ -357,7 +366,9 @@ export function noteGenerator(
 				// }
 			} catch (error) {
 				new Notice(`Error calling GPT: ${error.message || error}`);
-				canvas.removeNode(created);
+				if (!toNode) {
+					canvas.removeNode(created);
+				}
 			}
 
 			await canvas.requestSave();

@@ -78,18 +78,24 @@ const handleRegenerateResponse = async (
 ) => {
 	const activeNode = getActiveCanvasNodes(app)![0];
 
-	const canvas = getActiveCanvas(app);
+	// const canvas = getActiveCanvas(app);
 
-	// @ts-expect-error
-	const toNode = activeNode.to.node;
+	// // @ts-expect-error
+	// const toNode = activeNode.to.node;
 
-	console.log({ toNode });
+	// console.log({ toNode });
 
-	canvas!.removeNode(toNode);
-	canvas?.requestSave();
+	// canvas!.removeNode(toNode);
+	// canvas?.requestSave();
 
-	// @ts-expect-error
-	const { generateNote } = noteGenerator(app, settings, activeNode.from.node);
+	const { generateNote } = noteGenerator(
+		app,
+		settings,
+		// @ts-expect-error
+		activeNode.from.node,
+		// @ts-expect-error
+		activeNode.to.node
+	);
 
 	await generateNote();
 };
