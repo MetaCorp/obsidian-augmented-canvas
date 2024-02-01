@@ -1,5 +1,6 @@
 import OpenAI from "openai";
 import { ChatCompletionMessageParam } from "openai/resources";
+import { logDebug } from "src/logDebug";
 
 export type Message = {
 	role: string;
@@ -21,6 +22,13 @@ export const streamResponse = async (
 	} = {},
 	cb: any
 ) => {
+	logDebug("Calling AI :", {
+		messages,
+		model,
+		max_tokens,
+		temperature,
+		isJSON: false,
+	});
 	// console.log({ messages, max_tokens });
 	const openai = new OpenAI({
 		apiKey: apiKey,
@@ -46,24 +54,24 @@ export const getResponse = async (
 	// prompt: string,
 	messages: ChatCompletionMessageParam[],
 	{
-		max_tokens,
 		model,
+		max_tokens,
 		temperature,
 		isJSON,
 	}: {
-		max_tokens?: number;
 		model?: string;
+		max_tokens?: number;
 		temperature?: number;
 		isJSON?: boolean;
 	} = {}
 ) => {
-	// console.log("Calling ChatGPT getResponse: ", {
-	// 	messages,
-	// 	// prompt,
-	// 	// apiKey,
-	// 	maxTokens,
-	// 	model,
-	// });
+	logDebug("Calling AI :", {
+		messages,
+		model,
+		max_tokens,
+		temperature,
+		isJSON,
+	});
 
 	const openai = new OpenAI({
 		apiKey: apiKey,

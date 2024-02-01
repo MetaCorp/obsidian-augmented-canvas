@@ -13,6 +13,7 @@ import {
 	getImageModels,
 	getModels,
 } from "./AugmentedCanvasSettings";
+import { initLogDebug } from "src/logDebug";
 
 export class SettingsTab extends PluginSettingTab {
 	plugin: ChatStreamPlugin;
@@ -233,6 +234,7 @@ export class SettingsTab extends PluginSettingTab {
 					.onChange(async (value) => {
 						this.plugin.settings.debug = value;
 						await this.plugin.saveSettings();
+						initLogDebug(this.plugin.settings);
 					});
 			});
 	}

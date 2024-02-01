@@ -1,15 +1,15 @@
 import { App, Notice, TFile } from "obsidian";
-import { AugmentedCanvasSettings } from "../settings/AugmentedCanvasSettings";
-import { createImage } from "../utils/chatgpt";
+import { AugmentedCanvasSettings } from "../../settings/AugmentedCanvasSettings";
+import { createImage } from "../../utils/chatgpt";
 import {
 	getActiveCanvas,
 	getActiveCanvasNodes,
 	getCanvasActiveNoteText,
 	getImageSaveFolderPath,
-} from "../utils";
-import { saveBase64Image } from "../obsidian/imageUtils";
-import { createNode } from "../obsidian/canvas-patches";
-import { generateFileName, updateNodeAndSave } from "../obsidian/fileUtil";
+} from "../../utils";
+import { saveBase64Image } from "../../obsidian/imageUtils";
+import { createNode } from "../../obsidian/canvas-patches";
+import { generateFileName, updateNodeAndSave } from "../../obsidian/fileUtil";
 
 export const handleGenerateImage = async (
 	app: App,

@@ -14,7 +14,7 @@ import {
 	addAskAIButton,
 	addRegenerateResponse,
 	handleCallGPT_Question,
-} from "./canvasNodeMenuActions/advancedCanvas";
+} from "./actions/canvasNodeMenuActions/advancedCanvas";
 import {
 	AugmentedCanvasSettings,
 	DEFAULT_SETTINGS,
@@ -23,16 +23,17 @@ import {
 import SettingsTab from "./settings/SettingsTab";
 import { CustomQuestionModal } from "./Modals/CustomQuestionModal";
 import { CanvasNode } from "./obsidian/canvas-internal";
-import { handlePatchNoteMenu } from "./menuPatches/noteMenuPatch";
+import { handlePatchNoteMenu } from "./actions/menuPatches/noteMenuPatch";
 import { createCanvasGroup, getActiveCanvas } from "./utils";
 import SystemPromptsModal from "./Modals/SystemPromptsModal";
 
-import { createFlashcards } from "./canvasNodeContextMenuActions/flashcards";
+import { createFlashcards } from "./actions/canvasNodeContextMenuActions/flashcards";
 import { getFilesContent } from "./obsidian/fileUtil";
 import { getResponse } from "./utils/chatgpt";
 import { parseCsv } from "./utils/csvUtils";
-import { handleAddRelevantQuestions } from "./commands/relevantQuestions";
-import { handleGenerateImage } from "./canvasNodeContextMenuActions/generateImage";
+import { handleAddRelevantQuestions } from "./actions/commands/relevantQuestions";
+import { handleGenerateImage } from "./actions/canvasNodeContextMenuActions/generateImage";
+import { initLogDebug } from "./logDebug";
 
 export default class AugmentedCanvasPlugin extends Plugin {
 	triggerByPlugin: boolean = false;
@@ -50,6 +51,8 @@ export default class AugmentedCanvasPlugin extends Plugin {
 
 		// this.patchCanvas();
 		setTimeout(() => {
+			initLogDebug(this.settings);
+
 			this.patchCanvasMenu();
 			this.addCommands();
 			this.patchNoteContextMenu();

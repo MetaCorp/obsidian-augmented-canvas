@@ -1,13 +1,13 @@
-import { CanvasView } from "../obsidian/canvas-patches";
-import { CanvasNode } from "../obsidian/canvas-internal";
+import { CanvasView } from "../../obsidian/canvas-patches";
+import { CanvasNode } from "../../obsidian/canvas-internal";
 import { App, Notice } from "obsidian";
-import { getActiveCanvas } from "../utils";
-import { readNodeContent } from "../obsidian/fileUtil";
+import { getActiveCanvas } from "../../utils";
+import { readNodeContent } from "../../obsidian/fileUtil";
 import {
 	AugmentedCanvasSettings,
 	DEFAULT_SETTINGS,
-} from "../settings/AugmentedCanvasSettings";
-import { getResponse } from "../utils/chatgpt";
+} from "../../settings/AugmentedCanvasSettings";
+import { getResponse } from "../../utils/chatgpt";
 import { getTokenLimit } from "../canvasNodeMenuActions/noteGenerator";
 
 const FLASHCARDS_SYSTEM_PROMPT = `

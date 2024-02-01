@@ -1,16 +1,20 @@
 import { TiktokenModel, encodingForModel } from "js-tiktoken";
 import { App, ItemView, Notice } from "obsidian";
-import { CanvasNode } from "../obsidian/canvas-internal";
-import { CanvasView, calcHeight, createNode } from "../obsidian/canvas-patches";
+import { CanvasNode } from "../../obsidian/canvas-internal";
+import {
+	CanvasView,
+	calcHeight,
+	createNode,
+} from "../../obsidian/canvas-patches";
 import {
 	AugmentedCanvasSettings,
 	DEFAULT_SETTINGS,
-} from "../settings/AugmentedCanvasSettings";
+} from "../../settings/AugmentedCanvasSettings";
 // import { Logger } from "./util/logging";
-import { visitNodeAndAncestors } from "../obsidian/canvasUtil";
-import { readNodeContent } from "../obsidian/fileUtil";
-import { getResponse, streamResponse } from "../utils/chatgpt";
-import { CHAT_MODELS, chatModelByName } from "../openai/models";
+import { visitNodeAndAncestors } from "../../obsidian/canvasUtil";
+import { readNodeContent } from "../../obsidian/fileUtil";
+import { getResponse, streamResponse } from "../../utils/chatgpt";
+import { CHAT_MODELS, chatModelByName } from "../../openai/models";
 
 /**
  * Color for assistant notes: 6 == purple

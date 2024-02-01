@@ -1,8 +1,8 @@
 import { App, setIcon, setTooltip } from "obsidian";
 import { getTokenLimit, noteGenerator } from "./noteGenerator";
-import { AugmentedCanvasSettings } from "../settings/AugmentedCanvasSettings";
-import { CanvasNode } from "../obsidian/canvas-internal";
-import { getResponse } from "../utils/chatgpt";
+import { AugmentedCanvasSettings } from "../../settings/AugmentedCanvasSettings";
+import { CanvasNode } from "../../obsidian/canvas-internal";
+import { getResponse } from "../../utils/chatgpt";
 import { getActiveCanvas, getActiveCanvasNodes } from "src/utils";
 
 const SYSTEM_PROMPT_QUESTIONS = `
