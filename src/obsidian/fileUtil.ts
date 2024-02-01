@@ -162,6 +162,9 @@ export const generateFileName = (prefix: string = "file"): string => {
 	return `${prefix}_${year}-${month}-${day}_${hours}-${minutes}-${seconds}`;
 };
 
+/*
+ * Will read canvas node content || md note content
+ */
 export const cachedReadFile = async (app: App, file: TFile) => {
 	if (file.path.endsWith(".canvas")) {
 		const canvasJson = JSON.parse(await app.vault.cachedRead(file));
