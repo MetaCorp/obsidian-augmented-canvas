@@ -13,6 +13,7 @@ import Fuse, { FuseResult } from "fuse.js";
 export default class QuickActionModal extends SuggestModal<SystemPrompt> {
 	settings: AugmentedCanvasSettings;
 	fuse: Fuse<SystemPrompt>;
+	onChoose: (systemPrompt: SystemPrompt) => void;
 
 	/**
 	 *
@@ -20,9 +21,14 @@ export default class QuickActionModal extends SuggestModal<SystemPrompt> {
 	 * @param plugin plugin instance
 	 * @param editor editor instance
 	 */
-	constructor(app: App, settings: AugmentedCanvasSettings) {
+	constructor(
+		app: App,
+		settings: AugmentedCanvasSettings,
+		onChoose: (systemPrompt: SystemPrompt) => void
+	) {
 		super(app);
 		this.settings = settings;
+		this.onChoose = onChoose;
 
 		const fuse = new Fuse(
 			[...this.settings.userSystemPrompts, ...this.settings.systemPrompts]
@@ -46,22 +52,6 @@ export default class QuickActionModal extends SuggestModal<SystemPrompt> {
 		return this.fuse
 			.search(query)
 			.map((result: FuseResult<SystemPrompt>) => result.item);
-
-		return this.settings.systemPrompts.filter(
-			(systemPrompt: SystemPrompt) => {
-				if (query === "") return true;
-
-				const promptWords = systemPrompt.prompt.split(/ /g);
-				const actWords = systemPrompt.act.split(/ /g);
-
-				return (
-					promptWords.filter((word: string) => word.includes(query))
-						.length > 0 ||
-					actWords.filter((word: string) => word.includes(query))
-						.length > 0
-				);
-			}
-		);
 	}
 
 	/**
@@ -91,34 +81,6 @@ export default class QuickActionModal extends SuggestModal<SystemPrompt> {
 		systemPrompt: SystemPrompt,
 		evt: MouseEvent | KeyboardEvent
 	) {
-		new Notice(`Selected ${systemPrompt.act}`);
-
-		const canvas = getActiveCanvas(this.app);
-		if (!canvas) return;
-
-		const text = `
-SYSTEM PROMPT
-
-${systemPrompt.prompt.trim()}
-`.trim();
-
-		const NODE_WIDTH = 800;
-		const NODE_HEIGHT = 300;
-		const newNode = createNode(canvas, {
-			pos: {
-				// @ts-expect-error
-				x: canvas.x - NODE_WIDTH / 2,
-				// @ts-expect-error
-				y: canvas.y - NODE_HEIGHT / 2,
-			},
-			// position: "left",
-			size: {
-				height: calcHeight({ parentHeight: NODE_HEIGHT, text }),
-				width: NODE_WIDTH,
-			},
-			text,
-			focus: false,
-		});
-		// canvas.menu.menuEl.append(new MenuItem())
+		this.onChoose(systemPrompt);
 	}
 }

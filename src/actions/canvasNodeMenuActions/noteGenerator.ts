@@ -32,8 +32,8 @@ const placeholderNoteHeight = 60;
 const emptyNoteHeight = 100;
 
 const NOTE_MAX_WIDTH = 400;
-const NOTE_MIN_HEIGHT = 400;
-const NOTE_INCR_HEIGHT_STEP = 150;
+export const NOTE_MIN_HEIGHT = 400;
+export const NOTE_INCR_HEIGHT_STEP = 150;
 
 // TODO : remove
 const logDebug = (text: any) => null;
@@ -318,7 +318,7 @@ export function noteGenerator(
 						} else {
 							const height = calcHeight({
 								text: created.text,
-								parentHeight: node.height,
+								// parentHeight: node.height,
 							});
 							if (height > created.height) {
 								created.moveAndResize({

@@ -6,6 +6,7 @@ import {
 	MenuItem,
 	Notice,
 	Plugin,
+	TFolder,
 	setIcon,
 	setTooltip,
 } from "obsidian";
@@ -34,6 +35,10 @@ import { parseCsv } from "./utils/csvUtils";
 import { handleAddRelevantQuestions } from "./actions/commands/relevantQuestions";
 import { handleGenerateImage } from "./actions/canvasNodeContextMenuActions/generateImage";
 import { initLogDebug } from "./logDebug";
+import FolderSuggestModal from "./modals/FolderSuggestModal";
+import { calcHeight, createNode } from "./obsidian/canvas-patches";
+import { insertSystemPrompt } from "./actions/commands/insertSystemPrompt";
+import { runPromptFolder } from "./actions/commands/runPromptFolder";
 
 export default class AugmentedCanvasPlugin extends Plugin {
 	triggerByPlugin: boolean = false;
@@ -306,6 +311,40 @@ export default class AugmentedCanvasPlugin extends Plugin {
 		const app = this.app;
 
 		this.addCommand({
+			id: "run-prompt-folder",
+			name: "Run a system prompt on a folder",
+			checkCallback: (checking: boolean) => {
+				if (checking) {
+					// console.log({ checkCallback: checking });
+					if (!getActiveCanvas(app)) return false;
+
+					return true;
+				}
+
+				new SystemPromptsModal(
+					app,
+					this.settings,
+					(systemPrompt: SystemPrompt) => {
+						new Notice(
+							`Selected system prompt ${systemPrompt.act}`
+						);
+
+						new FolderSuggestModal(app, (folder: TFolder) => {
+							new Notice(`Selected folder ${folder.path}`);
+							runPromptFolder(
+								app,
+								this.settings,
+								systemPrompt,
+								folder
+							);
+						}).open();
+					}
+				).open();
+			},
+			// callback: () => {},
+		});
+
+		this.addCommand({
 			id: "insert-system-prompt",
 			name: "Insert system prompt",
 			checkCallback: (checking: boolean) => {
@@ -316,7 +355,12 @@ export default class AugmentedCanvasPlugin extends Plugin {
 					return true;
 				}
 
-				new SystemPromptsModal(app, this.settings).open();
+				new SystemPromptsModal(
+					app,
+					this.settings,
+					(systemPrompt: SystemPrompt) =>
+						insertSystemPrompt(app, systemPrompt)
+				).open();
 			},
 			// callback: () => {},
 		});

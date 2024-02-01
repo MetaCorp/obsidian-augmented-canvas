@@ -1,4 +1,11 @@
-import { App, TFile, loadPdfJs, resolveSubpath } from "obsidian";
+import {
+	App,
+	TAbstractFile,
+	TFile,
+	TFolder,
+	loadPdfJs,
+	resolveSubpath,
+} from "obsidian";
 import { Canvas, CanvasNode, CreateNodeOptions } from "./canvas-internal";
 import { AugmentedCanvasSettings } from "src/settings/AugmentedCanvasSettings";
 
@@ -138,6 +145,7 @@ export const updateNodeAndSave = async (
 ) => {
 	// console.log({ nodeOptions });
 	// node.setText(nodeOptions.text);
+	// @ts-expect-error
 	node.setData(nodeOptions);
 	await canvas.requestSave();
 };
@@ -152,4 +160,25 @@ export const generateFileName = (prefix: string = "file"): string => {
 	const seconds = now.getUTCSeconds().toString().padStart(2, "0");
 
 	return `${prefix}_${year}-${month}-${day}_${hours}-${minutes}-${seconds}`;
+};
+
+export const readFolderMarkdownContent = async (app: App, folder: TFolder) => {
+	const filesContent: string[] = [];
+	for await (const fileOrFolder of folder.children) {
+		if (fileOrFolder instanceof TFile) {
+			filesContent.push(
+				`
+# ${fileOrFolder.path}
+
+${await app.vault.cachedRead(fileOrFolder)}
+`.trim()
+			);
+		} else {
+			filesContent.push(
+				`${readFolderMarkdownContent(app, fileOrFolder as TFolder)}`
+			);
+		}
+	}
+
+	return filesContent.join("\n\n");
 };

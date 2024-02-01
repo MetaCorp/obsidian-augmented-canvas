@@ -4,7 +4,7 @@ import { AugmentedCanvasSettings } from "./settings/AugmentedCanvasSettings";
 let settings: AugmentedCanvasSettings | null = null;
 
 export const initLogDebug = (settings2: AugmentedCanvasSettings) => {
-	console.log({ settings2 });
+	// console.log({ settings2 });
 	settings = settings2;
 };
 

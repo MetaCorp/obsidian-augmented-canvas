@@ -53,7 +53,8 @@ const minHeight = 60;
  * For notes beyond a few lines, the note will have scroll bar.
  * Not a precise science, just something that is not surprising.
  */
-export const calcHeight = (options: { parentHeight: number; text: string }) => {
+// export const calcHeight = (options: { parentHeight: number; text: string }) => {
+export const calcHeight = (options: { text: string }) => {
 	const calcTextHeight = Math.round(
 		textPaddingHeight +
 			(pxPerLine * options.text.length) / (minWidth / pxPerChar)
@@ -92,7 +93,10 @@ export const createNode = (
 			  Math.max(
 					minHeight,
 					parentNode &&
-						calcHeight({ text, parentHeight: parentNode.height })
+						calcHeight({
+							text,
+							// parentHeight: parentNode.height
+						})
 			  )
 			: DEFAULT_NODE_HEIGHT
 		: undefined;
