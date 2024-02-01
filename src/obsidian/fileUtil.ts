@@ -163,7 +163,7 @@ export const generateFileName = (prefix: string = "file"): string => {
 };
 
 export const readFolderMarkdownContent = async (app: App, folder: TFolder) => {
-	console.log({ folder });
+	// console.log({ folder });
 
 	const filesContent: string[] = [];
 	for await (const fileOrFolder of folder.children) {
