@@ -162,6 +162,37 @@ export const generateFileName = (prefix: string = "file"): string => {
 	return `${prefix}_${year}-${month}-${day}_${hours}-${minutes}-${seconds}`;
 };
 
+export const cachedReadFile = async (app: App, file: TFile) => {
+	if (file.path.endsWith(".canvas")) {
+		const canvasJson = JSON.parse(await app.vault.cachedRead(file));
+		console.log({ canvasJson });
+
+		const nodesContent: string[] = [];
+
+		if (canvasJson.nodes) {
+			for await (const node of canvasJson.nodes) {
+				if (node.type === "text") {
+					nodesContent.push(node.text!);
+				} else if (node.type === "file") {
+					nodesContent.push(
+						await cachedReadFile(
+							app,
+							app.vault.getAbstractFileByPath(node.file!) as TFile
+						)
+					);
+				}
+			}
+		}
+
+		console.log({ canvas: { file, nodesContent } });
+
+		return nodesContent.join("\n\n");
+	} else {
+		return await app.vault.cachedRead(file);
+	}
+};
+
+// TODO : if there is a canvas which link to a file in the same folder then the folder can be read two times
 export const readFolderMarkdownContent = async (app: App, folder: TFolder) => {
 	// console.log({ folder });
 
@@ -173,7 +204,7 @@ export const readFolderMarkdownContent = async (app: App, folder: TFolder) => {
 				`
 # ${fileOrFolder.path}
 
-${await app.vault.cachedRead(fileOrFolder)}
+${await cachedReadFile(app, fileOrFolder)}
 `.trim()
 			);
 		} else {

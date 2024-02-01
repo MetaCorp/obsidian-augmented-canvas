@@ -330,7 +330,7 @@ export default class AugmentedCanvasPlugin extends Plugin {
 						);
 
 						new FolderSuggestModal(app, (folder: TFolder) => {
-							new Notice(`Selected folder ${folder.path}`);
+							// new Notice(`Selected folder ${folder.path}`);
 							runPromptFolder(
 								app,
 								this.settings,
