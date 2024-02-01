@@ -38,6 +38,10 @@ The links between notes are used to create the chat history sent to GPT.
 
 -   The plugin adds an action to the edge context menu to regenerate an AI response.
 
+## Privacy
+
+The content that is send to GPT can be viewed by toggling on the "Debug output" setting. The messages then appear in the console.
+
 ## Installation
 
 -   Not ready for market yet
