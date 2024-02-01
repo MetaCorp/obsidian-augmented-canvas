@@ -26,7 +26,9 @@ The links between notes are used to create the chat history sent to GPT.
 
 -   The plugin adds an action to create an image in the context menu of a note in the canvas.
 
--   The plugin adds a command to insert system prompts on the Canvas. The system prompts are fetch from [f/awesome-chatgpt-prompts (github.com)](https://github.com/f/awesome-chatgpt-prompts). You can also add your own system prompts in the settings.
+-   The plugin adds a command named "Run a system prompt on a folder". Reading all md and canvas files present in that folder and sub-folders and inserting the response in the current canvas.
+
+-   The plugin adds a command named "Insert system prompt". This command will insert a chosen system prompt to the current canvas. The system prompts are fetch from [f/awesome-chatgpt-prompts (github.com)](https://github.com/f/awesome-chatgpt-prompts). You can also add your own system prompts in the settings.
 
 ![Augmented-Canvas-Insertsystemprompt](./assets/AugmentedCanvas-Insertsystemprompt.gif)
 
@@ -34,7 +36,7 @@ The links between notes are used to create the chat history sent to GPT.
 
 ![Augmented-Canvas-Createflashcards](./assets/AugmentedCanvas-Createflashcards.gif)
 
--   The plugin adds a command to insert relevant questions in the current canvas. The plugin reads your historical activity, reading the last X files modified (configurable in the settings).
+-   The plugin adds a command named "Insert relevant questions". This command insert AI generated questions to the current canvas. The plugin reads and then send your historical activity to GPT, reading the last X files modified (configurable in the settings).
 
 -   The plugin adds an action to the edge context menu to regenerate an AI response.
 
