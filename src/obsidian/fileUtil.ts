@@ -164,6 +164,7 @@ export const generateFileName = (prefix: string = "file"): string => {
 
 /*
  * Will read canvas node content || md note content
+ * TODO add backlinks reading
  */
 export const cachedReadFile = async (app: App, file: TFile) => {
 	if (file.path.endsWith(".canvas")) {
@@ -187,7 +188,7 @@ export const cachedReadFile = async (app: App, file: TFile) => {
 			}
 		}
 
-		console.log({ canvas: { file, nodesContent } });
+		// console.log({ canvas: { file, nodesContent } });
 
 		return nodesContent.join("\n\n");
 	} else {
