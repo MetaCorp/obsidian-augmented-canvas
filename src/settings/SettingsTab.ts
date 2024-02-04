@@ -72,6 +72,19 @@ export class SettingsTab extends PluginSettingTab {
 			});
 
 		new Setting(containerEl)
+			.setName("Youtube API key")
+			.setDesc("The Youtube API key used to fetch captions")
+			.addText((text) => {
+				text.inputEl.type = "password";
+				text.setPlaceholder("API Key")
+					.setValue(this.plugin.settings.youtubeApiKey)
+					.onChange(async (value) => {
+						this.plugin.settings.youtubeApiKey = value;
+						await this.plugin.saveSettings();
+					});
+			});
+
+		new Setting(containerEl)
 			.setName("Default system prompt")
 			.setDesc(
 				`The system prompt sent with each request to the API. \n(Note: you can override this by beginning a note stream with a note starting 'SYSTEM PROMPT'. The remaining content of that note will be used as system prompt.)`

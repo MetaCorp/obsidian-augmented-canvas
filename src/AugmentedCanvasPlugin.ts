@@ -39,6 +39,8 @@ import FolderSuggestModal from "./modals/FolderSuggestModal";
 import { calcHeight, createNode } from "./obsidian/canvas-patches";
 import { insertSystemPrompt } from "./actions/commands/insertSystemPrompt";
 import { runPromptFolder } from "./actions/commands/runPromptFolder";
+import { InputModal } from "./modals/InputModal";
+import { runYoutubeCaptions } from "./actions/commands/youtubeCaptions";
 
 export default class AugmentedCanvasPlugin extends Plugin {
 	triggerByPlugin: boolean = false;
@@ -309,6 +311,33 @@ export default class AugmentedCanvasPlugin extends Plugin {
 
 	addCommands() {
 		const app = this.app;
+
+		this.addCommand({
+			id: "insert-youtube-caption",
+			name: "Insert captions of a Youtube video",
+			checkCallback: (checking: boolean) => {
+				if (checking) {
+					// console.log({ checkCallback: checking });
+					if (!getActiveCanvas(app)) return false;
+
+					return true;
+				}
+
+				new InputModal(
+					app,
+					{
+						label: "Enter a youtube url",
+						buttonLabel: "Scrape captions",
+					},
+					(videoUrl: string) => {
+						new Notice(`Scraping captions of youtube video`);
+
+						runYoutubeCaptions(app, this.settings, videoUrl);
+					}
+				).open();
+			},
+			// callback: () => {},
+		});
 
 		this.addCommand({
 			id: "run-prompt-folder",

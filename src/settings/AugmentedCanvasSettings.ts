@@ -82,6 +82,11 @@ export interface AugmentedCanvasSettings {
 	 * The path where generated images are stored
 	 */
 	imagesPath?: string;
+
+	/**
+	 * The Youtube API Key
+	 */
+	youtubeApiKey: string;
 }
 // export const DEFAULT_SYSTEM_PROMPT = `
 // You are a critical-thinking assistant bot.
@@ -132,6 +137,7 @@ export const DEFAULT_SETTINGS: AugmentedCanvasSettings = {
 	relevantQuestionsSystemPrompt: RELEVANT_QUESTION_SYSTEM_PROMPT,
 	imageModel: IMAGE_MODELS.DALL_E_3.name,
 	imagesPath: undefined,
+	youtubeApiKey: "",
 };
 
 export function getModels() {

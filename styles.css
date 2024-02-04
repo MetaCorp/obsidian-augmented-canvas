@@ -6,11 +6,18 @@
 	align-items: end;
 }
 
-.augmented-canvas-modal-input {
+.augmented-canvas-modal-textarea {
 	box-sizing: border-box;
 	min-height: 70px;
 	flex-grow: 1;
 	width: 100%;
+}
+
+.augmented-canvas-modal-input {
+	box-sizing: border-box;
+	flex-grow: 1;
+	width: 100%;
+	padding: 12px;
 }
 
 /*  */

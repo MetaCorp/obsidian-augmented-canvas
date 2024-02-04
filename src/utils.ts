@@ -149,3 +149,16 @@ export const getImageSaveFolderPath = (
 	// // @ts-expect-error
 	// return settings.imagesPath || app.vault.config.attachmentFolderPath;
 };
+
+export function getYouTubeVideoId(url: string): string | null {
+	// This pattern will match the following types of YouTube URLs:
+	// - http://www.youtube.com/watch?v=VIDEO_ID
+	// - http://www.youtube.com/watch?v=VIDEO_ID&...
+	// - http://www.youtube.com/embed/VIDEO_ID
+	// - http://youtu.be/VIDEO_ID
+	// The capture group (VIDEO_ID) is the YouTube video ID
+	const pattern =
+		/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i;
+	const match = url.match(pattern);
+	return match ? match[1] : null;
+}

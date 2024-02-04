@@ -50,11 +50,11 @@ export const handleGenerateImage = async (
 	const imageFileName = generateFileName("AI-Image");
 	const imageFolder = getImageSaveFolderPath(app, settings);
 	// console.log({ imageFolder });
-	await saveBase64Image(app, `${imageFolder}${imageFileName}.png`, b64Image);
+	await saveBase64Image(app, `${imageFolder}/${imageFileName}.png`, b64Image);
 	new Notice(`Generating image "${imageFileName}" done successfully.`);
 
 	updateNodeAndSave(canvas, node, {
-		text: `![[${imageFileName}.png]]`,
+		text: `![[${imageFolder}/${imageFileName}.png]]`,
 	});
 
 	// TODO : For now Obsidian API to .createFileNode is bugged
