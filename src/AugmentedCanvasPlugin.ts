@@ -41,6 +41,7 @@ import { insertSystemPrompt } from "./actions/commands/insertSystemPrompt";
 import { runPromptFolder } from "./actions/commands/runPromptFolder";
 import { InputModal } from "./modals/InputModal";
 import { runYoutubeCaptions } from "./actions/commands/youtubeCaptions";
+import { insertWebsiteContent } from "./actions/commands/websiteContent";
 
 export default class AugmentedCanvasPlugin extends Plugin {
 	triggerByPlugin: boolean = false;
@@ -312,6 +313,35 @@ export default class AugmentedCanvasPlugin extends Plugin {
 	addCommands() {
 		const app = this.app;
 
+		// * Website to MD
+		// this.addCommand({
+		// 	id: "insert-website-content",
+		// 	name: "Insert the content of a website as markdown",
+		// 	checkCallback: (checking: boolean) => {
+		// 		if (checking) {
+		// 			// console.log({ checkCallback: checking });
+		// 			if (!getActiveCanvas(app)) return false;
+
+		// 			return true;
+		// 		}
+
+		// 		new InputModal(
+		// 			app,
+		// 			{
+		// 				label: "Enter a website url",
+		// 				buttonLabel: "Get website content",
+		// 			},
+		// 			(videoUrl: string) => {
+		// 				new Notice(`Scraping website content`);
+
+		// 				insertWebsiteContent(app, this.settings, videoUrl);
+		// 			}
+		// 		).open();
+		// 	},
+		// 	// callback: () => {},
+		// });
+
+		// * Youtube captions
 		// this.addCommand({
 		// 	id: "insert-youtube-caption",
 		// 	name: "Insert captions of a Youtube video",
