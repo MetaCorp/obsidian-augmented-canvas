@@ -312,32 +312,32 @@ export default class AugmentedCanvasPlugin extends Plugin {
 	addCommands() {
 		const app = this.app;
 
-		this.addCommand({
-			id: "insert-youtube-caption",
-			name: "Insert captions of a Youtube video",
-			checkCallback: (checking: boolean) => {
-				if (checking) {
-					// console.log({ checkCallback: checking });
-					if (!getActiveCanvas(app)) return false;
+		// this.addCommand({
+		// 	id: "insert-youtube-caption",
+		// 	name: "Insert captions of a Youtube video",
+		// 	checkCallback: (checking: boolean) => {
+		// 		if (checking) {
+		// 			// console.log({ checkCallback: checking });
+		// 			if (!getActiveCanvas(app)) return false;
 
-					return true;
-				}
+		// 			return true;
+		// 		}
 
-				new InputModal(
-					app,
-					{
-						label: "Enter a youtube url",
-						buttonLabel: "Scrape captions",
-					},
-					(videoUrl: string) => {
-						new Notice(`Scraping captions of youtube video`);
+		// 		new InputModal(
+		// 			app,
+		// 			{
+		// 				label: "Enter a youtube url",
+		// 				buttonLabel: "Scrape captions",
+		// 			},
+		// 			(videoUrl: string) => {
+		// 				new Notice(`Scraping captions of youtube video`);
 
-						runYoutubeCaptions(app, this.settings, videoUrl);
-					}
-				).open();
-			},
-			// callback: () => {},
-		});
+		// 				runYoutubeCaptions(app, this.settings, videoUrl);
+		// 			}
+		// 		).open();
+		// 	},
+		// 	// callback: () => {},
+		// });
 
 		this.addCommand({
 			id: "run-prompt-folder",
