@@ -48,6 +48,7 @@ The content that is send to GPT can be viewed by toggling on the "Debug output" 
 
 -   Not ready for market yet
 -   Can be installed via the [Brat](https://github.com/TfTHacker/obsidian42-brat) plugin
+    You can see how to do so in this Ric Raftis article: https://ricraftis.au/obsidian/installing-the-brat-plugin-in-obsidian-a-step-by-step-guide/
 -   Manual installation
 
 1. Find the release page on this github page and click
