@@ -43,6 +43,9 @@ import { InputModal } from "./modals/InputModal";
 import { runYoutubeCaptions } from "./actions/commands/youtubeCaptions";
 import { insertWebsiteContent } from "./actions/commands/websiteContent";
 
+// @ts-expect-error
+import promptsCsvText from "./data/prompts.csv.txt";
+
 export default class AugmentedCanvasPlugin extends Plugin {
 	triggerByPlugin: boolean = false;
 	patchSucceed: boolean = false;
@@ -58,7 +61,7 @@ export default class AugmentedCanvasPlugin extends Plugin {
 		// this.registerCustomIcons();
 
 		// this.patchCanvas();
-		setTimeout(() => {
+		this.app.workspace.onLayoutReady(() => {
 			initLogDebug(this.settings);
 
 			this.patchCanvasMenu();
@@ -68,7 +71,7 @@ export default class AugmentedCanvasPlugin extends Plugin {
 			if (this.settings.systemPrompts.length === 0) {
 				this.fetchSystemPrompts();
 			}
-		}, 200);
+		});
 		// this.patchCanvasInteraction();
 		// this.patchCanvasNode();
 
@@ -267,12 +270,12 @@ export default class AugmentedCanvasPlugin extends Plugin {
 	}
 
 	async fetchSystemPrompts() {
-		const response = await fetch(
-			"https://raw.githubusercontent.com/f/awesome-chatgpt-prompts/main/prompts.csv"
-		);
-		const text = await response.text();
-		const parsedCsv = parseCsv(text);
-		console.log({ parsedCsv });
+		// const response = await fetch(
+		// 	"https://raw.githubusercontent.com/f/awesome-chatgpt-prompts/main/prompts.csv"
+		// );
+		// const text = await response.text();
+		const parsedCsv = parseCsv(promptsCsvText);
+		// console.log({ parsedCsv });
 
 		const systemPrompts: SystemPrompt[] = parsedCsv
 			.slice(1)
@@ -281,7 +284,7 @@ export default class AugmentedCanvasPlugin extends Plugin {
 				act: value[0],
 				prompt: value[1],
 			}));
-		console.log({ systemPrompts });
+		// console.log({ systemPrompts });
 
 		this.settings.systemPrompts = systemPrompts;
 
@@ -291,23 +294,25 @@ export default class AugmentedCanvasPlugin extends Plugin {
 	patchNoteContextMenu() {
 		const settings = this.settings;
 		// * no event name to add to Canvas context menu ("canvas-menu" does not exist)
-		this.app.workspace.on("canvas:node-menu", (menu) => {
-			menu.addSeparator();
-			menu.addItem((item) => {
-				item.setTitle("Create flashcards")
-					.setIcon("lucide-wallet-cards")
-					.onClick(() => {
-						createFlashcards(this.app, settings);
-					});
-			});
-			menu.addItem((item) => {
-				item.setTitle("Generate image")
-					.setIcon("lucide-image")
-					.onClick(() => {
-						handleGenerateImage(this.app, settings);
-					});
-			});
-		});
+		this.registerEvent(
+			this.app.workspace.on("canvas:node-menu", (menu) => {
+				menu.addSeparator();
+				menu.addItem((item) => {
+					item.setTitle("Create flashcards")
+						.setIcon("lucide-wallet-cards")
+						.onClick(() => {
+							createFlashcards(this.app, settings);
+						});
+				});
+				menu.addItem((item) => {
+					item.setTitle("Generate image")
+						.setIcon("lucide-image")
+						.onClick(() => {
+							handleGenerateImage(this.app, settings);
+						});
+				});
+			})
+		);
 	}
 
 	addCommands() {

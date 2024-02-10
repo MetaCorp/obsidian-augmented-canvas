@@ -48,7 +48,7 @@ export const handleGenerateImage = async (
 	});
 
 	const imageFileName = generateFileName("AI-Image");
-	const imageFolder = getImageSaveFolderPath(app, settings);
+	const imageFolder = await getImageSaveFolderPath(app, settings);
 	// console.log({ imageFolder });
 	await saveBase64Image(app, `${imageFolder}/${imageFileName}.png`, b64Image);
 	new Notice(`Generating image "${imageFileName}" done successfully.`);

@@ -140,12 +140,18 @@ export const getCanvasActiveNoteText = (app: App) => {
 // 	canvas.requestSave();
 // };
 
-export const getImageSaveFolderPath = (
+export const getImageSaveFolderPath = async (
 	app: App,
 	settings: AugmentedCanvasSettings
 ) => {
 	// @ts-expect-error
-	return app.vault.config.attachmentFolderPath;
+	const attachments = (await app.vault.getAvailablePathForAttachments())
+		.split("/")
+		.slice(0, -1)
+		.join("/");
+	console.log({ attachments });
+
+	return attachments;
 	// // @ts-expect-error
 	// return settings.imagesPath || app.vault.config.attachmentFolderPath;
 };

@@ -43,6 +43,7 @@ export const streamResponse = async (
 		temperature,
 	});
 	for await (const chunk of stream) {
+		logDebug("AI chunk", { chunk });
 		// console.log({ completionChoice: chunk.choices[0] });
 		cb(chunk.choices[0]?.delta?.content || "");
 	}
@@ -94,7 +95,7 @@ export const getResponse = async (
 		response_format: { type: isJSON ? "json_object" : "text" },
 	});
 
-	// console.log({ completion });
+	logDebug("AI response", { completion });
 	return isJSON
 		? JSON.parse(completion.choices[0].message!.content!)
 		: completion.choices[0].message!.content!;
@@ -130,6 +131,7 @@ export const createImage = async (
 		size: isVertical ? "1024x1792" : "1792x1024",
 		response_format: "b64_json",
 	});
+	logDebug("AI response", { response });
 	// console.log({ responseImg: response });
 	return response.data[0].b64_json!;
 };
