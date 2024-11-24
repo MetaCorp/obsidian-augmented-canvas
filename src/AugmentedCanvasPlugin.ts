@@ -131,6 +131,8 @@ export default class AugmentedCanvasPlugin extends Plugin {
 				.first()?.view;
 			if (!canvasView) return false;
 
+			console.log("canvasView", canvasView);
+			// TODO: check if this is working
 			const menu = (canvasView as CanvasView)?.canvas?.menu;
 			if (!menu) return false;
 
