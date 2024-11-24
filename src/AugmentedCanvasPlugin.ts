@@ -53,7 +53,7 @@ export default class AugmentedCanvasPlugin extends Plugin {
 	settings: AugmentedCanvasSettings;
 
 	async onload() {
-		this.loadSettings();
+		await this.loadSettings();
 		this.addSettingTab(new SettingsTab(this.app, this));
 
 		// this.registerCommands();
