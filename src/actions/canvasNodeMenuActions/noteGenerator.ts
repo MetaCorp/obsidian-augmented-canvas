@@ -108,7 +108,8 @@ export function noteGenerator(
 		// return { messages: [], tokenCount: 0 };
 
 		const encoding = encodingForModel(
-			(settings.apiModel || DEFAULT_SETTINGS.apiModel) as TiktokenModel
+			// (settings.apiModel || DEFAULT_SETTINGS.apiModel) as TiktokenModel
+			"gpt-4"
 		);
 
 		const messages: any[] = [];
